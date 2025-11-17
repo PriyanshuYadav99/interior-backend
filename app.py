@@ -304,7 +304,7 @@ app = Flask(__name__)
 
 # Enable CORS for frontend
 CORS(app, resources={
-    r"/api/*": {
+    r"/*": {
         "origins": [
             "http://localhost:5173",
             "http://localhost:3000",
