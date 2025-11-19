@@ -6,230 +6,260 @@ load_dotenv()
 # FAL API Configuration
 FAL_API_KEY = os.getenv('FAL_API_KEY')
 
-# Paths to reference room images (if you have them)
+# Paths to reference room images
 ROOM_IMAGES = {
-    'master_bedroom': 'backend\images\MADHUBANbedroom.webp',
-    'bedroom_1': 'backend\images\madhubanbedroom2.webp',
-    'bedroom_2': 'backend/images/bedroom_2.png',
-    'living_room': 'backend\images\madhubanlivingroom3.webp',
-    'kitchen': 'backend\images\madhubankitchen.webp',
-    'dining_room': 'backend/images/dining_room.png'
+    'master_bedroom': 'backend/images/MADHUBANbedroom.webp',
+    'bedroom_1': 'backend/images/madhubanbedroom2.webp',
+    'living_room': 'backend/images/madhubanlivingroom3.webp',
+    'kitchen': 'backend/images/madhubankitchen.webp',
 }
 
-# Room base descriptions (Updated based on your floor plan)
-# ROOM_DESCRIPTIONS = {
-#     'master_bedroom': '15 feet x 12.5 feet empty unfurnished room (4.57m x 3.81m), bare room with no furniture, no bed, no objects, clean empty space with plain walls and floor, 4 feet x 4 feet window on the right wall with natural light, door opening on the bottom wall (entrance viewpoint), view from entrance looking into the room, architectural photography of vacant room ready for interior design',    
-#     'bedroom_1': '15 feet x 12 feet (4.57m x 3.66m), empty unfurnished room, 4 feet x 4 feet window on left wall with natural light, door on bottom wall near corner, photographed from entrance doorway looking into the room, bare walls and empty floor space',
-#     'bedroom_2': 'comfortable bedroom with bed, modern furniture, pleasant lighting, well-organized layout',
-#     'living_room': 'spacious family living room with large seating area, entertainment space, open terrace access, abundant natural light',
-#     'kitchen': 'compact modern kitchen with efficient layout, sleek appliances, ample counter space, functional design',
-#     'dining_room': 'welcoming dining area with dining table, comfortable seating, family-friendly atmosphere'
-# }
-
-# # Room spatial specifications (Converted from meters to feet from your floor plan)
-# # Note: 1 meter = 3.28 feet
-# ROOM_DIMENSIONS = {
-#     'master_bedroom': '''15 feet x 12.5 feet empty unfurnished room (4.57m x 3.81m), 
-#     bare room with no furniture, no bed, no objects, 
-#     clean empty space with plain walls and floor, 
-#     4 feet x 4 feet window on the right wall with natural light, 
-#     door opening on the bottom wall (entrance viewpoint), 
-#     view from entrance looking into the room, 
-#     architectural photography of vacant room ready for interior design''',
-    
-#     'bedroom_1': '''15 feet x 12 feet (4.57m x 3.66m), 
-#     empty unfurnished room, 
-#     4 feet x 4 feet window on left wall with natural light, 
-#     door on bottom wall near corner, 
-#     photographed from entrance doorway looking into the room, 
-#     bare walls and empty floor space''',
-    
-#     'bedroom_2': '''11 feet x 12.5 feet room (3.35m x 3.81m), 
-#     full bed 6 feet x 6 feet positioned centrally, 
-     
-#     door on right wall connecting to passage, 
-#     cozy compact room with efficient furniture placement''',
-    
-#     'living_room': '''23 feet x 14.5 feet spacious family room (7.00m x 4.42m), 
-#     large L-shaped or sectional sofa 10-12 feet along main wall, 
-#     coffee table in center, TV unit on opposite wall, 
-#     open terrace access on top side with sliding doors, 
-#     foyer area 5 feet x 5 feet (1.52m x 1.55m) near entrance, 
-#     abundant natural light and open layout perfect for family gatherings''',
-    
-#     'kitchen': '''11 feet x 10 feet efficient kitchen (3.35m x 3.05m), 
-#     L-shaped or straight counter layout along two walls, 
-#     cooking range, sink, and refrigerator in work triangle, 
-#     storage cabinets above and below counters, 
-#     window or ventilation for natural light, 
-#     door connects to dining area for easy serving''',
-    
-#     'dining_room': '''9.6 feet x 12 feet dining area (2.93m x 3.66m), 
-#     rectangular dining table 5-6 feet x 3 feet centered, 
-#     4-6 dining chairs around table, 
-#     adjacent to kitchen with easy access, 
-#     connects to passage and living areas, 
-#     intimate space perfect for family meals'''
-# }
-
-# # Additional architectural details from floor plan
-# # COMMON_FEATURES = {
-# #     'passage': '4 feet wide central passage (1.22m) connecting all rooms with smooth circulation',
-# #     'toilets': '3 toilets - one 5x8.2 feet (1.52x2.50m), one 5x7.7 feet (1.52x2.34m), one 6x6 feet (1.83x1.83m)',
-# #     'wash_area': 'dedicated wash area 7.5 feet x 2.2 feet (2.28m x 0.67m)',
-# #     'store': 'storage room 5 feet x 5 feet (1.52m x 1.52m) near kitchen',
-# #     'open_terrace': 'large open terrace accessible from living room for outdoor relaxation'
-# # }
-
-# # Predefined interior design styles
-# INTERIOR_STYLES = {
-#     'modern': 'modern minimalist interior design with clean lines, neutral color palette, contemporary furniture, sleek finishes',
-#     'scandinavian': 'scandinavian interior design with light wood tones, white walls, cozy textiles, natural light, hygge aesthetic',
-#     'industrial': 'industrial loft interior design with exposed brick walls, metal fixtures, concrete elements, raw materials',
-#     'minimalist': 'minimalist interior design with simple forms, uncluttered space, functional furniture, zen-like atmosphere',
-#     'traditional': 'traditional classic interior design with elegant furniture, rich colors, ornate details, timeless appeal',
-#     'bohemian': 'bohemian eclectic interior design with colorful textiles, artistic elements, plants, global-inspired decor',
-#     'contemporary': 'contemporary interior design with current trends, mixed materials, bold accents, comfortable sophistication',
-#     'coastal': 'coastal beach-inspired interior with light blues, whites, natural textures, airy feel, relaxed atmosphere'
-# }
-
-# # Image generation parameters
-# IMAGE_CONFIG = {
-#     'width': 1024,
-#     'height': 768,
-#     'num_images': 2,
-#     'guidance_scale': 7.5,
-#     'num_inference_steps': 50,
-#     'prompt_strength': 0.75  # How much to transform the input image (0.5-0.9)
-# }
-
-# # Window specifications for accurate prompting
-# # WINDOW_DETAILS = {
-# #     'master_bedroom': 'large 4x4 feet window on right wall with curtains or blinds, natural daylight',
-# #     'bedroom_1': 'large 4x4 feet window on left wall with window treatment, good ventilation',
-# #     'bedroom_2': 'large 4x4 feet window on left wall with natural light streaming in'
-# # }
-
-# # Furniture placement guidelines based on floor plan
-# # FURNITURE_PLACEMENT = {
-# #     'master_bedroom': {
-# #         'bed': 'centered against left wall, headboard on wall',
-# #         'nightstands': 'on both sides of bed',
-# #         'dresser': 'opposite to bed or on wall near window',
-# #         'seating': 'small chair or bench near window if space permits'
-# #     },
-# #     'bedroom_1': {
-# #         'bed': 'against right wall to maximize floor space',
-# #         'wardrobe': 'on left wall near door',
-# #         'study_desk': 'near window for natural light',
-# #         'nightstand': 'beside bed'
-# #     },
-# #     'bedroom_2': {
-# #         'bed': 'centered against back wall',
-# #         'wardrobe': 'compact wardrobe on available wall',
-# #         'desk': 'small desk or shelf unit if space allows',
-# #         'efficient_storage': 'under-bed storage for space optimization'
-# #     },
-# #     'living_room': {
-# #         'main_seating': 'L-shaped or sectional sofa facing entertainment wall',
-# #         'tv_unit': 'on main wall with storage',
-# #         'coffee_table': 'centered in seating area',
-# #         'accent_chairs': 'near terrace door or as additional seating',
-# #         'console': 'in foyer area near entrance',
-# #         'decor': 'plants near terrace, artwork on walls'
-# #     },
-# #     'kitchen': {
-# #         'layout': 'L-shaped counter with cooking range on one side',
-# #         'sink': 'under window or on main counter',
-# #         'refrigerator': 'in corner for easy access',
-# #         'cabinets': 'upper and lower cabinets for storage',
-# #         'microwave': 'on counter or built-in'
-# #     },
-# #     'dining_room': {
-# #         'table': 'rectangular table centered in room',
-# #         'chairs': '4-6 chairs around table',
-# #         'sideboard': 'optional sideboard against wall for serving',
-# #         'lighting': 'pendant light centered above table'
-# #     }
-# # }
-
-# # Door positions for spatial accuracy
-# # DOOR_POSITIONS = {
-# #     'master_bedroom': 'door on bottom wall connecting to 1.22m wide passage',
-# #     'bedroom_1': 'door on bottom wall near toilet, opens to passage',
-# #     'bedroom_2': 'door on right wall connecting to central passage',
-# #     'living_room': 'main entrance from foyer area, access to open terrace',
-# #     'kitchen': 'door connecting to dining area and passage',
-# #     'dining_room': 'open connection to passage and kitchen'
-# # }
 """
-Final Ready-to-Use Config for Interior Design AI
-Based on your actual floor plan with correct camera positions
+🎯 FIXED LAYOUT SYSTEM FOR CONSISTENT GENERATION
+Only theme, colors, textures, and decorative elements change.
+Room structure, furniture positions, and architecture remain IDENTICAL.
 """
 
-# Room base descriptions (for furnished rooms)
-ROOM_DESCRIPTIONS = {
-    'master_bedroom': 'luxurious master bedroom with elegant design',
-    'bedroom_1': 'comfortable bedroom with modern amenities',
-    'living_room': 'combined living room and puja area with traditional elements',
-    'kitchen': 'modern kitchen with functional layout',
-    'dining_room': 'welcoming dining area with beautiful setup',
+# ====================================================================
+# 🏗️ FIXED ROOM ARCHITECTURES (NEVER CHANGES)
+# ====================================================================
+
+FIXED_ROOM_LAYOUTS = {
+    'master_bedroom': {
+        'camera_angle': 'front view facing the bed directly from foot of bed',
+        'room_size': '14 feet x 17 feet (4.27m x 5.18m)',
+        'flooring': 'glossy white marble flooring with subtle natural veining',
+        'ceiling': '10 feet height with recessed ceiling detail and cove lighting around perimeter',
+        
+        # FIXED POSITIONS (never change)
+        'layout': {
+            'bed': 'king-size upholstered platform bed positioned center of back wall, directly facing camera, bed frame low-profile modern style',
+            'left_wall': 'single large floor-to-ceiling window (6 feet wide) with sheer white curtains and grey blackout drapes, window starts 1 foot from corner',
+            'right_wall': 'built-in floor-to-ceiling wardrobe with smooth panel doors (8 feet wide), single door positioned on right wall near back corner leading to attached facilities',
+            'back_wall': 'textured accent wall behind bed with vertical paneling or fluted design, bed centered against this wall, NO DOORS on back wall',
+            'right_corner': 'small seating area with accent chair and side table near wardrobe, compact reading nook'
+        },
+        
+        'furniture_positions': {
+            'nightstands': 'two matching floating nightstands on either side of bed, wall-mounted with under-lighting',
+            'pendant_lights': 'two modern pendant lights hanging above nightstands, adjustable height, contemporary design',
+            'bed_styling': 'bed dressed with layered pillows (3 standard + 2 decorative), folded throw at foot of bed, fitted sheet and duvet',
+            'area_rug': 'rectangular textured area rug under bed, extending 2 feet beyond bed on three sides',
+            'accent_chair': 'single contemporary accent chair in right corner with small round side table'
+        },
+        
+        'lighting_structure': {
+            'natural': 'soft diffused sunlight from left window casting gentle shadows',
+            'ambient': 'recessed ceiling lights in cove around perimeter',
+            'task': 'pendant lights above nightstands',
+            'accent': 'LED strip under floating nightstands'
+        }
+    },
+    
+    'bedroom_1': {
+        'camera_angle': 'front view from entrance gate (bedroom entry), facing bed directly',
+        'room_size': '14 feet x 13 feet (4.27m x 3.96m)',
+        'flooring': 'glossy white marble flooring with subtle veining',
+        'ceiling': '10 feet height with false ceiling and recessed lighting, modern minimal design',
+        
+        'layout': {
+            'bed': 'queen-size upholstered platform bed centered against back wall, low-profile modern frame, directly in front of camera view',
+            'back_wall': 'textured feature wall behind bed with horizontal wood slat panels or subtle geometric pattern, window centered in this wall',
+            'window': 'single large window centered on back wall behind bed (5 feet wide), with roller blinds, positioned 3 feet above bed headboard',
+            'left_wall': 'full-height built-in wardrobe system with LED-lit shelving and closed cabinet sections, wooden finish with glass display shelves, extends entire wall length',
+            'right_wall_door1': 'first door near front (connected to attached toilet/bathroom), modern flush door with concealed hinges',
+            'right_wall_door2': 'second door further back (access to small balcony), full-height glass door with wooden frame',
+            'right_wall_panel': 'decorative wood slat wall paneling with vertical grooves between the two doors, with ambient backlighting'
+        },
+        
+        'furniture_positions': {
+            'nightstands': 'two floating wall-mounted nightstands on either side of bed, dark wood finish with LED under-lighting',
+            'pendant_lights': 'two spherical pendant lights with white glass shades, hanging at 30 inches above nightstands',
+            'bed_styling': 'bed with upholstered headboard integrated into feature wall, layered pillows (2 standard + 2 decorative), textured throw blanket',
+            'area_rug': 'geometric patterned area rug centered under bed, extending 18 inches beyond bed frame on sides and foot'
+        },
+        
+        'lighting_structure': {
+            'natural': 'natural light from back wall window, diffused through roller blinds',
+            'ambient': 'recessed ceiling spots in false ceiling, evenly distributed',
+            'accent': 'LED backlighting behind wood slat panels on right wall, warm white strips under nightstands',
+            'task': 'pendant lights above nightstands for reading'
+        }
+    },
+    
+    'living_room': {
+        'camera_angle': 'front view from left side of room, capturing full width of space',
+        'room_size': '11.5 feet x 12.5 feet (3.5m x 3.8m)',
+        'flooring': 'glossy white marble flooring with natural veining',
+        'ceiling': '10 feet height with simple flat false ceiling, recessed lighting',
+        
+        'layout': {
+    'camera_position': 'camera positioned on left wall, shooting toward right side of room',
+    'sofa': 'beige/grey L-shaped sectional sofa positioned against the back wall (concrete textured wall), with chaise extension pointing toward camera/left side',
+    'front_wall': 'puja alcove with white arched niche is built into the front wall (same wall where camera is positioned), visible on left side of frame, golden Om symbol above, brass Ganesha idol inside, white cabinet base with closed storage below, alcove is 5 feet wide',
+    'back_wall': 'concrete or textured grey accent wall directly opposite to front wall, sofa positioned against this wall, large framed abstract artwork centered above sofa (4 feet wide)',
+    'right_wall': 'white/cream painted wall visible on right side of frame, decorative wall clock mounted here (copper/rose gold finish)',
+    'right_corner': 'wooden paneled door to bedroom 1 visible in far right corner, tall decorative palm plant in white pot placed near this door'
+},
+        
+        'furniture_positions': {
+            'coffee_tables': 'two round nesting coffee tables with marble/stone tops and wooden bases, placed in front of sofa',
+            'area_rug': 'geometric patterned area rug (black and white design) placed under coffee tables and in front of sofa, 6 feet x 8 feet',
+            'side_table': 'small hexagonal side table with metal frame next to chaise section',
+            'sofa_styling': '5-6 throw pillows on sofa (mix of solid and patterned), textured throw blanket draped on chaise',
+            'puja_alcove': 'two brass candle holders (diyas) flanking Ganesha idol, small pooja items on cabinet base'
+        },
+        
+        'decorative_elements': {
+            'wall_art': 'large abstract or architectural photograph above sofa, black frame, 4 feet x 3 feet',
+            'wall_clock': 'decorative wall clock on right side of room (copper/rose gold finish with minimal design)',
+            'plants': 'tall palm plant near right door, small potted plant on side table'
+        },
+        
+        'lighting_structure': {
+            'ambient': 'recessed ceiling spots, evenly distributed warm white light',
+            'accent': 'focused spotlights highlighting puja alcove',
+            'natural': 'indirect natural light from adjacent spaces'
+        }
+    },
+    
+    'kitchen': {
+        'camera_angle': 'front view showing L-shaped kitchen layout',
+        'room_size': '10 feet x 20.6 feet (3m x 6.3m)',
+        'flooring': 'cream/beige marble flooring with subtle veining',
+        'ceiling': '9 feet height with false ceiling, recessed LED panel lights',
+        
+        'layout': {
+            'left_wall': 'tall stainless steel double-door refrigerator in corner, followed by floor-to-ceiling wooden storage cabinets with open shelving sections',
+            'left_wall_door': 'utility/store room door on left wall (wooden panel door with modern handle)',
+            'front_wall': 'continues the L-shape with grey modular lower cabinets, terrazzo composite countertop, stainless steel sink with modern faucet',
+            'front_wall_window': 'medium window with horizontal blinds above sink area, providing natural light to workspace',
+            'right_wall': 'grey modular upper cabinets with handleless design, built-in oven at eye level, wooden open shelving with LED strip lighting, black chimney hood above cooktop',
+            'countertop': 'L-shaped terrazzo countertop connecting left and front walls, thickness 2 inches, seamless design'
+        },
+        
+        'appliances_positions': {
+            'refrigerator': 'double-door stainless steel fridge in left corner, 6 feet tall',
+            'built_in_oven': 'eye-level built-in oven on right wall upper section, surrounded by grey cabinets',
+            'cooktop': 'gas cooktop on front wall counter with 4 burners, black glass top',
+            'chimney': 'black modern chimney hood above cooktop, angular design',
+            'sink': 'undermount stainless steel single bowl sink on front wall counter near window'
+        },
+        
+        'storage': {
+            'upper_cabinets': 'grey modular cabinets on right and front walls, handleless push-to-open mechanism',
+            'lower_cabinets': 'grey modular base cabinets with drawers and closed storage, handleless design',
+            'wooden_shelves': 'open wooden shelves on right wall with LED backlighting, displaying cookware and decor',
+            'tall_cabinets': 'wooden floor-to-ceiling storage on left wall with combination of closed and open shelving'
+        },
+        
+        'lighting_structure': {
+            'natural': 'sunlight from front wall window above sink',
+            'ambient': 'recessed LED panel lights in false ceiling, cool white temperature',
+            'task': 'under-cabinet LED strips beneath upper cabinets, focused light on countertop workspace',
+            'accent': 'LED strip lighting behind open wooden shelves'
+        },
+        
+        'countertop_items': {
+            'near_sink': 'dish soap dispenser, small potted plant, cutting board',
+            'near_cooktop': 'oil bottles, spice jars, cooking utensils in holder',
+            'open_shelves': 'coffee maker, decorative items, cookbooks, small plants'
+        }
+    }
 }
 
-# Room spatial specifications based on YOUR floor plan with camera viewpoint
-ROOM_DIMENSIONS = {
-    'master_bedroom': '''14 feet x 17 feet (4.27m x 5.18m) master bedroom,
-    photographed from the front of the bed (bed is directly in front of camera),
-    window on LEFT wall with soft natural sunlight streaming in,
-    bed positioned in front of camera view,
-    wardrobe on RIGHT wall,
-    door opening on the wall behind camera position,
-    spacious rectangular elegant layout''',
+# ====================================================================
+# 🎨 THEME TRANSLATION SYSTEM
+# Translates user themes into specific visual elements
+# ====================================================================
+
+THEME_ELEMENTS = {
+    # Color schemes for different themes
+    'color_palettes': {
+        'space': 'deep midnight blue, cosmic purple, silver, black with galaxy gradient accents',
+        'tropical': 'vibrant turquoise, coral pink, lime green, sandy beige, ocean blue',
+        'forest': 'deep forest green, earthy brown, moss green, warm wood tones, natural beige',
+        'ocean': 'navy blue, seafoam green, white, sand beige, aqua blue',
+        'sunset': 'burnt orange, warm pink, golden yellow, deep purple, terracotta',
+        'minimalist': 'pure white, light grey, charcoal, natural wood, soft beige',
+        'luxury': 'deep navy, gold, cream, marble white, burgundy',
+        'industrial': 'charcoal grey, black, raw steel, exposed concrete, warm Edison bulb glow'
+    },
     
-    'bedroom_1': '''14 feet x 13 feet (4.27m x 3.96m) bedroom,
-    photographed from entrance gate (connected to living room),
-    bed directly in front of camera,
-    window on BACK wall behind the bed with natural light,
-    wardrobe on LEFT wall,
-    door to attached toilet on RIGHT wall,
-    door to small balcony also on RIGHT wall,
-    well-proportioned comfortable rectangular room''',
+    # Wall treatments for themes
+    'wall_textures': {
+        'space': 'deep blue wall with subtle galaxy nebula pattern, starfield gradient',
+        'tropical': 'walls with palm leaf pattern wallpaper or tropical botanical prints',
+        'forest': 'textured wood panels or forest green paint with botanical wall art',
+        'ocean': 'soft blue gradient walls or wave-pattern textured panels',
+        'sunset': 'warm ombre walls from orange to pink with abstract sunset artwork',
+        'minimalist': 'clean matte white or light grey smooth walls',
+        'luxury': 'velvet textured wallpaper or leather-look panels with gold trim',
+        'industrial': 'exposed concrete finish or dark grey industrial paint'
+    },
     
-    'living_room': '''11.5x12.5 ft rectangular living room, front view. Left side: flat white arched puja alcove built INTO left wall, golden Om, Ganesha idol, white base cabinet. Center: beige L-sofa with chaise, round marble tables, patterned rug. Right side: wooden door on right wall, palm plant. Back: concrete accent wall with large artwork above sofa. Glossy white marble floor.''',
+    # Textile and soft furnishings
+    'textiles': {
+        'space': 'bedding with galaxy prints, metallic silver pillows, dark blue velvet throw',
+        'tropical': 'bright floral prints, palm leaf patterns, rattan textures, tropical themed pillows',
+        'forest': 'earth-tone linens, botanical print pillows, natural fiber textures',
+        'ocean': 'blue and white striped patterns, nautical themed accents, linen textures',
+        'sunset': 'warm gradient bedding, terracotta pillows, woven textures',
+        'minimalist': 'solid neutral bedding, simple geometric pillows, natural cotton',
+        'luxury': 'silk or velvet bedding, gold embroidered pillows, plush materials',
+        'industrial': 'dark grey linens, leather accents, raw cotton textures'
+    },
     
-    'kitchen': '''10x20.6 ft modern L-shaped kitchen. Left: tall fridge, built-in oven, wooden storage. Center: wooden utility door. Right: grey modular cabinets, terrazzo countertop, steel sink, black chimney. Back: window with blinds, wooden open shelving. Cream marble floor, recessed ceiling lights, contemporary design.''',
+    # Decorative accents
+    'decor_items': {
+        'space': 'moon phase wall art, LED star lights, planetary models, rocket ship figurines',
+        'tropical': 'palm leaf artwork, tropical flowers in vases, bamboo accents, seashells',
+        'forest': 'botanical prints, wooden branch sculptures, potted ferns, nature photography',
+        'ocean': 'seashell collections, driftwood art, marine life prints, coral decorations',
+        'sunset': 'abstract sunset paintings, warm metallic accents, desert-inspired decor',
+        'minimalist': 'single statement art piece, minimal vase with single stem, simple clock',
+        'luxury': 'crystal vases, gold-framed mirrors, elegant sculptures, designer books',
+        'industrial': 'vintage metal signs, Edison bulb fixtures, exposed gear decorations'
+    },
     
-    'dining_room': '''comfortable dining space,
-    family-friendly dining setup,
-    adjacent to kitchen for convenience,
-    welcoming atmosphere''',
+    # Lighting modifications
+    'lighting_style': {
+        'space': 'LED strip lights with purple/blue glow, fiber optic star ceiling',
+        'tropical': 'warm yellow lighting, rattan pendant shades, natural bamboo fixtures',
+        'forest': 'warm wood pendant lights, Edison bulbs, natural light emphasis',
+        'ocean': 'cool white light, wave-patterned light fixtures, blue accent lighting',
+        'sunset': 'warm amber lighting, gradient LED strips, golden hour simulation',
+        'minimalist': 'simple white LED, clean geometric fixtures, natural daylight temperature',
+        'luxury': 'crystal chandeliers, gold fixtures, warm elegant lighting',
+        'industrial': 'exposed Edison bulbs, metal cage fixtures, warm vintage glow'
+    }
 }
 
-# Predefined interior design styles (with furniture and decor)
+# ====================================================================
+# 🎯 PREDEFINED INTERIOR STYLES (For non-custom selections)
+# ====================================================================
+
 INTERIOR_STYLES = {
-    'modern': 'modern minimalist design with clean lines, neutral colors, sleek furniture, contemporary lighting, glass and metal accents, uncluttered space, polished flooring',
-    
-    'scandinavian': 'scandinavian style with light wood furniture, white walls, cozy textiles, natural light, hygge aesthetic, minimalist decor, plants, bright airy feel',
-    
-    'industrial': 'industrial loft style with metal accents, exposed brick or concrete walls, leather furniture, Edison bulbs, urban warehouse aesthetic, raw materials',
-    
-    'minimalist': 'minimalist design with essential furniture only, simple forms, neutral palette, clean surfaces, zen atmosphere, functional pieces, uncluttered space',
-    
-    'traditional': 'traditional classic design with elegant wooden furniture, rich fabrics, ornate details, warm colors, timeless decor, vintage elements, crown molding',
-    
-    'contemporary': 'contemporary style with modern furniture, mixed materials, bold accent colors, artistic elements, sophisticated look, sleek finishes, current trends',
-    
-    'luxury': 'luxury interior with premium furniture, velvet upholstery, gold accents, crystal chandeliers, marble surfaces, opulent decor, high-end finishes, elegant details',
-    
-    'coastal': 'coastal beach style with light blue and white colors, wicker furniture, nautical decor, natural textures, airy feel, relaxed atmosphere, seaside elements',
-    
-    'rustic': 'rustic countryside style with reclaimed wood furniture, stone accents, earthy tones, vintage pieces, cozy atmosphere, natural materials, cabin-like warmth',
-    
-    'japanese': 'japanese zen style with low furniture, natural materials, shoji screens, minimal decor, tatami elements, peaceful ambiance, bamboo accents, zen-inspired',
-    
-    'bohemian': 'bohemian eclectic style with colorful textiles, layered rugs, plants, macrame, global-inspired decor, artistic vibe, mix of patterns, vibrant atmosphere',
-    
-    'art_deco': 'art deco style with geometric patterns, luxurious materials, bold colors, metallic accents, glamorous furniture, 1920s elegance, sophisticated glamour',
+    'modern': 'modern minimalist design with clean lines, neutral colors, sleek furniture, contemporary lighting',
+    'scandinavian': 'scandinavian style with light wood, white walls, cozy textiles, natural light, hygge aesthetic',
+    'industrial': 'industrial loft style with metal accents, exposed materials, leather furniture, Edison bulbs',
+    'minimalist': 'minimalist design with essential furniture, simple forms, neutral palette, zen atmosphere',
+    'traditional': 'traditional classic design with elegant wooden furniture, rich fabrics, ornate details, warm colors',
+    'contemporary': 'contemporary style with modern furniture, mixed materials, bold accents, artistic elements',
+    'luxury': 'luxury interior with premium furniture, velvet upholstery, gold accents, crystal lighting, marble surfaces',
+    'coastal': 'coastal beach style with light blue and white, wicker furniture, nautical decor, natural textures',
+    'rustic': 'rustic countryside style with reclaimed wood, stone accents, earthy tones, cozy atmosphere',
+    'japanese': 'japanese zen style with low furniture, natural materials, minimal decor, peaceful ambiance',
+    'bohemian': 'bohemian eclectic style with colorful textiles, layered rugs, plants, global-inspired decor',
+    'art_deco': 'art deco style with geometric patterns, luxurious materials, bold colors, metallic accents'
+}
+
+# Room base descriptions (simplified, main details in FIXED_ROOM_LAYOUTS)
+ROOM_DESCRIPTIONS = {
+    'master_bedroom': 'luxurious master bedroom',
+    'bedroom_1': 'comfortable modern bedroom',
+    'living_room': 'elegant living room with integrated puja area',
+    'kitchen': 'contemporary L-shaped kitchen',
 }
 
 # Image generation parameters
@@ -239,29 +269,5 @@ IMAGE_CONFIG = {
     'num_images': 2,
     'guidance_scale': 7.5,
     'num_inference_steps': 50,
-    'prompt_strength': 0.75  # How much to transform the input image (0.5-0.9)
-}
-
-# Additional room details for reference
-ROOM_NOTES = {
-    'ground_floor': {
-        'master_bedroom': 'Ground floor, 14\'x17\', window on left, wardrobe right, bed in front, door at back',
-        'bedroom_1': 'Ground floor, 14\'x13\', bed in front, window at back, wardrobe left, toilet door right, balcony access right',
-        'living_puja': 'Combined space 11\'6"x12\'6" + 5\'x5\' puja corner, photographed from master bedroom door, staircase on left',
-        'toilets': 'Two toilets on ground floor - 6\'4"x8\'3" and 6\'x8\'6"',
-        'wet_area': 'Utility space adjacent to toilets',
-        'dress_area': '6\'x8\'6" dressing/storage area'
-    },
-    'upper_floor': {
-        'bedroom_2': '14\'x17\'9" with attached facilities',
-        'bedroom_3': '14\'x13\' with 6\'9"x4\'9" balcony',
-        'toilet': '6\'4"x8\'3" attached bathroom'
-    }
-}
-
-# Camera position summary (for your reference)
-CAMERA_POSITIONS = {
-    'master_bedroom': 'From front of bed (bed in front, window left, wardrobe right)',
-    'bedroom_1': 'From entrance gate (bed in front, window back, wardrobe left, doors right)',
-    'living_room': 'From master bedroom entry door (puja corner integrated, staircase left)',
+    'prompt_strength': 0.75
 }
