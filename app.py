@@ -96,15 +96,13 @@ image_cache = {}
 # ============================================================
 app = Flask(__name__)
 
-CORS(
-    app,
-    supports_credentials=True,
-    resources={r"/*": {
+CORS(app, resources={
+    r"/*": {
         "origins": "*",
-        "allow_headers": ["Content-Type", "Authorization"],
-        "methods": ["GET", "POST", "OPTIONS"]
-    }}
-)
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 # Force headers on every response
 @app.after_request
