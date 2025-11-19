@@ -1,0 +1,414 @@
+2025-11-19 01:03:09,141 - INFO - 
+==================================================
+2025-11-19 01:03:09,282 - INFO - ==================================================
+
+2025-11-19 01:03:09,546 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 01:03:09,547 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 01:03:09,567 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 01:03:11,490 - INFO - 
+==================================================
+2025-11-19 01:03:11,517 - INFO - ==================================================
+
+2025-11-19 01:03:11,563 - WARNING -  * Debugger is active!
+2025-11-19 01:03:11,567 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 01:03:27,218 - INFO - 127.0.0.1 - - [19/Nov/2025 01:03:27] "GET / HTTP/1.1" 200 -
+2025-11-19 01:03:27,356 - INFO - 127.0.0.1 - - [19/Nov/2025 01:03:27] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-19 01:05:57,777 - INFO -  * Detected change in 'C:\\interior-backend\\venv\\Lib\\site-packages\\pip\\_vendor\\urllib3\\util\\queue.py', reloading
+2025-11-19 01:05:58,945 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 01:06:02,294 - INFO - 
+==================================================
+2025-11-19 01:06:02,332 - INFO - ==================================================
+
+2025-11-19 01:06:02,371 - WARNING -  * Debugger is active!
+2025-11-19 01:06:02,380 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 01:18:34,112 - INFO - 
+==================================================
+2025-11-19 01:18:34,147 - INFO - ==================================================
+
+2025-11-19 01:18:34,253 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 01:18:34,253 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 01:18:34,273 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 01:18:36,355 - INFO - 
+==================================================
+2025-11-19 01:18:36,398 - INFO - ==================================================
+
+2025-11-19 01:18:36,438 - WARNING -  * Debugger is active!
+2025-11-19 01:18:36,495 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 01:35:02,003 - INFO - 127.0.0.1 - - [19/Nov/2025 01:35:01] "[35m[1mOPTIONS /api/register-user HTTP/1.1[0m" 204 -
+2025-11-19 01:35:04,444 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 01:35:04,761 - INFO - HTTP Request: POST https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users "HTTP/2 201 Created"
+2025-11-19 01:35:09,381 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\flask\\app.py', reloading
+2025-11-19 01:35:09,659 - INFO - 127.0.0.1 - - [19/Nov/2025 01:35:09] "[35m[1mPOST /api/register-user HTTP/1.1[0m" 201 -
+2025-11-19 01:35:09,660 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\werkzeug\\debug\\__init__.py', reloading
+2025-11-19 01:35:09,662 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\werkzeug\\serving.py', reloading
+2025-11-19 01:35:09,664 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\http\\server.py', reloading
+2025-11-19 01:35:09,668 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\socketserver.py', reloading
+2025-11-19 01:35:09,671 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\threading.py', reloading
+2025-11-19 01:35:10,380 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 01:35:15,225 - INFO - 
+==================================================
+2025-11-19 01:35:15,243 - INFO - ==================================================
+
+2025-11-19 01:35:15,288 - WARNING -  * Debugger is active!
+2025-11-19 01:35:15,341 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 01:54:03,637 - INFO - 
+==================================================
+2025-11-19 01:54:03,652 - INFO - ==================================================
+
+2025-11-19 01:54:03,771 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 01:54:03,772 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 01:54:03,790 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 01:54:06,020 - INFO - 
+==================================================
+2025-11-19 01:54:06,032 - INFO - ==================================================
+
+2025-11-19 01:54:06,065 - WARNING -  * Debugger is active!
+2025-11-19 01:54:06,116 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 01:54:19,589 - INFO - 127.0.0.1 - - [19/Nov/2025 01:54:19] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 01:54:19,591 - INFO - 127.0.0.1 - - [19/Nov/2025 01:54:19] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 01:54:21,277 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 01:54:21,283 - INFO - 127.0.0.1 - - [19/Nov/2025 01:54:21] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 01:54:21,286 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 01:54:21,300 - INFO - 127.0.0.1 - - [19/Nov/2025 01:54:21] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 01:59:21,227 - INFO -  * Detected change in 'C:\\interior-backend\\prompts.py', reloading
+2025-11-19 01:59:22,685 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 01:59:28,357 - INFO - 
+==================================================
+2025-11-19 01:59:28,388 - INFO - ==================================================
+
+2025-11-19 01:59:28,468 - WARNING -  * Debugger is active!
+2025-11-19 01:59:28,553 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 01:59:31,949 - INFO - 127.0.0.1 - - [19/Nov/2025 01:59:31] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 01:59:31,953 - INFO - 127.0.0.1 - - [19/Nov/2025 01:59:31] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 01:59:33,127 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 01:59:33,139 - INFO - 127.0.0.1 - - [19/Nov/2025 01:59:33] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 01:59:33,502 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 01:59:33,503 - INFO - 127.0.0.1 - - [19/Nov/2025 01:59:33] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 02:14:45,687 - INFO - 
+==================================================
+2025-11-19 02:14:45,769 - INFO - ==================================================
+
+2025-11-19 02:14:45,869 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 02:14:45,869 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 02:14:45,892 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 02:14:48,805 - INFO - 
+==================================================
+2025-11-19 02:14:48,877 - INFO - ==================================================
+
+2025-11-19 02:14:48,922 - WARNING -  * Debugger is active!
+2025-11-19 02:14:48,929 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 02:15:11,377 - INFO - 127.0.0.1 - - [19/Nov/2025 02:15:11] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 02:15:11,378 - INFO - 127.0.0.1 - - [19/Nov/2025 02:15:11] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 02:15:13,157 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 02:15:13,163 - INFO - 127.0.0.1 - - [19/Nov/2025 02:15:13] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 02:15:13,165 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 02:15:13,169 - INFO - 127.0.0.1 - - [19/Nov/2025 02:15:13] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 02:15:31,609 - INFO - 127.0.0.1 - - [19/Nov/2025 02:15:31] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 02:15:31,617 - INFO - 127.0.0.1 - - [19/Nov/2025 02:15:31] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 02:15:32,156 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpx\\_client.py', reloading
+2025-11-19 02:15:32,349 - INFO - 127.0.0.1 - - [19/Nov/2025 02:15:32] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 02:15:32,361 - INFO - 127.0.0.1 - - [19/Nov/2025 02:15:32] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 02:15:32,361 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpx\\_transports\\default.py', reloading
+2025-11-19 02:15:32,369 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py', reloading
+2025-11-19 02:15:32,375 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpcore\\_sync\\connection_pool.py', reloading
+2025-11-19 02:15:32,376 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpcore\\_sync\\connection.py', reloading
+2025-11-19 02:15:32,377 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpcore\\_sync\\http2.py', reloading
+2025-11-19 02:15:33,472 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 02:15:37,405 - INFO - 
+==================================================
+2025-11-19 02:15:37,545 - INFO - ==================================================
+
+2025-11-19 02:15:37,596 - WARNING -  * Debugger is active!
+2025-11-19 02:15:37,606 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 05:06:51,262 - INFO - 127.0.0.1 - - [19/Nov/2025 05:06:51] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 05:06:51,274 - INFO - 127.0.0.1 - - [19/Nov/2025 05:06:51] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 07:55:55,966 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 07:55:55,978 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 08:15:17,788 - INFO - 127.0.0.1 - - [19/Nov/2025 08:15:17] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 08:15:17,788 - INFO - 127.0.0.1 - - [19/Nov/2025 08:15:17] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 09:27:42,072 - INFO - 127.0.0.1 - - [19/Nov/2025 09:27:42] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 09:27:42,081 - INFO - 127.0.0.1 - - [19/Nov/2025 09:27:42] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 09:27:42,563 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\postgrest\\_sync\\request_builder.py', reloading
+2025-11-19 09:27:43,043 - INFO - 127.0.0.1 - - [19/Nov/2025 09:27:43] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 09:27:43,061 - INFO - 127.0.0.1 - - [19/Nov/2025 09:27:43] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 09:27:43,063 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpx\\_client.py', reloading
+2025-11-19 09:27:43,067 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpx\\_transports\\default.py', reloading
+2025-11-19 09:27:43,076 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py', reloading
+2025-11-19 09:27:43,080 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpcore\\_sync\\connection_pool.py', reloading
+2025-11-19 09:27:43,088 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\httpcore\\_sync\\connection.py', reloading
+2025-11-19 09:27:44,619 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 09:27:54,514 - INFO - 
+==================================================
+2025-11-19 09:27:54,650 - INFO - ==================================================
+
+2025-11-19 09:27:54,706 - WARNING -  * Debugger is active!
+2025-11-19 09:27:54,710 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 09:43:46,482 - INFO - 127.0.0.1 - - [19/Nov/2025 09:43:46] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 09:43:46,478 - INFO - 127.0.0.1 - - [19/Nov/2025 09:43:46] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 09:43:48,980 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 09:43:48,982 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 09:43:49,647 - INFO - 127.0.0.1 - - [19/Nov/2025 09:43:49] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 09:43:49,659 - INFO - 127.0.0.1 - - [19/Nov/2025 09:43:49] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 09:56:52,462 - INFO - 127.0.0.1 - - [19/Nov/2025 09:56:52] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 09:56:53,863 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 09:56:53,941 - INFO - 127.0.0.1 - - [19/Nov/2025 09:56:53] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 09:57:54,119 - INFO - 127.0.0.1 - - [19/Nov/2025 09:57:54] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 09:57:54,121 - INFO - 127.0.0.1 - - [19/Nov/2025 09:57:54] "[35m[1mOPTIONS /api/check-user HTTP/1.1[0m" 204 -
+2025-11-19 09:57:54,827 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 09:57:54,841 - INFO - 127.0.0.1 - - [19/Nov/2025 09:57:54] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 09:57:54,847 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.priyanshuu.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 09:57:54,850 - INFO - 127.0.0.1 - - [19/Nov/2025 09:57:54] "POST /api/check-user HTTP/1.1" 200 -
+2025-11-19 10:29:03,346 - INFO - 127.0.0.1 - - [19/Nov/2025 10:29:03] "[35m[1mOPTIONS /api/register-user HTTP/1.1[0m" 204 -
+2025-11-19 10:29:04,511 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.9670111545ak%40gmail.com "HTTP/2 200 OK"
+2025-11-19 10:29:04,772 - INFO - HTTP Request: POST https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users "HTTP/2 201 Created"
+2025-11-19 10:29:08,729 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\flask\\app.py', reloading
+2025-11-19 10:29:09,177 - INFO - 127.0.0.1 - - [19/Nov/2025 10:29:09] "[35m[1mPOST /api/register-user HTTP/1.1[0m" 201 -
+2025-11-19 10:29:09,178 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\werkzeug\\debug\\__init__.py', reloading
+2025-11-19 10:29:09,181 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\werkzeug\\serving.py', reloading
+2025-11-19 10:29:09,190 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\http\\server.py', reloading
+2025-11-19 10:29:09,192 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\socketserver.py', reloading
+2025-11-19 10:29:09,193 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\threading.py', reloading
+2025-11-19 10:29:10,330 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 10:29:16,868 - INFO - 
+==================================================
+2025-11-19 10:29:17,060 - INFO - ==================================================
+
+2025-11-19 10:29:17,100 - WARNING -  * Debugger is active!
+2025-11-19 10:29:17,105 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 10:29:28,169 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&verification_token=eq.XtXlTLvdPschhXpFW-_6uzc0dAKmq8bdTAiZyv07JG0 "HTTP/2 200 OK"
+2025-11-19 10:29:28,359 - INFO - HTTP Request: PATCH https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?id=eq.09bf34f8-8fd7-4f07-a7da-77842b9a5af4 "HTTP/2 200 OK"
+2025-11-19 10:29:28,362 - INFO - 127.0.0.1 - - [19/Nov/2025 10:29:28] "GET /api/verify-email?token=XtXlTLvdPschhXpFW-_6uzc0dAKmq8bdTAiZyv07JG0 HTTP/1.1" 200 -
+2025-11-19 10:29:28,506 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&verification_token=eq.XtXlTLvdPschhXpFW-_6uzc0dAKmq8bdTAiZyv07JG0 "HTTP/2 200 OK"
+2025-11-19 10:29:28,508 - INFO - 127.0.0.1 - - [19/Nov/2025 10:29:28] "[31m[1mGET /api/verify-email?token=XtXlTLvdPschhXpFW-_6uzc0dAKmq8bdTAiZyv07JG0 HTTP/1.1[0m" 400 -
+2025-11-19 10:34:54,845 - INFO -  * Detected change in 'C:\\interior-backend\\venv\\Lib\\site-packages\\pip\\_internal\\utils\\compatibility_tags.py', reloading
+2025-11-19 10:34:55,912 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 10:34:59,950 - INFO - 
+==================================================
+2025-11-19 10:35:00,170 - INFO - ==================================================
+
+2025-11-19 10:35:00,308 - WARNING -  * Debugger is active!
+2025-11-19 10:35:00,316 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 10:35:49,609 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 10:35:49,665 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 10:35:50,236 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 10:35:55,411 - INFO - 
+==================================================
+2025-11-19 10:35:55,480 - INFO - ==================================================
+
+2025-11-19 10:35:55,519 - WARNING -  * Debugger is active!
+2025-11-19 10:35:55,523 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 11:20:01,113 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 11:20:01,151 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 11:20:03,551 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 11:24:01,785 - INFO - 
+==================================================
+2025-11-19 11:24:01,802 - INFO - ==================================================
+
+2025-11-19 11:24:01,931 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 11:24:01,932 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 11:24:01,954 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 11:24:04,307 - INFO - 
+==================================================
+2025-11-19 11:24:04,377 - INFO - ==================================================
+
+2025-11-19 11:24:04,399 - WARNING -  * Debugger is active!
+2025-11-19 11:24:04,407 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 11:49:04,348 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 11:49:04,553 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 11:53:37,487 - INFO - 
+======================================================================
+2025-11-19 11:53:37,494 - INFO - ======================================================================
+2025-11-19 11:53:37,501 - INFO - ======================================================================
+2025-11-19 11:53:37,509 - INFO - ======================================================================
+2025-11-19 11:53:37,517 - INFO - ======================================================================
+2025-11-19 11:53:37,521 - INFO - ======================================================================
+
+2025-11-19 11:53:37,622 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 11:53:37,623 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 11:53:37,688 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 11:53:39,927 - INFO - 
+======================================================================
+2025-11-19 11:53:39,931 - INFO - ======================================================================
+2025-11-19 11:53:39,935 - INFO - ======================================================================
+2025-11-19 11:53:39,940 - INFO - ======================================================================
+2025-11-19 11:53:39,952 - INFO - ======================================================================
+2025-11-19 11:53:39,954 - INFO - ======================================================================
+
+2025-11-19 11:53:39,977 - WARNING -  * Debugger is active!
+2025-11-19 11:53:39,984 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 12:06:24,351 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\hashlib.py', reloading
+2025-11-19 12:06:25,980 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 12:11:53,260 - INFO - 
+======================================================================
+2025-11-19 12:11:53,267 - INFO - ======================================================================
+2025-11-19 12:11:53,271 - INFO - ======================================================================
+2025-11-19 12:11:53,277 - INFO - ======================================================================
+2025-11-19 12:11:53,284 - INFO - ======================================================================
+2025-11-19 12:11:53,285 - INFO - ======================================================================
+
+2025-11-19 12:11:53,379 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 12:11:53,380 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 12:11:53,444 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 12:11:55,968 - INFO - 
+======================================================================
+2025-11-19 12:11:55,972 - INFO - ======================================================================
+2025-11-19 12:11:55,976 - INFO - ======================================================================
+2025-11-19 12:11:55,992 - INFO - ======================================================================
+2025-11-19 12:11:55,997 - INFO - ======================================================================
+2025-11-19 12:11:55,998 - INFO - ======================================================================
+
+2025-11-19 12:11:56,015 - WARNING -  * Debugger is active!
+2025-11-19 12:11:56,025 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 12:26:12,607 - INFO -  * Detected change in 'C:\\interior-backend\\prompts.py', reloading
+2025-11-19 12:26:12,634 - INFO -  * Detected change in 'C:\\interior-backend\\prompts.py', reloading
+2025-11-19 12:26:14,972 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 12:28:43,671 - INFO - 
+======================================================================
+2025-11-19 12:28:43,678 - INFO - ======================================================================
+2025-11-19 12:28:43,682 - INFO - ======================================================================
+2025-11-19 12:28:43,687 - INFO - ======================================================================
+2025-11-19 12:28:43,695 - INFO - ======================================================================
+2025-11-19 12:28:43,697 - INFO - ======================================================================
+
+2025-11-19 12:28:43,765 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 12:28:43,767 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 12:28:43,831 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 12:28:46,637 - INFO - 
+======================================================================
+2025-11-19 12:28:46,641 - INFO - ======================================================================
+2025-11-19 12:28:46,644 - INFO - ======================================================================
+2025-11-19 12:28:46,651 - INFO - ======================================================================
+2025-11-19 12:28:46,657 - INFO - ======================================================================
+2025-11-19 12:28:46,658 - INFO - ======================================================================
+
+2025-11-19 12:28:46,701 - WARNING -  * Debugger is active!
+2025-11-19 12:28:46,707 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 12:39:40,011 - INFO -  * Detected change in 'C:\\interior-backend\\app.py', reloading
+2025-11-19 12:39:40,076 - INFO -  * Detected change in 'C:\\interior-backend\\app.py', reloading
+2025-11-19 12:39:43,018 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 12:47:02,942 - INFO - 
+======================================================================
+2025-11-19 12:47:02,951 - INFO - ======================================================================
+2025-11-19 12:47:02,956 - INFO - ======================================================================
+2025-11-19 12:47:02,964 - INFO - ======================================================================
+2025-11-19 12:47:02,970 - INFO - ======================================================================
+2025-11-19 12:47:02,972 - INFO - ======================================================================
+
+2025-11-19 12:47:03,070 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 12:47:03,070 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 12:47:03,135 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 12:47:05,420 - INFO - 
+======================================================================
+2025-11-19 12:47:05,424 - INFO - ======================================================================
+2025-11-19 12:47:05,428 - INFO - ======================================================================
+2025-11-19 12:47:05,439 - INFO - ======================================================================
+2025-11-19 12:47:05,444 - INFO - ======================================================================
+2025-11-19 12:47:05,446 - INFO - ======================================================================
+
+2025-11-19 12:47:05,465 - WARNING -  * Debugger is active!
+2025-11-19 12:47:05,474 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 12:50:21,439 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 12:50:21,468 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 12:50:22,364 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 12:50:28,186 - INFO - 
+======================================================================
+2025-11-19 12:50:28,191 - INFO - ======================================================================
+2025-11-19 12:50:28,196 - INFO - ======================================================================
+2025-11-19 12:50:28,208 - INFO - ======================================================================
+2025-11-19 12:50:28,216 - INFO - ======================================================================
+2025-11-19 12:50:28,217 - INFO - ======================================================================
+
+2025-11-19 12:50:28,252 - WARNING -  * Debugger is active!
+2025-11-19 12:50:28,258 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 12:58:29,145 - INFO -  * Detected change in 'C:\\interior-backend\\config.py', reloading
+2025-11-19 12:58:30,380 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 12:58:34,838 - INFO - 
+======================================================================
+2025-11-19 12:58:34,843 - INFO - ======================================================================
+2025-11-19 12:58:34,848 - INFO - ======================================================================
+2025-11-19 12:58:34,858 - INFO - ======================================================================
+2025-11-19 12:58:34,862 - INFO - ======================================================================
+2025-11-19 12:58:34,863 - INFO - ======================================================================
+
+2025-11-19 12:58:34,909 - WARNING -  * Debugger is active!
+2025-11-19 12:58:34,920 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 15:38:11,356 - INFO - 
+======================================================================
+2025-11-19 15:38:11,370 - INFO - ======================================================================
+2025-11-19 15:38:11,375 - INFO - ======================================================================
+2025-11-19 15:38:11,379 - INFO - ======================================================================
+2025-11-19 15:38:11,385 - INFO - ======================================================================
+2025-11-19 15:38:11,386 - INFO - ======================================================================
+
+2025-11-19 15:38:11,522 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.234:5000
+2025-11-19 15:38:11,522 - INFO - [33mPress CTRL+C to quit[0m
+2025-11-19 15:38:11,558 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 15:38:13,789 - INFO - 
+======================================================================
+2025-11-19 15:38:13,793 - INFO - ======================================================================
+2025-11-19 15:38:13,797 - INFO - ======================================================================
+2025-11-19 15:38:13,803 - INFO - ======================================================================
+2025-11-19 15:38:13,809 - INFO - ======================================================================
+2025-11-19 15:38:13,810 - INFO - ======================================================================
+
+2025-11-19 15:38:13,877 - WARNING -  * Debugger is active!
+2025-11-19 15:38:13,884 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 15:46:02,794 - INFO - 127.0.0.1 - - [19/Nov/2025 15:46:02] "[35m[1mOPTIONS /api/register-user HTTP/1.1[0m" 204 -
+2025-11-19 15:46:05,011 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&email=eq.devil.yadav.9251%40gmail.com "HTTP/2 200 OK"
+2025-11-19 15:46:05,552 - INFO - HTTP Request: POST https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users "HTTP/2 201 Created"
+2025-11-19 15:46:05,946 - INFO - HTTP Request: POST https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/registration_attempts "HTTP/2 201 Created"
+2025-11-19 15:46:09,473 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\flask\\app.py', reloading
+2025-11-19 15:46:09,497 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\werkzeug\\debug\\__init__.py', reloading
+2025-11-19 15:46:09,503 - INFO - 127.0.0.1 - - [19/Nov/2025 15:46:09] "[35m[1mPOST /api/register-user HTTP/1.1[0m" 201 -
+2025-11-19 15:46:09,504 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\werkzeug\\serving.py', reloading
+2025-11-19 15:46:09,504 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\http\\server.py', reloading
+2025-11-19 15:46:09,505 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\socketserver.py', reloading
+2025-11-19 15:46:09,505 - INFO -  * Detected change in 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\threading.py', reloading
+2025-11-19 15:46:10,989 - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-19 15:46:15,567 - INFO - 
+======================================================================
+2025-11-19 15:46:15,574 - INFO - ======================================================================
+2025-11-19 15:46:15,580 - INFO - ======================================================================
+2025-11-19 15:46:15,585 - INFO - ======================================================================
+2025-11-19 15:46:15,592 - INFO - ======================================================================
+2025-11-19 15:46:15,594 - INFO - ======================================================================
+
+2025-11-19 15:46:15,678 - WARNING -  * Debugger is active!
+2025-11-19 15:46:15,683 - INFO -  * Debugger PIN: 705-246-981
+2025-11-19 15:46:57,494 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&verification_token=eq.7yatV2KB26NZsmscHiHP9lZCGBDGAy4RJgZmDsAbET4 "HTTP/2 200 OK"
+2025-11-19 15:46:57,663 - INFO - HTTP Request: PATCH https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?id=eq.11be06b5-6361-448c-a341-a29b41b193e0 "HTTP/2 200 OK"
+2025-11-19 15:46:57,822 - INFO - HTTP Request: PATCH https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/sessions?user_id=eq.11be06b5-6361-448c-a341-a29b41b193e0 "HTTP/2 200 OK"
+2025-11-19 15:46:57,990 - INFO - HTTP Request: PATCH https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/registration_attempts?user_id=eq.11be06b5-6361-448c-a341-a29b41b193e0 "HTTP/2 200 OK"
+2025-11-19 15:46:58,007 - INFO - 127.0.0.1 - - [19/Nov/2025 15:46:58] "GET /api/verify-email?token=7yatV2KB26NZsmscHiHP9lZCGBDGAy4RJgZmDsAbET4 HTTP/1.1" 200 -
+2025-11-19 15:46:58,173 - INFO - HTTP Request: GET https://oanrrebsfjwqfbsvveod.supabase.co/rest/v1/users?select=%2A&verification_token=eq.7yatV2KB26NZsmscHiHP9lZCGBDGAy4RJgZmDsAbET4 "HTTP/2 200 OK"
+2025-11-19 15:46:58,176 - INFO - 127.0.0.1 - - [19/Nov/2025 15:46:58] "[31m[1mGET /api/verify-email?token=7yatV2KB26NZsmscHiHP9lZCGBDGAy4RJgZmDsAbET4 HTTP/1.1[0m" 400 -
