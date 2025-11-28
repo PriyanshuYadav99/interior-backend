@@ -6,14 +6,20 @@ load_dotenv()
 # FAL API Configuration
 FAL_API_KEY = os.getenv('FAL_API_KEY')
 
-# Paths to reference room images
+# Paths to reference room images - CORRECTED PATHS
 ROOM_IMAGES = {
-    'master_bedroom': 'backend/images/MADHUBANbedroom.webp',
-    'bedroom_1': 'backend/images/madhubanbedroom2.webp',
-    'living_room': 'backend/images/madhubanlivingroom3.webp',
-    'kitchen': 'backend/images/madhubankitchen.webp',
+    'master_bedroom': 'images/MADHUBANbedroom.webp',
+    'bedroom_1': 'images/madhubanbedroom2.webp',
+    'living_room': 'images/madhubanlivingroom3.webp',
+    'kitchen': 'images/madhubankitchen.webp',
 }
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOM_IMAGES = {
+    'master_bedroom': os.path.join(BASE_DIR, 'images', 'MADHUBANbedroom.webp'),
+    'bedroom_1': os.path.join(BASE_DIR, 'images', 'madhubanbedroom2.webp'),
+    'living_room': os.path.join(BASE_DIR, 'images', 'madhubanlivingroom3.webp'),
+    'kitchen': os.path.join(BASE_DIR, 'images', 'madhubankitchen.webp'),
+}
 """
 🎯 FIXED LAYOUT SYSTEM FOR CONSISTENT GENERATION
 Only theme, colors, textures, and decorative elements change.
@@ -25,36 +31,105 @@ Room structure, furniture positions, and architecture remain IDENTICAL.
 # ====================================================================
 
 FIXED_ROOM_LAYOUTS = {
-    'master_bedroom': {
-        'camera_angle': 'front view facing the bed directly from foot of bed',
-        'room_size': '14 feet x 17 feet (4.27m x 5.18m)',
-        'flooring': 'glossy white marble flooring with subtle natural veining',
-        'ceiling': '10 feet height with recessed ceiling detail and cove lighting around perimeter',
-        
-        # FIXED POSITIONS (never change)
-        'layout': {
-            'bed': 'king-size upholstered platform bed positioned center of back wall, directly facing camera, bed frame low-profile modern style',
-            'left_wall': 'single large floor-to-ceiling window (6 feet wide) with sheer white curtains and grey blackout drapes, window starts 1 foot from corner',
-            'right_wall': 'built-in floor-to-ceiling wardrobe with smooth panel doors (8 feet wide), single door positioned on right wall near back corner leading to attached facilities',
-            'back_wall': 'textured accent wall behind bed with vertical paneling or fluted design, bed centered against this wall, NO DOORS on back wall',
-            'right_corner': 'small seating area with accent chair and side table near wardrobe, compact reading nook'
-        },
-        
-        'furniture_positions': {
-            'nightstands': 'two matching floating nightstands on either side of bed, wall-mounted with under-lighting',
-            'pendant_lights': 'two modern pendant lights hanging above nightstands, adjustable height, contemporary design',
-            'bed_styling': 'bed dressed with layered pillows (3 standard + 2 decorative), folded throw at foot of bed, fitted sheet and duvet',
-            'area_rug': 'rectangular textured area rug under bed, extending 2 feet beyond bed on three sides',
-            'accent_chair': 'single contemporary accent chair in right corner with small round side table'
-        },
-        
-        'lighting_structure': {
-            'natural': 'soft diffused sunlight from left window casting gentle shadows',
-            'ambient': 'recessed ceiling lights in cove around perimeter',
-            'task': 'pendant lights above nightstands',
-            'accent': 'LED strip under floating nightstands'
-        }
+'master_bedroom': {
+    'camera_angle': 'slightly elevated front view facing the bed directly from foot of bed, eye level approximately 5 feet high, centered perspective showing full room width',
+    'room_size': '16 feet x 18 feet (4.88m x 5.49m)',
+    'flooring': 'glossy white marble flooring with subtle natural veining, highly polished surface with reflective finish',
+    'ceiling': '10 feet height with smooth white finish, recessed lighting zones, clean modern design',
+    
+    # FIXED POSITIONS (never change)
+    'layout': {
+        'bed': 'king-size upholstered platform bed positioned center of back wall, directly facing camera, cream/beige fabric upholstered headboard with winged curved design, low-profile wooden base with light wood tone, bed centered perfectly on back wall',
+        'left_wall': 'vertical wooden slat wall paneling from floor to ceiling covering entire left wall, natural wood tone with consistent spacing, large potted palm plant in left corner, modern white nightstand with wooden legs and gold accents positioned left of bed',
+        'right_wall': 'large built-in floor-to-ceiling illuminated wardrobe system with glass doors (10 feet wide), internal LED strip lighting showing organized clothing and shelves, dark wood frame with backlit interior, extends along most of right wall, grey upholstered accent chair with ottoman positioned in right foreground',
+        'back_wall': 'stunning circular backlit feature wall behind bed - large circular wooden panel (approximately 8 feet diameter) with warm LED backlighting creating halo effect, smooth wood finish matching room tones, bed headboard positioned within circle, vertical wooden slat paneling on left portion of back wall transitioning into white panel doors on right portion',
+        'front_area': 'grey upholstered bench or ottoman at foot of bed with black and white houndstooth throw blanket casually draped, magazines on floor near ottoman'
     },
+    
+    'furniture_positions': {
+        'nightstands': 'two matching modern nightstands on either side of bed - white drawer units with wooden legs and gold/brass accent handles, floating appearance, under-lighting effect',
+        'pendant_lights': 'two modern cylindrical pendant lights with white fabric shades hanging above nightstands, adjustable cable height, warm ambient glow, approximately 30 inches above nightstand surface',
+        'bed_styling': 'bed dressed with layered neutral bedding - beige/cream fitted sheet, grey duvet, multiple decorative pillows (2 white euro shams, 2 grey standard pillows, 2-3 patterned accent pillows with geometric black and white designs), brown/tan throw blanket casually placed on bed, bedding appears slightly unmade/lived-in for realistic feel',
+        'area_rug': 'large rectangular textured grey area rug under bed and extending into room, extends approximately 3 feet beyond bed on front and sides, low-pile modern weave pattern',
+        'accent_chair': 'contemporary grey upholstered swivel accent chair in right foreground with matching upholstered ottoman, rounded organic shape, modern sculptural design',
+        'decorative_items': 'small camera on left nightstand, table lamp with white shade on left nightstand, books stacked on right nightstand, potted palm plant in left corner (approximately 5 feet tall)'
+    },
+    
+    'wardrobe_details': {
+        'type': 'floor-to-ceiling built-in wardrobe with glass sliding doors',
+        'interior': 'illuminated with LED strip lighting on each shelf and hanging rod, warm white light',
+        'organization': 'upper shelves with folded clothes and accessories, middle section with hanging clothes on rods (shirts, suits, dresses), lower drawers and shoe storage',
+        'finish': 'dark wood frame (walnut or espresso tone) with transparent glass panels, modern handle-less design',
+        'position': 'spans 10 feet along right wall, reaches ceiling height, creates feature wall effect when illuminated'
+    },
+    
+    'circular_feature_wall': {
+        'design': 'large circular wooden panel mounted on back wall behind bed, approximately 8 feet diameter',
+        'lighting': 'warm LED backlighting creating halo glow effect around entire circle perimeter, soft ambient wash',
+        'material': 'smooth wood finish matching natural wood tones throughout room, possibly veneer or solid wood',
+        'position': 'centered on back wall, bed headboard positioned within lower portion of circle',
+        'impact': 'serves as dramatic focal point and statement piece, draws eye to bed area'
+    },
+    
+    'wall_treatments': {
+        'left_wall': 'vertical wooden slat paneling, natural wood tone, evenly spaced slats creating linear rhythm, extends full height from floor to ceiling',
+        'back_wall_left': 'continuation of vertical wooden slats transitioning from left wall',
+        'back_wall_center': 'circular feature panel with backlighting',
+        'back_wall_right': 'smooth white panel doors (possibly closet or bathroom access)',
+        'right_wall': 'clean white wall with integrated wardrobe system',
+        'overall_aesthetic': 'warm wood tones balanced with crisp white surfaces creating modern luxury feel'
+    },
+    
+    'lighting_structure': {
+        'natural': 'soft diffused daylight creating gentle ambient illumination, no harsh shadows',
+        'feature_lighting': 'warm LED backlighting behind circular feature wall creating dramatic halo effect',
+        'wardrobe_lighting': 'internal LED strip lighting in wardrobe illuminating contents with warm white light',
+        'pendant_lights': 'two cylindrical pendant lights above nightstands with white fabric diffusers providing task lighting',
+        'accent_lighting': 'subtle under-lighting beneath floating nightstands creating floating effect',
+        'overall_temperature': 'warm white lighting scheme (2700K-3000K) creating cozy inviting atmosphere'
+    },
+    
+    'color_palette': {
+        'primary': 'warm natural wood tones (oak, walnut)',
+        'secondary': 'crisp white (walls, ceiling, nightstands)',
+        'accent': 'grey tones (chair, rug, bedding)',
+        'metallic': 'brushed gold/brass hardware accents',
+        'contrast': 'black and white patterns (houndstooth throw, geometric pillows)',
+        'overall_mood': 'sophisticated neutral palette with warm undertones, luxury hotel aesthetic'
+    },
+    
+    'material_finishes': {
+        'flooring': 'high-gloss white marble with natural grey veining, mirror-like polish',
+        'wood_elements': 'matte natural wood finish on slats and circular feature',
+        'textiles': 'mixed textures - linen bedding, velvet/chenille upholstery, woven area rug',
+        'metals': 'brushed brass/gold on nightstand handles and light fixtures',
+        'glass': 'clear glass on wardrobe doors, slight reflective quality'
+    },
+    
+    'styling_details': {
+        'bedding': 'layered approach with multiple pillow sizes and textures, slightly tousled for lived-in luxury feel',
+        'accessories': 'carefully curated minimal accessories - camera, books, single table lamp, throw blanket',
+        'greenery': 'single large potted palm adding organic element and height variation',
+        'patterns': 'geometric patterns on accent pillows and throw providing visual interest without overwhelming',
+        'overall_vibe': 'modern luxury with warm inviting atmosphere, magazine-worthy yet livable'
+    },
+    
+    'architectural_details': {
+        'ceiling_height': '10 feet providing spacious open feel',
+        'door_location': 'smooth white panel doors on right portion of back wall (likely bathroom or walk-in closet access)',
+        'window_treatment': 'concealed or minimal windows allowing focus on interior lighting design',
+        'built_ins': 'extensive built-in wardrobe system demonstrating custom millwork',
+        'trim_and_molding': 'minimal or flush detailing maintaining clean modern aesthetic'
+    },
+    
+    'photography_style': {
+        'perspective': 'straight-on symmetrical composition, slightly elevated viewpoint',
+        'depth_of_field': 'everything in sharp focus from foreground to background',
+        'lighting_balance': 'even exposure showing detail in both bright and shadowed areas',
+        'color_grading': 'warm natural tones with slight enhancement, professionally color corrected',
+        'style': 'architectural photography style, clean and aspirational, suitable for design magazine or portfolio'
+    }
+},
     
     'bedroom_1': {
         'camera_angle': 'front view from entrance gate (bedroom entry), facing bed directly',
@@ -258,7 +333,7 @@ INTERIOR_STYLES = {
 ROOM_DESCRIPTIONS = {
     'master_bedroom': 'luxurious master bedroom',
     'bedroom_1': 'comfortable modern bedroom',
-    'living_room': 'elegant living room with integrated puja area',
+    'living_room': 'elegant living room with integrated puja area on the front wall',
     'kitchen': 'contemporary L-shaped kitchen',
 }
 
