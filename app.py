@@ -1313,11 +1313,9 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('app.log', encoding='utf-8'),
-        logging.StreamHandler(sys.stdout)
+        logging.StreamHandler(sys.stdout)  # ✅ Console only
     ]
 )
-logger = logging.getLogger(__name__)
 
 
 # ============================================================
