@@ -1324,8 +1324,7 @@ logger = logging.getLogger(__name__)  # ✅ ADD THIS LINE
 # ============================================================
 
 # API Keys
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 
 # Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -1365,8 +1364,10 @@ app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
         "origins": "*",
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": False,
+        "max_age": 3600
     }
 })
 
@@ -1937,11 +1938,18 @@ def simple_register():
                 logger.warning(f"[SIMPLE_REGISTER] Session update failed: {e}")
         
         # Send welcome email (non-blocking)
-        try:
-            send_welcome_email(full_name, email)
-            logger.info(f"[SIMPLE_REGISTER] Welcome email sent to {email}")
-        except Exception as e:
-            logger.warning(f"[SIMPLE_REGISTER] Failed to send welcome email: {e}")
+        t# Send welcome email (truly non-blocking with threading)
+def send_email_async():
+    try:
+        send_welcome_email(full_name, email)
+        logger.info(f"[SIMPLE_REGISTER] Welcome email sent to {email}")
+    except Exception as e:
+        logger.warning(f"[SIMPLE_REGISTER] Failed to send welcome email: {e}")
+
+# Start email in background thread
+email_thread = threading.Thread(target=send_email_async, daemon=True)
+email_thread.start()
+logger.info(f"[SIMPLE_REGISTER] Email queued for background sending")
         
         logger.info(f"[SIMPLE_REGISTER] Registration complete for {email}")
         
