@@ -1316,6 +1316,7 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)  # ✅ Console only
     ]
 )
+logger = logging.getLogger(__name__)  # ✅ ADD THIS LINE
 
 
 # ============================================================
@@ -1340,7 +1341,7 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_FROM = os.getenv("EMAIL_FROM", EMAIL_USER)
 
-# Twilio for Phone OTP
+
 
 
 # Frontend URL
@@ -2322,7 +2323,6 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     logger.info(f"Starting AI Interior Design Backend v10.0.0 on port {port}")
     logger.info(f"OpenAI: {'✓' if OPENAI_API_KEY else '✗'}")
-    logger.info(f"Twilio: ✗ (Removed - No OTP verification)")
     logger.info(f"Email: {'✓' if EMAIL_USER and EMAIL_PASSWORD else '✗'}")
     logger.info(f"Supabase: {'✓' if supabase else '✗'}")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=False)  # ✅ Production ready
