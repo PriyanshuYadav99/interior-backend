@@ -1937,19 +1937,18 @@ def simple_register():
             except Exception as e:
                 logger.warning(f"[SIMPLE_REGISTER] Session update failed: {e}")
         
-        # Send welcome email (non-blocking)
-        t# Send welcome email (truly non-blocking with threading)
-def send_email_async():
-    try:
-        send_welcome_email(full_name, email)
-        logger.info(f"[SIMPLE_REGISTER] Welcome email sent to {email}")
-    except Exception as e:
-        logger.warning(f"[SIMPLE_REGISTER] Failed to send welcome email: {e}")
-
-# Start email in background thread
-email_thread = threading.Thread(target=send_email_async, daemon=True)
-email_thread.start()
-logger.info(f"[SIMPLE_REGISTER] Email queued for background sending")
+        # ✅ Send welcome email in background thread (non-blocking)
+        def send_email_async():
+            try:
+                send_welcome_email(full_name, email)
+                logger.info(f"[SIMPLE_REGISTER] Welcome email sent to {email}")
+            except Exception as e:
+                logger.warning(f"[SIMPLE_REGISTER] Failed to send welcome email: {e}")
+        
+        # Start email thread in background
+        email_thread = threading.Thread(target=send_email_async, daemon=True)
+        email_thread.start()
+        logger.info(f"[SIMPLE_REGISTER] Email queued for background sending")
         
         logger.info(f"[SIMPLE_REGISTER] Registration complete for {email}")
         
