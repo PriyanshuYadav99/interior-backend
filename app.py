@@ -1261,50 +1261,98 @@
 #     logger.info(f"Email: {'✓' if EMAIL_USER and EMAIL_PASSWORD else '✗'}")
 #     logger.info(f"Supabase: {'✓' if supabase else '✗'}")
 #     app.run(host='0.0.0.0', port=port, debug=True)
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import os
 import sys
-import requests
-import traceback
-import base64
-import time
-import hashlib
-import logging
-import tempfile
-import io
-import secrets
-from functools import wraps
-from openai import OpenAI
-from datetime import datetime, timedelta
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from supabase import create_client, Client
-from PIL import Image
-from pymongo import MongoClient
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
-from datetime import timezone
-import threading  # ✅ ADD THIS
-# Local imports
-from config import (
-    INTERIOR_STYLES, 
-    FIXED_ROOM_LAYOUTS,
-    ROOM_DESCRIPTIONS, 
-    ROOM_IMAGES,
-    THEME_ELEMENTS
-)
-from prompts import (
-    construct_prompt,
-    construct_fixed_layout_prompt,
-    construct_custom_theme_prompt,
-    validate_inputs, 
-    deconstruct_theme_to_realistic_elements,
-    get_short_prompt_for_cache
-)
+print("=" * 60, flush=True)
+print("🚀 STARTING APP.PY", flush=True)
+print("=" * 60, flush=True)
 
+# Stage 1: Basic Flask imports
+try:
+    print("Stage 1: Importing Flask core...", flush=True)
+    from flask import Flask, request, jsonify
+    from flask_cors import CORS
+    import os
+    import requests
+    import traceback
+    import base64
+    import time
+    import hashlib
+    import logging
+    import tempfile
+    import io
+    import secrets
+    from functools import wraps
+    from datetime import datetime, timedelta, timezone
+    import threading
+    print("✓ Stage 1: Flask core imported", flush=True)
+except Exception as e:
+    print(f"✗ STAGE 1 FAILED: {e}", flush=True)
+    traceback.print_exc()
+    sys.exit(1)
+
+# Stage 2: OpenAI
+try:
+    print("Stage 2: Importing OpenAI...", flush=True)
+    from openai import OpenAI
+    print("✓ Stage 2: OpenAI imported", flush=True)
+except Exception as e:
+    print(f"✗ STAGE 2 FAILED: {e}", flush=True)
+    traceback.print_exc()
+    sys.exit(1)
+
+# Stage 3: Email
+try:
+    print("Stage 3: Importing email modules...", flush=True)
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    print("✓ Stage 3: Email modules imported", flush=True)
+except Exception as e:
+    print(f"✗ STAGE 3 FAILED: {e}", flush=True)
+    traceback.print_exc()
+    sys.exit(1)
+
+# Stage 4: Database/Storage
+try:
+    print("Stage 4: Importing database modules...", flush=True)
+    from supabase import create_client, Client
+    from PIL import Image
+    from pymongo import MongoClient
+    import cloudinary
+    import cloudinary.uploader
+    import cloudinary.api
+    print("✓ Stage 4: Database modules imported", flush=True)
+except Exception as e:
+    print(f"⚠ STAGE 4 WARNING: {e}", flush=True)
+    print("Continuing without some database modules...", flush=True)
+
+# Stage 5: Local imports
+try:
+    print("Stage 5: Importing local config/prompts...", flush=True)
+    from config import (
+        INTERIOR_STYLES, 
+        FIXED_ROOM_LAYOUTS,
+        ROOM_DESCRIPTIONS, 
+        ROOM_IMAGES,
+        THEME_ELEMENTS
+    )
+    from prompts import (
+        construct_prompt,
+        construct_fixed_layout_prompt,
+        construct_custom_theme_prompt,
+        validate_inputs, 
+        deconstruct_theme_to_realistic_elements,
+        get_short_prompt_for_cache
+    )
+    print("✓ Stage 5: Local modules imported", flush=True)
+except Exception as e:
+    print(f"✗ STAGE 5 FAILED: {e}", flush=True)
+    traceback.print_exc()
+    sys.exit(1)
+
+print("=" * 60, flush=True)
+print("✓ ALL IMPORTS SUCCESSFUL", flush=True)
+print("=" * 60, flush=True)
 
 # ============================================================
 # LOGGING SETUP
@@ -1312,56 +1360,82 @@ from prompts import (
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout)  # ✅ Console only
-    ]
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
-logger = logging.getLogger(__name__)  # ✅ ADD THIS LINE
-
+logger = logging.getLogger(__name__)
+print("✓ Logging configured", flush=True)
 
 # ============================================================
 # CONFIGURATION
 # ============================================================
+print("Configuring environment variables...", flush=True)
 
 # API Keys
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
-# Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-mongo_client = MongoClient(MONGO_URI)
-db = mongo_client["interior_design"]
+# Supabase - NON-BLOCKING
+try:
+    print("Initializing Supabase...", flush=True)
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY) if (SUPABASE_URL and SUPABASE_KEY) else None
+    print(f"✓ Supabase: {'Connected' if supabase else 'Not configured'}", flush=True)
+except Exception as e:
+    print(f"⚠ Supabase failed: {e}", flush=True)
+    supabase = None
+
+# MongoDB - NON-BLOCKING with timeout
+try:
+    print("Initializing MongoDB...", flush=True)
+    MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+    mongo_client = MongoClient(
+        MONGO_URI, 
+        serverSelectionTimeoutMS=3000,
+        connectTimeoutMS=3000
+    )
+    db = mongo_client["interior_design"]
+    print("✓ MongoDB: Client created", flush=True)
+except Exception as e:
+    print(f"⚠ MongoDB failed: {e}", flush=True)
+    mongo_client = None
+    db = None
+
 # Email
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_FROM = os.getenv("EMAIL_FROM", EMAIL_USER)
-
-
-
+print(f"✓ Email: {'Configured' if EMAIL_USER else 'Not configured'}", flush=True)
 
 # Frontend URL
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 # Cache Settings
-CACHE_DURATION = 1800  # 30 minutes
+CACHE_DURATION = 1800
 image_cache = {}
 
 # Cloudinary Setup
-cloudinary.config(
-    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key = os.getenv("CLOUDINARY_API_KEY"),
-    api_secret = os.getenv("CLOUDINARY_API_SECRET")
-)
+try:
+    print("Configuring Cloudinary...", flush=True)
+    cloudinary.config(
+        cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.getenv("CLOUDINARY_API_KEY"),
+        api_secret=os.getenv("CLOUDINARY_API_SECRET")
+    )
+    print("✓ Cloudinary configured", flush=True)
+except Exception as e:
+    print(f"⚠ Cloudinary config failed: {e}", flush=True)
+
 # ============================================================
 # FLASK APP INITIALIZATION
 # ============================================================
+print("Creating Flask app...", flush=True)
 app = Flask(__name__)
+print("✓ Flask app created", flush=True)
 
+print("Configuring CORS...", flush=True)
 CORS(app, resources={
     r"/*": {
         "origins": "*",
@@ -1369,8 +1443,8 @@ CORS(app, resources={
         "allow_headers": ["Content-Type"]
     }
 })
+print("✓ CORS configured", flush=True)
 
-# Force headers on every response
 @app.after_request
 def apply_cors(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
@@ -1378,7 +1452,19 @@ def apply_cors(response):
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     return response
 
-openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+try:
+    print("Initializing OpenAI client...", flush=True)
+    openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+    print(f"✓ OpenAI: {'Ready' if openai_client else 'Not configured'}", flush=True)
+except Exception as e:
+    print(f"⚠ OpenAI client failed: {e}", flush=True)
+    openai_client = None
+
+print("=" * 60, flush=True)
+print("✓✓✓ APP INITIALIZATION COMPLETE ✓✓✓", flush=True)
+print("=" * 60, flush=True)
+
+# ... rest of your code continues unchanged from line 80 onwards
 
 
 # ============================================================
@@ -2318,7 +2404,10 @@ def clear_cache():
 # ============================================================
 # MAIN
 # ============================================================
-
+print("=" * 60, flush=True)
+print("✓✓✓ APP READY FOR GUNICORN ✓✓✓", flush=True)
+print(f"Routes registered: {len(app.url_map._rules)}", flush=True)
+print("=" * 60, flush=True)
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     logger.info(f"Starting AI Interior Design Backend v10.0.0 on port {port}")
