@@ -1,3 +1,4 @@
+
 # from flask import Flask, request, jsonify
 # from flask_cors import CORS
 # import os
@@ -17,7 +18,6 @@
 # import smtplib
 # from email.mime.text import MIMEText
 # from email.mime.multipart import MIMEMultipart
-# from twilio.rest import Client as TwilioClient
 # from supabase import create_client, Client
 # from PIL import Image
 # from pymongo import MongoClient
@@ -43,7 +43,7 @@
 #     get_short_prompt_for_cache
 # )
 
-
+# # Redeployment trigger - 2025-11-29
 # # ============================================================
 # # LOGGING SETUP
 # # ============================================================
@@ -51,11 +51,10 @@
 #     level=logging.INFO,
 #     format='%(asctime)s - %(levelname)s - %(message)s',
 #     handlers=[
-#         logging.FileHandler('app.log', encoding='utf-8'),
-#         logging.StreamHandler(sys.stdout)
+#         logging.StreamHandler(sys.stdout)  # ✅ Console only
 #     ]
 # )
-# logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)  # ✅ ADD THIS LINE
 
 
 # # ============================================================
@@ -63,8 +62,7 @@
 # # ============================================================
 
 # # API Keys
-# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
+# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 
 # # Supabase
 # SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -80,11 +78,8 @@
 # EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 # EMAIL_FROM = os.getenv("EMAIL_FROM", EMAIL_USER)
 
-# # Twilio for Phone OTP
-# TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-# TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-# TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
-# twilio_client = TwilioClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN) if TWILIO_ACCOUNT_SID else None
+
+
 
 # # Frontend URL
 # FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
@@ -107,8 +102,10 @@
 # CORS(app, resources={
 #     r"/*": {
 #         "origins": "*",
-#         "methods": ["GET", "POST", "OPTIONS"],
-#         "allow_headers": ["Content-Type"]
+#         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+#         "allow_headers": ["Content-Type", "Authorization"],
+#         "supports_credentials": False,
+#         "max_age": 3600
 #     }
 # })
 
@@ -147,26 +144,26 @@
 #     return decorator
 
 
-# def get_cached_image(prompt):
-#     """Check if we have a cached image for this prompt"""
-#     cache_key = hashlib.md5(prompt.encode()).hexdigest()
+# def get_cached_image(prompt, client_name='default'):
+#     """Check if we have a cached image for this prompt + client combo"""
+#     cache_key = hashlib.md5(f"{client_name}:{prompt}".encode()).hexdigest()
 #     if cache_key in image_cache:
 #         cached_data, timestamp = image_cache[cache_key]
 #         if time.time() - timestamp < CACHE_DURATION:
-#             logger.info(f"[SUCCESS] Cache HIT for prompt: {prompt[:50]}...")
+#             logger.info(f"[SUCCESS] Cache HIT for client={client_name}, prompt: {prompt[:50]}...")
 #             return cached_data
 #         else:
 #             del image_cache[cache_key]
-#             logger.info(f"[INFO] Cache EXPIRED for prompt: {prompt[:50]}...")
-#     logger.info(f"[INFO] Cache MISS for prompt: {prompt[:50]}...")
+#             logger.info(f"[INFO] Cache EXPIRED for client={client_name}, prompt: {prompt[:50]}...")
+#     logger.info(f"[INFO] Cache MISS for client={client_name}, prompt: {prompt[:50]}...")
 #     return None
 
 
-# def save_to_cache(prompt, image_data):
-#     """Save generated image to cache"""
-#     cache_key = hashlib.md5(prompt.encode()).hexdigest()
+# def save_to_cache(prompt, image_data, client_name='default'):
+#     """Save generated image to cache with client context"""
+#     cache_key = hashlib.md5(f"{client_name}:{prompt}".encode()).hexdigest()
 #     image_cache[cache_key] = (image_data, time.time())
-#     logger.info(f"[CACHE] Cached image for prompt: {prompt[:50]}...")
+#     logger.info(f"[CACHE] Cached image for client={client_name}: {prompt[:50]}...")
 # def save_generation_to_db(client_name, room_type, style, custom_prompt, generated_image_url, user_id=None):
 #     """Save generation to MongoDB for tracking"""
 #     try:
@@ -326,59 +323,68 @@
 #         return None
 
 
-# def generate_otp():
-#     """Generate 6-digit OTP"""
-#     return str(secrets.randbelow(900000) + 100000)
+
 
 
 # # ============================================================
 # # EMAIL & SMS FUNCTIONS
 # # ============================================================
 
-# def send_info_email(full_name, email):
-#     """Send informational welcome email (NO verification link)"""
+# def send_welcome_email(full_name, email):
+#     """Send simple welcome email after registration"""
 #     try:
 #         if not EMAIL_USER or not EMAIL_PASSWORD:
 #             logger.warning("[WARNING] Email not configured")
 #             return False
         
 #         msg = MIMEMultipart('alternative')
-#         msg['Subject'] = 'Welcome to AI Interior Design! 🎨'
+#         msg['Subject'] = '🎨 Welcome to AI Interior Design Generator!'
 #         msg['From'] = EMAIL_FROM
 #         msg['To'] = email
         
 #         html = f"""
 #         <html>
-#           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-#             <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-#               <h2 style="color: #9333ea;">Welcome {full_name}! 🎉</h2>
-#               <p>Thank you for registering with AI Interior Design Generator!</p>
-              
-#               <div style="background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%); 
-#                           padding: 20px; 
-#                           border-radius: 12px; 
-#                           color: white; 
-#                           margin: 20px 0;">
-#                 <h3 style="margin-top: 0;">Your Registration Details:</h3>
-#                 <p style="margin: 5px 0;"><strong>Name:</strong> {full_name}</p>
-#                 <p style="margin: 5px 0;"><strong>Email:</strong> {email}</p>
-#                 <p style="margin: 5px 0;">✅ <strong>Status:</strong> Verify your phone to unlock unlimited designs!</p>
-#               </div>
-              
-#               <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
-#                 <h4 style="margin-top: 0; color: #9333ea;">What's Next?</h4>
-#                 <p>✨ Complete phone verification with the OTP sent to your mobile</p>
-#                 <p>🎨 Unlock unlimited AI-generated interior designs</p>
-#                 <p>💫 Save and download all your creations</p>
-#               </div>
-              
-#               <p style="color: #666; font-size: 14px;">
-#                 Need help? Reply to this email and we'll assist you.
+#           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+#             <div style="background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+#               <h1 style="color: white; margin: 0; font-size: 28px;">🎨 Welcome {full_name}!</h1>
+#             </div>
+            
+#             <div style="background: white; padding: 30px; border: 2px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+#               <p style="font-size: 18px; color: #111827; margin-top: 0;">
+#                 Thank you for registering! 🎉
 #               </p>
               
-#               <p style="color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-#                 This is an informational email. No action required via email.<br>
-#                 Complete verification using the OTP sent to your phone.
+#               <p style="font-size: 16px; color: #374151;">
+#                 You now have <strong style="color: #9333ea;">unlimited access</strong> to generate stunning AI-powered interior designs!
+#               </p>
+              
+#               <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #f59e0b;">
+#                 <h3 style="margin-top: 0; color: #92400e; font-size: 18px;">✨ What You Can Do Now:</h3>
+#                 <ul style="color: #78350f; margin: 10px 0; padding-left: 20px;">
+#                   <li style="margin: 8px 0;">Generate unlimited interior designs</li>
+#                   <li style="margin: 8px 0;">Choose from multiple styles (Modern, Scandinavian, Industrial & more)</li>
+#                   <li style="margin: 8px 0;">Create custom themes with your imagination</li>
+#                   <li style="margin: 8px 0;">Download all your designs in high quality</li>
+#                 </ul>
+#               </div>
+              
+#               <div style="text-align: center; margin: 30px 0;">
+#                 <a href="{FRONTEND_URL}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(147, 51, 234, 0.3);">
+#                   Start Creating Now →
+#                 </a>
+#               </div>
+              
+#               <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+#                 <strong>Your Details:</strong><br>
+#                 Name: {full_name}<br>
+#                 Email: {email}
+#               </p>
+              
+#               <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+              
+#               <p style="color: #9ca3af; font-size: 13px; text-align: center; margin-bottom: 0;">
+#                 Need help? Reply to this email and we'll assist you.<br>
+#                 Happy designing! 🏠✨
 #               </p>
 #             </div>
 #           </body>
@@ -392,7 +398,7 @@
 #             server.login(EMAIL_USER, EMAIL_PASSWORD)
 #             server.send_message(msg)
         
-#         logger.info(f"[SUCCESS] Info email sent to {email}")
+#         logger.info(f"[SUCCESS] Welcome email sent to {email}")
 #         return True
         
 #     except Exception as e:
@@ -401,46 +407,7 @@
 #         return False
 
 
-# def send_phone_otp(phone_number, country_code, otp):
-#     """Send OTP via Twilio SMS - ASYNC (non-blocking)"""
-    
-#     def send_sms_background():
-#         """Background thread function"""
-#         try:
-#             if not twilio_client:
-#                 logger.warning("[WARNING] Twilio not configured")
-#                 return
-            
-#             country_dial_codes = {
-#                 'IN': '+91', 'US': '+1', 'GB': '+44', 'CA': '+1', 'AU': '+61'
-#             }
-            
-#             full_phone = f"{country_dial_codes.get(country_code, '+1')}{phone_number}"
-            
-#             # ✅ This happens in background thread
-#             message = twilio_client.messages.create(
-#                 body=f"Your Design Generator verification code is: {otp}. Valid for 10 minutes.",
-#                 from_=TWILIO_PHONE_NUMBER,
-#                 to=full_phone
-#             )
-            
-#             logger.info(f"[SUCCESS] OTP sent to {full_phone} (SID: {message.sid})")
-            
-#         except Exception as e:
-#             logger.error(f"[ERROR] SMS error: {e}")
-    
-#     # ✅ Start background thread
-#     try:
-#         thread = threading.Thread(target=send_sms_background)
-#         thread.daemon = True  # Dies when main thread dies
-#         thread.start()
-        
-#         logger.info(f"[SMS] OTP queued for {phone_number} (async)")
-#         return True  # ✅ Return immediately without waiting
-        
-#     except Exception as e:
-#         logger.error(f"[ERROR] Failed to start SMS thread: {e}")
-#         return False
+
 
 
 # # ============================================================
@@ -607,7 +574,7 @@
 #     return jsonify({
 #         'status': 'healthy',
 #         'openai_configured': bool(OPENAI_API_KEY),
-#         'twilio_configured': bool(twilio_client),
+#         'twilio_configured': False,  
 #         'email_configured': bool(EMAIL_USER and EMAIL_PASSWORD),
 #         'supabase_configured': bool(supabase),
 #         'cache_entries': len(image_cache)
@@ -642,9 +609,10 @@
 # # REGISTRATION & OTP ENDPOINTS
 # # ============================================================
 
-# @app.route('/api/register', methods=['POST', 'OPTIONS'])
-# def register_user():
-#     """Register user and send Phone OTP + Email verification"""
+
+# @app.route('/api/simple-register', methods=['POST', 'OPTIONS'])
+# def simple_register():
+#     """Simple registration - NO OTP, NO duplicate checks - ALLOW EVERYTHING"""
 #     if request.method == 'OPTIONS':
 #         return '', 204
 
@@ -656,346 +624,89 @@
 #         phone_number = data.get('phone_number', '').strip()
 #         country_code = data.get('country_code', 'IN')
 #         session_id = data.get('session_id')
+#         generated_count = data.get('generated_count', 0)
         
-#         logger.info(f"[REGISTRATION] New registration attempt - Email: {email}, Phone: {phone_number}")
+#         logger.info(f"[SIMPLE_REGISTER] New registration - Email: {email}, Phone: {phone_number}")
         
-#         # Email is now OPTIONAL
-#         if not full_name or not phone_number:
-#             logger.warning(f"[VALIDATION] Missing required fields")
-#             return jsonify({'error': 'Name and phone number are required'}), 400
+#         # Validation - ALL fields required
+#         if not full_name or not email or not phone_number:
+#             return jsonify({'error': 'All fields are required'}), 400
         
-#         # Make email optional - if provided, clean it, otherwise set to None
-#         email = email if email else None
+#         if len(phone_number) < 10:
+#             return jsonify({'error': 'Phone number must be at least 10 digits'}), 400
+        
+#         if '@' not in email or '.' not in email:
+#             return jsonify({'error': 'Invalid email address'}), 400
         
 #         if not supabase:
-#             logger.error(f"[ERROR] Database not configured")
 #             return jsonify({'error': 'Database not configured'}), 500
         
-#         # Check existing user
-#         existing_user = supabase.table('users').select('*').eq('phone_number', phone_number).execute()
-
+#         # ✅ NO DUPLICATE CHECKS - Allow all registrations (even duplicates)
+#         logger.info(f"[SIMPLE_REGISTER] Creating new user (duplicates allowed): {email}, {phone_number}")
         
-#         if existing_user.data and len(existing_user.data) > 0:
-#             user = existing_user.data[0]
-            
-#             if user.get('phone_verified'):
-#                 logger.info(f"[INFO] Phone {phone_number} already verified")
-#                 return jsonify({
-#                     'success': True,
-#                     'already_verified': True,
-#                     'message': 'Phone already verified! You have unlimited access.',
-#                     'user_id': user['id']
-#                 }), 200
-            
-#             user_id = user['id']
-#             logger.info(f"[INFO] Existing unverified user found: {email}")
-#             # Update email if provided
-#             if email:
-#                 supabase.table('users').update({
-#                     'email': email,
-#                     'full_name': full_name
-#                 }).eq('id', user_id).execute()
-#         else:
-#             # Create new user
-#             user_data = {
-#                 'full_name': full_name,
-#                 'email': email,  # Can be None
-#                 'phone_number': phone_number,
-#                 'country_code': country_code,
-#                 'email_verified': False,  # Not used for access control
-#                 'phone_verified': False  # This is the ONLY field that grants access
-#             }
-            
-#             new_user = supabase.table('users').insert(user_data).execute()
-#             if not new_user.data:
-#                 logger.error(f"[ERROR] Failed to create user in database")
-#                 return jsonify({'error': 'Failed to create user'}), 500
-            
-#             user_id = new_user.data[0]['id']
-#             logger.info(f"[SUCCESS] New user created: {email} (ID: {user_id})")
-        
-#         # Generate OTP
-#         otp = generate_otp()
-#         otp_expires = datetime.now() + timedelta(minutes=10)
-        
-#         logger.info(f"[OTP] Generated OTP for {email}: {otp} (Expires: {otp_expires})")
-        
-#         # Save OTP to logs
-#         otp_data = {
-#             'user_id': user_id,
-#             'phone_number': phone_number,
-#             'otp': otp,
-#             'expires_at': otp_expires.isoformat(),
-#             'ip_address': request.remote_addr,
-#             'status': 'sent',
-#             'attempts': 0
-#         }
-#         supabase.table('phone_otp_logs').insert(otp_data).execute()
-#         logger.info(f"[OTP] OTP logged to database")
-        
-#         # Update user with OTP
-#         supabase.table('users').update({
-#             'phone_otp': otp,
-#             'phone_otp_expires_at': otp_expires.isoformat()
-#         }).eq('id', user_id).execute()
-#         logger.info(f"[OTP] User record updated with OTP")
-        
-#         # Send SMS
-#         logger.info(f"[SMS] Attempting to send OTP to {phone_number}...")
-#         sms_sent = send_phone_otp(phone_number, country_code, otp)
-        
-#         if sms_sent:
-#             logger.info(f"[SMS] OTP sent successfully to {phone_number}")
-#         else:
-#             logger.warning(f"[SMS] Failed to send OTP to {phone_number}")
-        
-#         # Generate email token
-#         # Send info email ONLY if email is provided (NO verification token)
-#         email_sent = False
-#         if email:
-#             logger.info(f"[EMAIL] Attempting to send info email to {email}...")
-#             email_sent = send_info_email(full_name, email)
-            
-#             if email_sent:
-#                 logger.info(f"[EMAIL] Info email sent to {email}")
-#             else:
-#                 logger.warning(f"[EMAIL] Failed to send info email to {email}")
-        
-#         # Log activity
-#         if session_id:
-#             activity_log = {
-#                 'user_id': user_id,
-#                 'session_id': session_id,
-#                 'activity_type': 'registration_initiated',
-#                 'ip_address': request.remote_addr,
-#                 'user_agent': request.headers.get('User-Agent', '')
-#             }
-#             supabase.table('user_activity_logs').insert(activity_log).execute()
-        
-#         logger.info(f"[SUCCESS] Registration process complete for {email}")
-        
-#         # IMPORTANT: Do NOT return the OTP in production
-#         response_data = {
-#             'success': True,
-#             'message': 'OTP sent to your phone. Please enter it to verify.',
-#             'user_id': user_id,
-#             'phone_number': phone_number,
+#         # Create new user - NO checks, always insert
+#         user_data = {
+#             'full_name': full_name,
 #             'email': email,
-#             'otp_expires_in_minutes': 10,
-#             'info_email_sent': email_sent if email else None,
-#             'sms_sent': sms_sent
+#             'phone_number': phone_number,
+#             'country_code': country_code,
+#             'pre_registration_generations': generated_count,
+#             'total_generations': 0,
+#             'ip_address': request.remote_addr,
+#             'user_agent': request.headers.get('User-Agent', '')
 #         }
         
-#         # Only add OTP in development mode
-#         if os.getenv('ENVIRONMENT') == 'development':
-#             response_data['otp_for_testing'] = otp
-#             logger.warning(f"[DEV] OTP exposed in response (development mode): {otp}")
+#         new_user = supabase.table('users').insert(user_data).execute()
         
-#         return jsonify(response_data), 200
+#         if not new_user.data:
+#             return jsonify({'error': 'Failed to create user'}), 500
+        
+#         user_id = new_user.data[0]['id']
+#         logger.info(f"[SIMPLE_REGISTER] New user created: {email} (ID: {user_id})")
+        
+#         # Update session
+#         if session_id:
+#             try:
+#                 supabase.table('sessions').update({
+#                     'user_id': user_id,
+#                     'is_registered': True,
+#                     'generation_count': 0
+#                 }).eq('session_id', session_id).execute()
+#             except Exception as e:
+#                 logger.warning(f"[SIMPLE_REGISTER] Session update failed: {e}")
+        
+#         # ✅ Send welcome email in background thread (non-blocking)
+#         def send_email_async():
+#             try:
+#                 send_welcome_email(full_name, email)
+#                 logger.info(f"[SIMPLE_REGISTER] Welcome email sent to {email}")
+#             except Exception as e:
+#                 logger.warning(f"[SIMPLE_REGISTER] Failed to send welcome email: {e}")
+        
+#         # Start email thread in background
+#         email_thread = threading.Thread(target=send_email_async, daemon=True)
+#         email_thread.start()
+#         logger.info(f"[SIMPLE_REGISTER] Email queued for background sending")
+        
+#         logger.info(f"[SIMPLE_REGISTER] Registration complete for {email}")
+        
+#         return jsonify({
+#             'success': True,
+#             'message': 'Registration successful! You now have unlimited access.',
+#             'user_id': user_id,
+#             'email': email,
+#             'phone_number': phone_number
+#         }), 200
 
 #     except Exception as e:
-#         logger.error(f"[ERROR] Registration error: {e}")
+#         logger.error(f"[SIMPLE_REGISTER] Error: {e}")
 #         traceback.print_exc()
 #         return jsonify({'error': 'Registration failed', 'details': str(e)}), 500
 
 
-# @app.route('/api/verify-otp', methods=['POST', 'OPTIONS'])
-# def verify_otp():
-#     """Verify Phone OTP"""
-#     if request.method == 'OPTIONS':
-#         return '', 204
-
-#     try:
-#         data = request.get_json()
-        
-#         phone_number = data.get('phone_number', '').strip()
-#         otp = data.get('otp', '').strip()
-#         session_id = data.get('session_id')
-        
-#         # Validation
-#         if not phone_number or not otp:
-#             logger.warning(f"[VALIDATION] Missing phone or OTP")
-#             return jsonify({'error': 'Phone number and OTP required'}), 400
-        
-#         # Validate OTP format (must be exactly 6 digits)
-#         if not otp.isdigit() or len(otp) != 6:
-#             logger.warning(f"[VALIDATION] Invalid OTP format: {otp}")
-#             return jsonify({'error': 'OTP must be 6 digits'}), 400
-        
-#         if not supabase:
-#             return jsonify({'error': 'Database not configured'}), 500
-        
-#         # Find user
-#         # Find user by phone number
-#         user_result = supabase.table('users').select('*').eq('phone_number', phone_number).execute()
-        
-#         if not user_result.data:
-#             logger.warning(f"[VALIDATION] User not found: {phone_number}")
-#             return jsonify({'error': 'User not found'}), 404
-        
-#         user = user_result.data[0]
-#         user_id = user['id']
-        
-#         # Check if already verified
-#         if user.get('phone_verified'):
-#             logger.info(f"[INFO] Phone already verified: {phone_number}")
-#             return jsonify({
-#                 'success': True,
-#                 'already_verified': True,
-#                 'message': 'Phone already verified! You have unlimited access.'
-#             }), 200
-        
-#         # Check OTP exists
-#         stored_otp = user.get('phone_otp')
-#         otp_expires_at = user.get('phone_otp_expires_at')
-        
-#         if not stored_otp or not otp_expires_at:
-#             logger.warning(f"[VALIDATION] No OTP found for user: {phone_number}")
-#             return jsonify({'error': 'No OTP found. Please request a new one.'}), 400
-        
-#         # Log OTP comparison
-#         logger.info(f"[OTP_CHECK] Phone: {phone_number}, Stored: {stored_otp}, Received: {otp}, Match: {stored_otp == otp}")
-        
-#         # Check expiration
-#         otp_expires = datetime.fromisoformat(otp_expires_at.replace('Z', '+00:00'))
-#         now = datetime.now(otp_expires.tzinfo)
-        
-#         if now > otp_expires:
-#             logger.warning(f"[VALIDATION] OTP expired for {phone_number}")
-#             return jsonify({'error': 'OTP has expired. Please request a new one.'}), 400
-        
-#         # Verify OTP - CRITICAL: Must match exactly
-#         if stored_otp != otp:
-#             logger.warning(f"[VALIDATION] Invalid OTP attempt for {phone_number}. Expected: {stored_otp}, Got: {otp}")
-            
-#             # Update failed attempt count
-#             try:
-#                 supabase.table('phone_otp_logs').update({
-#                     'status': 'failed',
-#                     'failed_attempts': supabase.table('phone_otp_logs').select('failed_attempts').eq('user_id', user_id).eq('otp', stored_otp).order('created_at', desc=True).limit(1).execute().data[0].get('failed_attempts', 0) + 1
-#                 }).eq('user_id', user_id).eq('otp', stored_otp).execute()
-#             except:
-#                 pass
-            
-#             return jsonify({'error': 'Invalid OTP. Please check and try again.'}), 400
-        
-        
-#         # OTP is correct - Mark phone as verified (ONLY THIS GRANTS ACCESS)
-#         logger.info(f"[SUCCESS] Correct OTP provided for {phone_number}. Marking as verified...")
-        
-#         supabase.table('users').update({
-#             'phone_verified': True,  # THIS IS THE ONLY FIELD THAT MATTERS FOR ACCESS
-#             'phone_otp': None,
-#             'phone_otp_expires_at': None,
-#             'updated_at': datetime.now().isoformat()
-#         }).eq('id', user_id).execute()
-        
-#         # Update OTP log status
-#         supabase.table('phone_otp_logs').update({
-#             'status': 'verified',
-#             'verified_at': datetime.now().isoformat()
-#         }).eq('user_id', user_id).eq('otp', otp).execute()
-        
-#         # Update session
-#         if session_id:
-#             supabase.table('sessions').update({
-#                 'is_verified': True,
-#                 'user_id': user_id
-#             }).eq('session_id', session_id).execute()
-        
-#         # Log activity
-#         activity_log = {
-#             'user_id': user_id,
-#             'session_id': session_id,
-#             'activity_type': 'phone_verified',
-#             'activity_data': {'phone_number': phone_number, 'verification_method': 'otp'},
-#             'ip_address': request.remote_addr,
-#             'user_agent': request.headers.get('User-Agent', '')
-#         }
-#         supabase.table('user_activity_logs').insert(activity_log).execute()
-        
-#         logger.info(f"[SUCCESS] Phone verified successfully for {phone_number}")
-        
-#         return jsonify({
-#             'success': True,
-#             'message': '🎉 Phone verified! Unlimited designs unlocked.',
-#             'verified': True,
-#             'user_id': user_id,
-#             'phone_number': phone_number,
-#             'email': user.get('email')
-#         }), 200
-
-#     except Exception as e:
-#         logger.error(f"[ERROR] OTP verification error: {e}")
-#         traceback.print_exc()
-#         return jsonify({'error': 'Verification failed', 'details': str(e)}), 500
-
-
-# @app.route('/api/resend-otp', methods=['POST', 'OPTIONS'])
-# def resend_otp():
-#     """Resend OTP to phone"""
-#     if request.method == 'OPTIONS':
-#         return '', 204
-
-#     try:
-#         data = request.get_json()
-#         phone_number = data.get('phone_number', '').strip()
-        
-#         if not phone_number:
-#             return jsonify({'error': 'Phone number required'}), 400
-        
-#         if not supabase:
-#             return jsonify({'error': 'Database not configured'}), 500
-        
-#         user_result = supabase.table('users').select('*').eq('phone_number', phone_number).execute()
-        
-#         if not user_result.data:
-#             return jsonify({'error': 'User not found'}), 404
-        
-#         user = user_result.data[0]
-#         user_id = user['id']
-#         country_code = user.get('country_code', 'IN')
-        
-#         # Generate new OTP
-#         otp = generate_otp()
-#         otp_expires = datetime.now() + timedelta(minutes=10)
-        
-#         supabase.table('users').update({
-#             'phone_otp': otp,
-#             'phone_otp_expires_at': otp_expires.isoformat()
-#         }).eq('id', user_id).execute()
-        
-#         # Send SMS
-#         sms_sent = send_phone_otp(phone_number, country_code, otp)
-        
-#         if not sms_sent:
-#             return jsonify({'error': 'Failed to send OTP'}), 500
-        
-#         logger.info(f"[SUCCESS] OTP resent to {phone_number}")
-        
-#         response_data = {
-#             'success': True,
-#             'message': 'New OTP sent to your phone',
-#             'otp_expires_in_minutes': 10
-#         }
-        
-#         # Development mode
-#         if os.getenv('ENVIRONMENT') == 'development':
-#             response_data['otp_for_testing'] = otp
-        
-#         return jsonify(response_data), 200
-
-#     except Exception as e:
-#         logger.error(f"[ERROR] Resend OTP error: {e}")
-#         return jsonify({'error': 'Failed to resend OTP'}), 500
-
-
-
-
-
 # @app.route('/api/check-user', methods=['POST', 'OPTIONS'])
 # def check_user_status():
-#     """Check if user is verified (for cross-device sync) - READ ONLY, does not modify verification status"""
+#     """Check if user is registered (simplified - no verification needed)"""
 #     if request.method == 'OPTIONS':
 #         return '', 204
 
@@ -1004,7 +715,6 @@
 #         phone_number = data.get('phone_number', '').strip()
         
 #         if not phone_number:
-#             logger.warning(f"[CHECK_USER] No phone number provided")
 #             return jsonify({'error': 'Phone number required'}), 400
         
 #         if not supabase:
@@ -1014,22 +724,16 @@
 #         user_result = supabase.table('users').select('*').eq('phone_number', phone_number).execute()
         
 #         if not user_result.data:
-#             logger.info(f"[CHECK_USER] User not found: {phone_number}")
 #             return jsonify({
 #                 'exists': False,
-#                 'verified': False
+#                 'registered': False
 #             }), 200
         
 #         user = user_result.data[0]
-#         # ONLY phone_verified matters for unlimited access
-#         is_verified = user.get('phone_verified', False)
-        
-#         logger.info(f"[CHECK_USER] Phone: {phone_number}, Verified: {is_verified}")
         
 #         return jsonify({
 #             'exists': True,
-#             'verified': is_verified,  # This is what frontend should check
-#             'phone_verified': user.get('phone_verified', False),
+#             'registered': True,
 #             'user_id': user['id'],
 #             'full_name': user.get('full_name'),
 #             'email': user.get('email')
@@ -1097,15 +801,24 @@
 #         prompt = optimize_prompt_for_gpt_image1(prompt, room_type)
 
 #         # Check cache
-#         cached_result = get_cached_image(prompt)
+#         # Check cache (with client_name)
+#         cached_result = get_cached_image(prompt, client_name)
 #         if cached_result:
 #             return jsonify({
 #                 'success': True,
 #                 'cached': True,
 #                 'flow': flow_type,
+#                 'client': client_name,
 #                 'images': [cached_result],
 #                 'prompt_used': prompt[:200] + '...'
 #             }), 200
+
+#         # ADD THIS DEBUG LINE
+#         logger.info(f"[DEBUG] Cache miss confirmed, proceeding to generation...")
+#         logger.info(f"[DEBUG] is_custom_theme={is_custom_theme}, reference_image exists={bool(reference_image)}")
+
+#         # Execute appropriate flow
+#         result = None
 
 #         # Execute appropriate flow
 #         result = None
@@ -1159,8 +872,8 @@
 #             'used_reference_image': True
 #         }
 
-#         # Cache it LAST
-#         save_to_cache(prompt, response_data)
+#         # Cache it LAST (with client_name)
+#         save_to_cache(prompt, response_data, client_name)
 
 #         return jsonify({
 #             'success': True,
@@ -1231,7 +944,105 @@
 #     except Exception as e:
 #         logger.error(f"[ERROR] Create session error: {e}")
 #         return jsonify({'error': 'Session creation failed'}), 500
+# @app.route('/api/check-session', methods=['POST', 'OPTIONS'])
+# def check_session():
+#     """Check session generation count - server-side tracking"""
+#     if request.method == 'OPTIONS':
+#         return '', 204
 
+#     try:
+#         data = request.get_json()
+#         session_id = data.get('session_id')
+        
+#         if not session_id or not supabase:
+#             return jsonify({'success': False, 'error': 'Invalid request'}), 400
+        
+#         # Get or create session
+#         session_result = supabase.table('sessions').select('*').eq('session_id', session_id).execute()
+        
+#         if not session_result.data:
+#             # Create new session
+#             session_data = {
+#                 'session_id': session_id,
+#                 'generation_count': 0,
+#                 'is_registered': False,
+#                 'ip_address': request.remote_addr,
+#                 'user_agent': request.headers.get('User-Agent', ''),
+#                 'status': 'active'
+#             }
+#             supabase.table('sessions').insert(session_data).execute()
+            
+#             return jsonify({
+#                 'success': True,
+#                 'generation_count': 0,
+#                 'is_registered': False
+#             }), 200
+        
+#         session = session_result.data[0]
+        
+#         return jsonify({
+#             'success': True,
+#             'generation_count': session.get('generation_count', 0),
+#             'is_registered': session.get('is_registered', False),
+#             'user_id': session.get('user_id'),
+#             'email': None
+#         }), 200
+
+#     except Exception as e:
+#         logger.error(f"[ERROR] Check session error: {e}")
+#         return jsonify({'success': False, 'error': 'Failed to check session'}), 500
+
+
+# @app.route('/api/increment-generation', methods=['POST', 'OPTIONS'])
+# def increment_generation():
+#     """Increment generation count for session"""
+#     if request.method == 'OPTIONS':
+#         return '', 204
+
+#     try:
+#         data = request.get_json()
+#         session_id = data.get('session_id')
+        
+#         if not session_id or not supabase:
+#             return jsonify({'success': False}), 400
+        
+#         # Update generation count
+#         session_result = supabase.table('sessions').select('*').eq('session_id', session_id).execute()
+        
+#         if session_result.data:
+#             current_count = session_result.data[0].get('generation_count', 0)
+#             new_count = current_count + 1
+            
+#             supabase.table('sessions').update({
+#                 'generation_count': new_count,
+#                 'last_activity': datetime.now().isoformat()
+#             }).eq('session_id', session_id).execute()
+            
+#             # Log the generation
+#             log_data = {
+#                 'session_id': session_id,
+#                 'user_id': session_result.data[0].get('user_id'),
+#                 'client_name': data.get('client_name', 'skyline'),
+#                 'room_type': data.get('room_type'),
+#                 'style': data.get('style'),
+#                 'custom_prompt': data.get('custom_prompt'),
+#                 'generation_number': new_count,
+#                 'was_registered': session_result.data[0].get('is_registered', False),
+#                 'ip_address': request.remote_addr,
+#                 'user_agent': request.headers.get('User-Agent', '')
+#             }
+#             supabase.table('generation_logs').insert(log_data).execute()
+            
+#             return jsonify({
+#                 'success': True,
+#                 'generation_count': new_count
+#             }), 200
+        
+#         return jsonify({'success': False}), 400
+
+#     except Exception as e:
+#         logger.error(f"[ERROR] Increment generation error: {e}")
+#         return jsonify({'success': False}), 500
 
 # # ============================================================
 # # CACHE MANAGEMENT
@@ -1257,10 +1068,11 @@
 #     port = int(os.getenv('PORT', 5000))
 #     logger.info(f"Starting AI Interior Design Backend v10.0.0 on port {port}")
 #     logger.info(f"OpenAI: {'✓' if OPENAI_API_KEY else '✗'}")
-#     logger.info(f"Twilio: {'✓' if twilio_client else '✗'}")
 #     logger.info(f"Email: {'✓' if EMAIL_USER and EMAIL_PASSWORD else '✗'}")
 #     logger.info(f"Supabase: {'✓' if supabase else '✗'}")
-#     app.run(host='0.0.0.0', port=port, debug=True)
+#     app.run(host='0.0.0.0', port=port, debug=False)  # ✅ Production ready
+    
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
@@ -1347,8 +1159,15 @@ EMAIL_FROM = os.getenv("EMAIL_FROM", EMAIL_USER)
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 # Cache Settings
+# Cache Settings
 CACHE_DURATION = 1800  # 30 minutes
 image_cache = {}
+
+# ✅ ADD THESE 3 LINES:
+import uuid
+from threading import Lock
+job_store = {}  # Stores background jobs
+job_lock = Lock()  # Thread safety
 
 # Cloudinary Setup
 cloudinary.config(
@@ -1492,6 +1311,24 @@ def clean_expired_cache():
         del image_cache[key]
     if expired_keys:
         logger.info(f"[CLEANUP] Cleaned {len(expired_keys)} expired cache entries")
+
+
+# ✅ ADD THIS NEW FUNCTION:
+def clean_expired_jobs():
+    """Remove jobs older than 1 hour"""
+    try:
+        cutoff_time = datetime.now() - timedelta(hours=1)
+        with job_lock:
+            old_jobs = [
+                job_id for job_id, job in job_store.items()
+                if job.get('created_at', datetime.now()) < cutoff_time
+            ]
+            for job_id in old_jobs:
+                del job_store[job_id]
+        if old_jobs:
+            logger.info(f"[CLEANUP] Removed {len(old_jobs)} old jobs")
+    except Exception as e:
+        logger.error(f"[ERROR] Job cleanup error: {e}")
 
 
 def optimize_prompt_for_gpt_image1(prompt, room_type):
@@ -1833,13 +1670,15 @@ def home():
 @app.route('/api/health', methods=['GET'])
 def health_check():
     clean_expired_cache()
+    clean_expired_jobs()  # ✅ ADD THIS LINE
     return jsonify({
         'status': 'healthy',
         'openai_configured': bool(OPENAI_API_KEY),
         'twilio_configured': False,  
         'email_configured': bool(EMAIL_USER and EMAIL_PASSWORD),
         'supabase_configured': bool(supabase),
-        'cache_entries': len(image_cache)
+        'cache_entries': len(image_cache),
+        'active_jobs': len(job_store)  # ✅ ADD THIS LINE
     }), 200
 
 
@@ -2321,6 +2160,244 @@ def clear_cache():
         'message': f'Cleared {cache_count} cached images'
     }), 200
 
+# ============================================================
+# ASYNC JOB ENDPOINTS (NEW - FOR FASTER RESPONSE)
+# ============================================================
+
+@app.route('/api/generate-design-async', methods=['POST', 'OPTIONS'])
+def generate_design_async():
+    """
+    NEW ENDPOINT: Returns job_id immediately, processes in background
+    Frontend should poll /api/check-job/{job_id} for results
+    """
+    if request.method == 'OPTIONS':
+        return '', 204
+
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+
+        room_type = data.get('room_type')
+        client_name = data.get('client_name', 'skyline')
+        style = data.get('style')
+        custom_prompt = data.get('custom_prompt', '').strip()
+
+        # Quick validation
+        VALID_CLIENTS = ['skyline', 'ellington']
+        if client_name not in VALID_CLIENTS:
+            return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
+
+        is_valid, message = validate_inputs(room_type, style, custom_prompt)
+        if not is_valid:
+            return jsonify({'error': message}), 400
+
+        # Generate unique job_id
+        job_id = str(uuid.uuid4())
+        
+        # Store job immediately
+        with job_lock:
+            job_store[job_id] = {
+                'status': 'pending',
+                'progress': 0,
+                'created_at': datetime.now(),
+                'data': data
+            }
+        
+        logger.info(f"[JOB] Created job {job_id} for {room_type} - {client_name}")
+        
+        # Background processing function
+        def process_generation():
+            try:
+                # Update status to processing
+                with job_lock:
+                    job_store[job_id]['status'] = 'processing'
+                    job_store[job_id]['progress'] = 10
+                
+                # Load reference image
+                logger.info(f"[JOB {job_id}] Loading reference image...")
+                reference_image = load_reference_image(room_type, client_name)
+                
+                if not reference_image:
+                    with job_lock:
+                        job_store[job_id]['status'] = 'failed'
+                        job_store[job_id]['error'] = f'Reference image not found for {room_type}'
+                    return
+                
+                with job_lock:
+                    job_store[job_id]['progress'] = 30
+                
+                # Build prompt
+                prompt_data = construct_prompt(room_type, style, custom_prompt)
+                if not prompt_data.get('success', True):
+                    with job_lock:
+                        job_store[job_id]['status'] = 'failed'
+                        job_store[job_id]['error'] = prompt_data.get('error', 'Prompt construction failed')
+                    return
+                
+                prompt = prompt_data['prompt']
+                prompt = optimize_prompt_for_gpt_image1(prompt, room_type)
+                
+                with job_lock:
+                    job_store[job_id]['progress'] = 40
+                
+                # Check cache
+                cached_result = get_cached_image(prompt, client_name)
+                if cached_result:
+                    logger.info(f"[JOB {job_id}] Cache HIT!")
+                    with job_lock:
+                        job_store[job_id]['status'] = 'completed'
+                        job_store[job_id]['progress'] = 100
+                        job_store[job_id]['result'] = cached_result
+                    return
+                
+                with job_lock:
+                    job_store[job_id]['progress'] = 50
+                
+                # Generate image (SLOW PART - 30-60s)
+                is_custom_theme = bool(custom_prompt)
+                logger.info(f"[JOB {job_id}] Generating with OpenAI...")
+                
+                if is_custom_theme:
+                    result = generate_with_openai_custom_theme(prompt, reference_image)
+                else:
+                    result = generate_with_openai_style_based(prompt, room_type, reference_image)
+                
+                if not result or not result.get('success'):
+                    with job_lock:
+                        job_store[job_id]['status'] = 'failed'
+                        job_store[job_id]['error'] = result.get('error', 'Generation failed') if result else 'No result'
+                    return
+                
+                with job_lock:
+                    job_store[job_id]['progress'] = 80
+                
+                # Upload to Cloudinary
+                logger.info(f"[JOB {job_id}] Uploading to Cloudinary...")
+                cloudinary_url = upload_to_cloudinary(result['image_base64'], client_name, room_type)
+                
+                # Save to MongoDB
+                generation_id = save_generation_to_db(
+                    client_name=client_name,
+                    room_type=room_type,
+                    style=style,
+                    custom_prompt=custom_prompt,
+                    generated_image_url=cloudinary_url,
+                    user_id=data.get('user_id')
+                )
+                
+                with job_lock:
+                    job_store[job_id]['progress'] = 90
+                
+                # Prepare final response
+                response_data = {
+                    'id': generation_id or 0,
+                    'image_base64': result['image_base64'],
+                    'client_name': client_name,
+                    'cloudinary_url': cloudinary_url,
+                    'room_type': room_type,
+                    'style': style if not is_custom_theme else 'custom',
+                    'custom_theme': custom_prompt if is_custom_theme else None,
+                    'model_used': result.get('model', 'gpt-image-1'),
+                    'generation_method': result.get('method', 'async'),
+                    'resolution': result.get('size', '1024x1024')
+                }
+                
+                # Cache it
+                save_to_cache(prompt, response_data, client_name)
+                
+                # Mark as completed
+                with job_lock:
+                    job_store[job_id]['status'] = 'completed'
+                    job_store[job_id]['progress'] = 100
+                    job_store[job_id]['result'] = response_data
+                
+                logger.info(f"[JOB {job_id}] ✅ COMPLETED!")
+                
+            except Exception as e:
+                logger.error(f"[JOB {job_id}] ❌ FAILED: {e}")
+                traceback.print_exc()
+                with job_lock:
+                    job_store[job_id]['status'] = 'failed'
+                    job_store[job_id]['error'] = str(e)
+        
+        # Start background thread
+        thread = threading.Thread(target=process_generation, daemon=True)
+        thread.start()
+        
+        # Return immediately (<1 second response!)
+        return jsonify({
+            'success': True,
+            'job_id': job_id,
+            'message': 'Generation started in background',
+            'poll_url': f'/api/check-job/{job_id}'
+        }), 202  # 202 = Accepted
+        
+    except Exception as e:
+        logger.error(f"[ERROR] Async generation error: {e}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to start generation', 'details': str(e)}), 500
+
+
+@app.route('/api/check-job/<job_id>', methods=['GET', 'OPTIONS'])
+def check_job(job_id):
+    """
+    Check job status - Frontend polls this every 2-3 seconds
+    Returns: pending, processing, completed, or failed
+    """
+    if request.method == 'OPTIONS':
+        return '', 204
+    
+    try:
+        with job_lock:
+            if job_id not in job_store:
+                return jsonify({
+                    'success': False,
+                    'error': 'Job not found or expired'
+                }), 404
+            
+            job = job_store[job_id]
+            
+            response = {
+                'success': True,
+                'job_id': job_id,
+                'status': job['status'],
+                'progress': job.get('progress', 0)
+            }
+            
+            if job['status'] == 'completed':
+                response['result'] = job['result']
+                response['message'] = 'Generation completed successfully'
+            elif job['status'] == 'failed':
+                response['error'] = job.get('error', 'Unknown error occurred')
+            elif job['status'] == 'processing':
+                response['message'] = 'Generating your design...'
+            else:  # pending
+                response['message'] = 'Waiting to start...'
+            
+            return jsonify(response), 200
+            
+    except Exception as e:
+        logger.error(f"[ERROR] Check job error: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Failed to check job status'
+        }), 500
+
+
+@app.route('/api/cleanup-old-jobs', methods=['POST'])
+def cleanup_old_jobs_endpoint():
+    """Manual cleanup endpoint (optional - can also run on cron)"""
+    try:
+        clean_expired_jobs()
+        return jsonify({
+            'success': True,
+            'message': 'Old jobs cleaned'
+        }), 200
+    except Exception as e:
+        logger.error(f"[ERROR] Cleanup endpoint error: {e}")
+        return jsonify({'error': str(e)}), 500
+
 
 # ============================================================
 # MAIN
@@ -2332,4 +2409,4 @@ if __name__ == '__main__':
     logger.info(f"OpenAI: {'✓' if OPENAI_API_KEY else '✗'}")
     logger.info(f"Email: {'✓' if EMAIL_USER and EMAIL_PASSWORD else '✗'}")
     logger.info(f"Supabase: {'✓' if supabase else '✗'}")
-    app.run(host='0.0.0.0', port=port, debug=False)  # ✅ Production ready
+    app.run(host='0.0.0.0', port=port, debug=False)  # ✅ Production ready   
