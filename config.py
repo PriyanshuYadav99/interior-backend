@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # FAL API Configuration
-FAL_API_KEY = os.getenv('FAL_API_KEY')
 
 # Paths to reference room images - CORRECTED PATHS
 ROOM_IMAGES = {
