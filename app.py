@@ -979,14 +979,32 @@ def generate_design():
         logger.info(f"[STEP 5/5] Post-processing...")
         
         # Upload to Cloudinary
-        cloudinary_url = None
-
-        # Build response
+        cloudinary_url = upload_to_cloudinary(result['image_base64'], client_name, room_type)
+        
+        if not cloudinary_url:
+            logger.error("[ERROR] Cloudinary upload failed")
+            return jsonify({
+                'error': 'Image upload failed',
+                'details': 'Failed to upload image to cloud storage'
+            }), 500
+        
+        logger.info(f"[SUCCESS] Image uploaded: {cloudinary_url}")
+        
+        # Save to database with Cloudinary URL
+        save_generation_to_db(
+            client_name=client_name,
+            room_type=room_type,
+            style=style if not is_custom_theme else 'custom',
+            custom_prompt=custom_prompt if is_custom_theme else None,
+            generated_image_url=cloudinary_url,
+            user_id=None
+        )
+        
+        # Build response with URL (NO base64)
         response_data = {
             'id': 0,
-            'image_base64': result['image_base64'],
+            'image_url': cloudinary_url,  # ✅ Changed from image_base64
             'client_name': client_name,
-            'cloudinary_url': cloudinary_url,
             'room_type': room_type,
             'style': style if not is_custom_theme else 'custom',
             'custom_theme': custom_prompt if is_custom_theme else None,
