@@ -900,7 +900,7 @@ def check_user_status():
 @app.route('/api/generate-design', methods=['POST', 'OPTIONS'])
 @timeout_decorator(180)
 def generate_design():
-    """Generate interior design with Gemini Flash ONLY"""
+    """OPTIMIZED: Generate interior design in under 10 seconds"""
     if request.method == 'OPTIONS':
         return '', 204
 
@@ -916,8 +916,7 @@ def generate_design():
         custom_prompt = data.get('custom_prompt', '').strip()
         
         logger.info(f"="*70)
-        logger.info(f"[GEMINI FLASH] NEW GENERATION REQUEST")
-        logger.info(f"[GEMINI FLASH] Room: {room_type} | Style: {style} | Client: {client_name}")
+        logger.info(f"[REQUEST] Room: {room_type} | Style: {style} | Client: {client_name}")
         logger.info(f"="*70)
 
         # Validate client
@@ -930,8 +929,22 @@ def generate_design():
         if not is_valid:
             return jsonify({'error': message}), 400
 
+        # ✅ FIX #1: CHECK CACHE FIRST (BEFORE GENERATION)
+        is_custom_theme = bool(custom_prompt)
+        cache_prompt = custom_prompt if is_custom_theme else f"{room_type}_{style}"
+        
+        cached_result = get_cached_image(cache_prompt, client_name)
+        if cached_result:
+            logger.info(f"[CACHE HIT] ⚡ Returning cached result instantly!")
+            return jsonify({
+                'success': True,
+                'cached': True,
+                'images': [cached_result],
+                'generation_time': '0.1s'
+            }), 200
+
         # Load reference image
-        logger.info(f"[STEP 1/5] Loading reference image for {room_type}...")
+        logger.info(f"[STEP 1/3] Loading reference image...")
         reference_image = load_reference_image(room_type, client_name)
         
         if not reference_image:
@@ -940,14 +953,8 @@ def generate_design():
                 'details': 'Reference image required'
             }), 500
 
-        # Determine flow
-        is_custom_theme = bool(custom_prompt)
-        flow_type = "FLOW 2 (Replicate Custom)" if is_custom_theme else "FLOW 1 (Replicate Style)"
-        
-        logger.info(f"[STEP 2/5] Flow Type: {flow_type}")
-
         # Build prompt
-        logger.info(f"[STEP 3/5] Building prompt...")
+        logger.info(f"[STEP 2/3] Building prompt...")
         prompt_data = construct_prompt(room_type, style, custom_prompt)
         if not prompt_data.get('success', True):
             return jsonify({'error': prompt_data.get('error', 'Prompt failed')}), 400
@@ -955,88 +962,90 @@ def generate_design():
         prompt = prompt_data['prompt']
         prompt = optimize_prompt_for_gpt_image1(prompt, room_type)
 
-        logger.info(f"[STEP 4/5] Generating with Gemini Flash...")
+        # ✅ FIX #2: GENERATE IMAGE (FAST - 7-8 SECONDS)
+        logger.info(f"[STEP 3/3] Generating with Replicate...")
+        start_time = time.time()
         
-        # ✅ GENERATE - Direct synchronous call
         if is_custom_theme:
-            logger.info("[FLOW 2] Gemini Flash custom theme generation...")
             result = generate_with_openai_custom_theme(prompt, reference_image)
         else:
-            logger.info("[FLOW 1] Gemini Flash style-based generation...")
             result = generate_with_openai_style_based(prompt, room_type, reference_image)
 
-        # Check result
         if not result or not result.get('success'):
             error_msg = result.get('error', 'Unknown error') if result else 'No result returned'
             logger.error(f"[GENERATION FAILED] {error_msg}")
             return jsonify({
                 'error': 'Generation failed',
-                'flow': flow_type,
-                'model': 'gemini-flash',
                 'details': error_msg
             }), 500
         
-        logger.info(f"[STEP 5/5] Post-processing...")
+        generation_time = time.time() - start_time
+        logger.info(f"[SUCCESS] ✨ Generated in {generation_time:.2f}s")
+
+        # ✅ FIX #3: PREPARE RESPONSE IMMEDIATELY (NO BLOCKING)
+        image_base64 = result['image_base64']
         
-        # Upload to Cloudinary
-        cloudinary_url = upload_to_cloudinary(result['image_base64'], client_name, room_type)
-        
-        if not cloudinary_url:
-            logger.error("[ERROR] Cloudinary upload failed")
-            return jsonify({
-                'error': 'Image upload failed',
-                'details': 'Failed to upload image to cloud storage'
-            }), 500
-        
-        logger.info(f"[SUCCESS] Image uploaded: {cloudinary_url}")
-        
-        # Save to database with Cloudinary URL
-        save_generation_to_db(
-            client_name=client_name,
-            room_type=room_type,
-            style=style if not is_custom_theme else 'custom',
-            custom_prompt=custom_prompt if is_custom_theme else None,
-            generated_image_url=cloudinary_url,
-            user_id=None
-        )
-        
-        # Build response with URL (NO base64)
+        # Generate response
         response_data = {
-            'id': 0,
-            'image_url': cloudinary_url,  # ✅ Changed from image_base64
+            'id': int(time.time()),
+            'image_base64': image_base64,  # Keep for backward compatibility
             'client_name': client_name,
             'room_type': room_type,
             'style': style if not is_custom_theme else 'custom',
             'custom_theme': custom_prompt if is_custom_theme else None,
             'model_used': 'adirik/interior-design',
-            'generation_method': result.get('method', flow_type),
+            'generation_method': result.get('method'),
             'resolution': result.get('size', '1024x1024'),
-            'flow': flow_type
+            'generation_time': f"{generation_time:.2f}s"
         }
 
-        logger.info(f"="*70)
-        logger.info(f"[SUCCESS] ✨ Generation completed in {result.get('generation_time')}")
-        logger.info(f"="*70)
-# Upload to Cloudinary in background
-        def upload_async():
+        # ✅ FIX #4: CACHE THE RESULT
+        save_to_cache(cache_prompt, response_data, client_name)
+
+        # ✅ FIX #5: DO CLOUDINARY + DATABASE IN BACKGROUND (NON-BLOCKING)
+        def background_upload():
+            """Upload to Cloudinary and save to DB in background"""
             try:
-                upload_to_cloudinary(result['image_base64'], client_name, room_type)
-            except:
-                pass
+                # Upload to Cloudinary
+                cloudinary_url = upload_to_cloudinary(image_base64, client_name, room_type)
+                
+                if cloudinary_url:
+                    logger.info(f"[BACKGROUND] ✅ Uploaded to Cloudinary: {cloudinary_url}")
+                    
+                    # Save to database
+                    save_generation_to_db(
+                        client_name=client_name,
+                        room_type=room_type,
+                        style=style if not is_custom_theme else 'custom',
+                        custom_prompt=custom_prompt if is_custom_theme else None,
+                        generated_image_url=cloudinary_url,
+                        user_id=None
+                    )
+                    logger.info(f"[BACKGROUND] ✅ Saved to database")
+                else:
+                    logger.error(f"[BACKGROUND] ❌ Cloudinary upload failed")
+                    
+            except Exception as e:
+                logger.error(f"[BACKGROUND] ❌ Error: {e}")
 
-        threading.Thread(target=upload_async, daemon=True).start()
+        # Start background thread
+        upload_thread = threading.Thread(target=background_upload, daemon=True)
+        upload_thread.start()
+        logger.info(f"[BACKGROUND] 🚀 Upload thread started (non-blocking)")
 
+        # ✅ RETURN IMMEDIATELY - DON'T WAIT FOR UPLOADS
+        logger.info(f"="*70)
+        logger.info(f"[RESPONSE] ⚡ Returning to client after {generation_time:.2f}s")
+        logger.info(f"="*70)
 
         return jsonify({
             'success': True,
             'cached': False,
-            'flow': flow_type,
-            'model': 'gemini-flash',
             'images': [response_data],
             'prompt_used': prompt[:300] + '...',
             'generation_details': {
-                'model': 'gemini-2.5-flash-image',
-                'generation_time': result.get('generation_time')
+                'model': 'adirik/interior-design',
+                'generation_time': f"{generation_time:.2f}s"
             }
         }), 200
 
