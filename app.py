@@ -129,22 +129,27 @@ cloudinary.config(
 # ============================================================
 app = Flask(__name__)
 
-CORS(app, resources={
-    r"/*": {
-        "origins": "*",
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-        "supports_credentials": False,
-        "max_age": 3600
-    }
-})
+CORS(app, 
+     origins="*",
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization"],
+     expose_headers=["Content-Type"],
+     supports_credentials=False,
+     max_age=3600)
+
 
 # Force headers on every response
 @app.after_request
 def apply_cors(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
+    response.headers["Access-Control-Max-Age"] = "3600"
+    
+    # Handle preflight OPTIONS requests
+    if request.method == "OPTIONS":
+        response.status_code = 200
+    
     return response
 
 # OpenAI client (not needed anymore since we use FLUX)
