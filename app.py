@@ -156,6 +156,24 @@ def apply_cors(response):
 openai_client = None
 
 # ============================================================
+# REGISTER BLUEPRINTS - MUST BE HERE FOR PRODUCTION
+# ============================================================
+try:
+    app.register_blueprint(scenario_bp)
+    logger.info("[SETUP] ✅ Scenario Simulator blueprint registered at /api/scenario")
+    
+    # Verify routes are registered
+    scenario_routes = [rule for rule in app.url_map.iter_rules() if 'scenario' in rule.rule]
+    logger.info(f"[SETUP] Found {len(scenario_routes)} scenario routes:")
+    for route in scenario_routes:
+        logger.info(f"  ✓ {route.rule} [{', '.join(route.methods - {'HEAD', 'OPTIONS'})}]")
+        
+except Exception as e:
+    logger.error(f"[SETUP] ❌ Failed to register scenario blueprint: {e}")
+    import traceback
+    traceback.print_exc()
+
+# ============================================================
 # UTILITY FUNCTIONS
 # ============================================================
 
@@ -1413,21 +1431,7 @@ def test_whatsapp_notification(user_id):
 # SCHEDULER INITIALIZATION
 # ============================================================
 if __name__ == '__main__':
-    # ✅ STEP 1: Register blueprint FIRST
-    try:
-        app.register_blueprint(scenario_bp)
-        logger.info("[SETUP] ✅ Scenario Simulator blueprint registered at /api/scenario")
-        
-        # Verify routes are registered
-        scenario_routes = [rule for rule in app.url_map.iter_rules() if 'scenario' in rule.rule]
-        logger.info(f"[SETUP] Found {len(scenario_routes)} scenario routes:")
-        for route in scenario_routes:
-            logger.info(f"  ✓ {route.rule} [{', '.join(route.methods - {'HEAD', 'OPTIONS'})}]")
-            
-    except Exception as e:
-        logger.error(f"[SETUP] ❌ Failed to register scenario blueprint: {e}")
-        import traceback
-        traceback.print_exc()
+    
     
     # ✅ STEP 2: Initialize scheduler
     if supabase:
