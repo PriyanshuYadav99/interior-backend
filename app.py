@@ -139,9 +139,10 @@ VERSION_CACHE_DURATION = 3600  # 1 hour
 app = Flask(__name__)
 
 # ✅ Configure CORS - Simple and working
+# ✅ ALLOW ALL - Simplest solution
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:5174", "http://127.0.0.1:5174"],
+        "origins": "*",  # ✅ Changed to wildcard
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "expose_headers": ["Content-Type"],
