@@ -119,59 +119,76 @@ CACHE_DURATION = 1800  # 30 minutes
 image_cache = {}
 
 # Cloudinary Setup
+# Cloudinary Setup
 cloudinary.config(
     cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key = os.getenv("CLOUDINARY_API_KEY"),
     api_secret = os.getenv("CLOUDINARY_API_SECRET")
 )
+
+# ============================================================
+# GLOBAL CACHE FOR MODEL VERSION - MUST BE HERE!
+# ============================================================
+_cached_model_version = None
+_version_cache_time = None
+VERSION_CACHE_DURATION = 3600  # 1 hour
+
 # ============================================================
 # FLASK APP INITIALIZATION
 # ============================================================
 app = Flask(__name__)
 
-CORS(app, 
-     origins="*",
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-     allow_headers=["Content-Type", "Authorization"],
-     expose_headers=["Content-Type"],
-     supports_credentials=False,
-     max_age=3600)
+# ✅ Configure CORS - Simple and working
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["http://localhost:5174", "http://127.0.0.1:5174"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "expose_headers": ["Content-Type"],
+        "supports_credentials": False,
+        "max_age": 3600
+    }
+})
 
-
-# Force headers on every response
-@app.after_request
-def apply_cors(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
-    response.headers["Access-Control-Max-Age"] = "3600"
-    
-    # Handle preflight OPTIONS requests
+# ✅ Handle OPTIONS globally - FIXED VERSION
+@app.before_request
+def handle_preflight():
+    """Handle OPTIONS requests"""
     if request.method == "OPTIONS":
-        response.status_code = 200
-    
+        response = jsonify({'status': 'ok'})
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+        response.headers['Access-Control-Max-Age'] = '3600'
+        return response, 200
+
+# ✅ Add CORS to all responses
+@app.after_request
+def after_request(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+    response.headers['Access-Control-Max-Age'] = '3600'
     return response
 
-# OpenAI client (not needed anymore since we use FLUX)
-openai_client = None
+# ============================================================
+# REGISTER BLUEPRINT - SIMPLE AND CLEAN
+# ============================================================
 
-# ============================================================
-# REGISTER BLUEPRINTS - MUST BE HERE FOR PRODUCTION
-# ============================================================
-try:
-    app.register_blueprint(scenario_bp)
-    logger.info("[SETUP] ✅ Scenario Simulator blueprint registered at /api/scenario")
-    
-    # Verify routes are registered
-    scenario_routes = [rule for rule in app.url_map.iter_rules() if 'scenario' in rule.rule]
-    logger.info(f"[SETUP] Found {len(scenario_routes)} scenario routes:")
-    for route in scenario_routes:
-        logger.info(f"  ✓ {route.rule} [{', '.join(route.methods - {'HEAD', 'OPTIONS'})}]")
-        
-except Exception as e:
-    logger.error(f"[SETUP] ❌ Failed to register scenario blueprint: {e}")
-    import traceback
-    traceback.print_exc()
+logger.info("="*70)
+logger.info("[BLUEPRINT] Registering scenario blueprint...")
+
+app.register_blueprint(scenario_bp)
+
+logger.info("[BLUEPRINT] ✅ Registered!")
+
+# List all routes to verify
+with app.app_context():
+    logger.info("[ROUTES] All registered routes:")
+    for rule in app.url_map.iter_rules():
+        logger.info(f"  {rule.rule} -> {rule.endpoint}")
+
+logger.info("="*70)    
 
 # ============================================================
 # UTILITY FUNCTIONS
@@ -506,9 +523,7 @@ def send_welcome_email(full_name, email):
 # ============================================================
 # GLOBAL CACHE FOR MODEL VERSION
 # ============================================================
-_cached_model_version = None
-_version_cache_time = None
-VERSION_CACHE_DURATION = 3600  # 1 hour
+
 
 def get_cached_model_version():
     """Get model version with 1-hour caching - SAVES 1-2 SECONDS"""
@@ -1905,6 +1920,7 @@ if __name__ == '__main__':
 # # ============================================================
 # # GLOBAL CACHE FOR MODEL VERSION
 # # ============================================================
+
 # _cached_model_version = None
 # _version_cache_time = None
 # VERSION_CACHE_DURATION = 3600  # 1 hour
