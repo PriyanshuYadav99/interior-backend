@@ -40,111 +40,7 @@ scenario_bp = Blueprint('scenario', __name__, url_prefix='/api/scenario')
 # SERVICE FUNCTIONS
 # ============================================================
 
-def generate_scenario_image(scenario_text, story_title):
-    """
-    Return icon emoji as SVG image (can be displayed in <img> tag)
-    Expected time: < 0.01 seconds (instant)
-    """
-    try:
-        scenario_lower = scenario_text.lower()
-        
-        # Icon mapping based on keywords
-        icon_map = {
-            # Transportation
-            'transport': '🚗',
-            'car': '🚗',
-            'bike': '🚴',
-            'bicycle': '🚴',
-            'airplane': '✈️',
-            'flight': '✈️',
-            'bus': '🚌',
-            'train': '🚆',
-            'metro': '🚇',
-            
-            # Food & Dining
-            'restaurant': '🍽️',
-            'food': '🍽️',
-            'cafe': '☕',
-            'coffee': '☕',
-            'dining': '🍽️',
-            'grocery': '🛒',
-            'market': '🏪',
-            
-            # Fitness & Health
-            'gym': '🏋️',
-            'fitness': '💪',
-            'workout': '🏋️',
-            'yoga': '🧘',
-            'hospital': '🏥',
-            'health': '⚕️',
-            'ill': '🏥',        # ← Added for "ill"
-            'sick': '🏥',       # ← Added for "sick"
-            'fever': '🏥',      # ← Added for "fever"
-            'emergency': '🚑',  # ← Added for "emergency"
-            
-            # Education
-            'school': '🏫',
-            'education': '📚',
-            'library': '📚',
-            'university': '🎓',
-            
-            # Recreation
-            'park': '🏞️',
-            'playground': '🎠',
-            'nature': '🌳',
-            'lake': '🏞️',
-            'beach': '🏖️',
-            'cinema': '🎬',
-            'theater': '🎭',
-            
-            # Shopping
-            'shop': '🛍️',
-            'mall': '🏬',
-            'store': '🏪',
-            
-            # Residential
-            'home': '🏠',
-            'house': '🏡',
-            'apartment': '🏢',
-            'neighborhood': '🏘️',
-            
-            # Services
-            'bank': '🏦',
-            'police': '🚓',
-            'fire': '🚒',
-        }
-        
-        # Find matching icon
-        selected_icon = '📍'  # Default icon
-        for keyword, icon in icon_map.items():
-            if keyword in scenario_lower:
-                selected_icon = icon
-                break
-        
-        # Convert emoji to SVG that can be used in <img> tag
-        svg_content = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="200" height="200">
-            <text x="50" y="50" font-size="60" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif">
-                {selected_icon}
-            </text>
-        </svg>'''
-        
-        # Convert SVG to base64
-        svg_base64 = base64.b64encode(svg_content.encode('utf-8')).decode('utf-8')
-        
-        return {
-            'success': True,
-            'image_base64': svg_base64,  # ← Now returns base64 SVG
-            'icon': selected_icon,
-            'is_svg': True,
-            'generation_time': '0.00s'
-        }
-        
-    except Exception as e:
-        return {
-            'success': False,
-            'error': str(e),
-            'icon': '📍'
-        }
+
 
 
 def generate_scenario_story(scenario_text):
@@ -430,7 +326,7 @@ def health():
 
 @scenario_bp.route('/generate', methods=['POST'])
 def generate_scenario():
-    """Generate a scenario with story and image"""
+    """Generate a scenario with story only (no image)"""
     try:
         data = request.get_json()
         
@@ -438,7 +334,6 @@ def generate_scenario():
             return jsonify({'error': 'No data provided'}), 400
         
         scenario_text = data.get('scenario_text', '').strip()
-        client_name = data.get('client_name', 'skyline')
         
         if not scenario_text:
             return jsonify({'error': 'scenario_text is required'}), 400
@@ -448,8 +343,7 @@ def generate_scenario():
         
         logger.info(f"[SCENARIO] Generating for: {scenario_text[:100]}...")
         
-        # Step 1: Generate story using Groq
-        logger.info("[SCENARIO] Step 1/2: Generating story with Groq...")
+        # Generate story using Groq
         story_result = generate_scenario_story(scenario_text)
         
         if not story_result.get('success'):
@@ -458,20 +352,7 @@ def generate_scenario():
                 'details': story_result.get('error')
             }), 500
         
-        # Step 2: Generate image using Replicate
-        logger.info("[SCENARIO] Step 2/2: Generating image with Replicate...")
-        image_result = generate_scenario_image(
-            scenario_text=scenario_text,
-            story_title=story_result['title']
-        )
-        
-        if not image_result.get('success'):
-            return jsonify({
-                'error': 'Failed to generate image',
-                'details': image_result.get('error')
-            }), 500
-        
-        # Success response
+        # Success response WITHOUT image
         logger.info(f"[SCENARIO] ✅ Successfully generated scenario: {story_result['title']}")
         
         return jsonify({
@@ -479,11 +360,8 @@ def generate_scenario():
             'title': story_result['title'],
             'story': story_result['story'],
             'tagline': story_result['tagline'],
-            'image_base64': image_result.get('image_base64'),
-            'generation_time': {
-                'story': story_result.get('generation_time'),
-                'image': image_result.get('generation_time')
-            }
+            'category': data.get('category', 'general'),
+            'generation_time': story_result.get('generation_time')
         }), 200
 
     except Exception as e:
@@ -1138,11 +1016,51 @@ The apartment's resale value appreciates faster because metro proximity is perma
 **Tagline:** When the metro is this close, the city becomes smaller.''',
     'image_url': 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
     'category': 'transport'
+},
+{
+    'id': 41,
+    'title': 'Weekend Getaways Without Traffic Stress',
+    'description': '''Friday evening exodus from cities means hours stuck in traffic. Your weekend trips to hill stations or beaches start with frustration before they begin with relaxation.
+
+This location sits on the outer ring road with direct highway access. Friday 6 PM departure means you're on the expressway by 6:15 PM, beating the worst congestion. Weekend return journeys on Sunday evening avoid reverse traffic flow.
+
+**Timeline:**
+6:00 PM — Leave office on Friday
+6:15 PM — Already on highway, traffic clearing
+8:30 PM — Reach hill station resort, 2.5 hours only
+
+**Transport Options Available:**
+- Own Vehicle - Direct highway access, minimal city roads
+- Car Rental - Multiple agencies within 2km radius
+- Bus Terminal - Interstate buses, 1.5km away
+- Carpool Groups - Active weekend travel community
+
+Your weekends become actual breaks, not endurance tests. The location's strategic positioning means spontaneous Friday evening departures become feasible, not fantasies requiring Thursday planning.
+
+**Tagline:** Where weekend adventures start stress-free.''',
+    'image_url': 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+    'category': 'transport'
+},
+{
+    'id': 42,
+    'title': 'Elderly Parents Living Independently, Nearby',
+    'description': '''Your parents want independence but you need peace of mind. Living too far means you can't help during emergencies. Living together creates friction despite good intentions.
+
+This society has a separate tower designated for senior living with specialized amenities. Your parents get their own 2BHK with grab bars, emergency buttons, and senior-friendly design. You live in the adjacent tower, 2 minutes walk away.
+
+Daily check-ins happen naturally through evening walks in the shared garden. Emergency help is instant—you can reach their apartment in under 3 minutes. They maintain independence and social life through the senior citizens club, while you maintain your own family routine.
+
+The building has 24/7 medical staff on call, pharmacy delivery services, and accessible design throughout. Your children visit grandparents spontaneously after school. Sunday lunches together don't require travel planning. Support is available without intrusion, proximity without loss of privacy.
+
+**Tagline:** Close enough to care, separate enough to thrive.''',
+    'image_url': 'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=400&h=300&fit=crop',
+    'category': 'elderly'
 }
 ]
+
 # Track current batch index (shared across all users)
 current_batch_index = 0
-BATCH_SIZE = 5
+BATCH_SIZE = 6
 
 @scenario_bp.route('/pre-generated', methods=['GET'])
 def get_pre_generated_scenarios():
@@ -1176,8 +1094,8 @@ def get_pre_generated_scenarios():
 @scenario_bp.route('/random', methods=['GET'])
 def get_random_scenarios():
     """
-    Get next 5 scenarios sequentially from the pool
-    Loops back to start after all 40 scenarios shown (8 batches total)
+    Get next 6 scenarios sequentially from the pool
+    Loops back to start after all 42 scenarios shown (7 batches total)
     
     Usage: GET /api/scenario/random
     """
@@ -1185,7 +1103,7 @@ def get_random_scenarios():
     
     try:
         # Validate pool size
-        if len(SCENARIO_POOL) < 5:
+        if len(SCENARIO_POOL) < 6:
             return jsonify({
                 'error': 'Not enough scenarios in pool',
                 'available': len(SCENARIO_POOL)
@@ -1203,16 +1121,31 @@ def get_random_scenarios():
         current_serving = current_batch_index + 1
         
         # Increment batch index and loop back to 0 after batch 8
-        current_batch_index = (current_batch_index + 1) % 8  # 40 ÷ 5 = 8 batches
+        current_batch_index = (current_batch_index + 1) % 7  # 40 ÷ 5 = 8 batches
         
-        logger.info(f"[SEQUENTIAL] ✅ Returned batch {current_serving}/8 (scenarios {start_idx+1}-{end_idx})")
+        logger.info(f"[SEQUENTIAL] ✅ Returned batch {current_serving}/7 (scenarios {start_idx+1}-{end_idx})")
         
         # ← CHANGED: Updated return with batch metadata
+        # Add icon field to each scenario if missing
+        for scenario in batch_scenarios:
+            if 'icon' not in scenario:
+                # Map category to icon
+                category_icons = {
+                    'family': 'clock',
+                    'elderly': 'shield',
+                    'professional': 'building',
+                    'lifestyle': 'home',
+                    'religion': 'home',
+                    'safety': 'shield',
+                    'transport': 'clock'
+                }
+                scenario['icon'] = category_icons.get(scenario.get('category', 'general'), 'building')
+
         return jsonify({
             'success': True,
             'scenarios': batch_scenarios,
             'batch_number': current_serving,
-            'total_batches': 8,
+            'total_batches': 7,
             'total_pool_size': len(SCENARIO_POOL)
         }), 200
         
