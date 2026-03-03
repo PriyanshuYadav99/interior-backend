@@ -26,7 +26,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import requests
-from scenario_simulator import scenario_bp
+from Life_Echo import scenario_bp as Life_bp
 from virtual_tour import virtual_tour_bp 
 from admin_routes import admin_bp
 
@@ -179,12 +179,12 @@ def after_request(response):
 # ============================================================
 
 logger.info("="*70)
-logger.info("[BLUEPRINT] Registering scenario blueprint...")
+logger.info("[BLUEPRINT] Registering Life_Echo blueprint...")
 
-app.register_blueprint(scenario_bp)
+app.register_blueprint(Life_bp)
 
 logger.info("[BLUEPRINT] ✅ Registered!")
-# After scenario_bp registration, ADD:
+# After Life_Echo_bp registration, ADD:
 logger.info("[BLUEPRINT] Registering virtual tour blueprint...")
 app.register_blueprint(virtual_tour_bp)
 logger.info("[BLUEPRINT] ✅ Virtual Tour Registered!")
