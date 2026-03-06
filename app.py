@@ -1406,7 +1406,28 @@ def get_pending_notifications():
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+@app.route('/api/room-preview/<client_name>/<room_type>', methods=['GET'])
+def get_room_preview(client_name, room_type):
+    """Serve the base reference image for a room so frontend can show it immediately on room click"""
+    try:
+        VALID_CLIENTS = ['skyline', 'ellington']
+        if client_name not in VALID_CLIENTS:
+            return jsonify({'error': f'Invalid client'}), 400
 
+        image_base64 = load_reference_image(room_type, client_name)
+        if not image_base64:
+            return jsonify({'error': 'Image not found'}), 404
+
+        return jsonify({
+            'success': True,
+            'image_base64': image_base64,
+            'room_type': room_type,
+            'client_name': client_name
+        }), 200
+
+    except Exception as e:
+        logger.error(f"[ROOM PREVIEW] Error: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/test-whatsapp-direct', methods=['POST'])
 def test_whatsapp_direct():
