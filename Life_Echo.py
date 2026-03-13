@@ -59,7 +59,6 @@ def generate_scenario_story(scenario_text):
         
         start_time = time.time()
         
-        # INTELLIGENT PROMPT - Detects scenario type automatically
         prompt = f"""Analyze this real estate scenario: "{scenario_text}"
 
 **STEP 1: IDENTIFY THE SCENARIO TYPE**
@@ -88,10 +87,10 @@ SCENARIO:
 **Transport Options Available:**
 - [Option 1: e.g., Own Vehicle - Direct basement access, no parking delay]
 - [Option 2: e.g., School Bus - Picks up from community gate]
-- [Option 3: e.g., Cab/Uber - 2-min wait time, ₹80-120]
-- [Option 4: e.g., Metro (only if in metro city) - Nearest station 800m]
+- [Option 3: e.g., Taxi/Cab - 2-min wait time, AED 15-25]
+- [Option 4: e.g., RTA Bus/Metro - Nearest station 800m]
 
-[Closing paragraph: 2-3 complete sentences explaining why this location makes it easy]
+[Closing paragraph: MAX 3 sentences explaining why this location makes it easy]
 
 TAGLINE: [Practical benefit statement]
 
@@ -109,11 +108,11 @@ It's 3 AM, and your son's fever has spiked to 104°F. You need to reach the hosp
 
 **Transport Options Available:**
 - Own Vehicle - Direct basement parking access, start immediately
-- Taxi/Cab - Book via app, 3-4 minute arrival time, ₹120-180
+- Taxi/Cab - Book via app, 3-4 minute arrival time, AED 25-40
 - Ambulance - Community emergency hotline, 5-minute response time
 - Neighbor's Vehicle - WhatsApp group emergency protocol active
 
-The hospital is only 2.3 kilometers away via a 60-foot-wide arterial road with zero traffic at night. The 24/7 manned security ensures the gate opens immediately without fumbling for access cards. While families in congested areas waste 20+ minutes navigating narrow gullies, you're already in the ER getting treatment.
+The hospital is only 2.3 kilometers away via a wide arterial road with zero traffic at night. The 24/7 manned security ensures the gate opens immediately without fumbling for access cards. While families in congested areas waste 20+ minutes, you're already in the ER getting treatment.
 
 TAGLINE: In medical emergencies, proximity saves lives.
 
@@ -133,9 +132,9 @@ Your son's school starts at 9 AM sharp, and he cannot be late.
 - School Bus - Picks up from community gate at 8:15 AM daily
 - Own Vehicle - Basement parking, 10-minute direct drive
 - Carpool - Rotate with 3 neighbor families via WhatsApp
-- Auto-rickshaw - Available at gate, ₹60-80 per trip
+- Taxi/Cab - Available at gate, AED 20-35 per trip
 
-The school is just 3.5 kilometers away via a signal-free stretch of the outer ring road. No narrow lanes, no U-turns, no traffic chaos. While other parents leave home at 8 AM to fight congestion, you're finishing breakfast in peace.
+The school is just 3.5 kilometers away via a signal-free stretch of road. No narrow lanes, no U-turns, no traffic chaos. While other parents leave home at 8 AM to fight congestion, you're finishing breakfast in peace.
 
 TAGLINE: Convenience isn't a perk. It's a parenting essential.
 
@@ -146,13 +145,13 @@ TAGLINE: Convenience isn't a perk. It's a parenting essential.
 TITLE: [Emotional/evocative title, 5-8 words]
 
 SCENARIO:
-[Paragraph 1: Set the scene with sensory details - 2-3 complete sentences]
+[Paragraph 1: Set the scene with sensory details - MAX 3 sentences only]
 
-[Paragraph 2: Show the contrast or problem - 2-3 complete sentences]
+[Paragraph 2: Show the contrast or problem - MAX 3 sentences only]
 
-[Paragraph 3: How the property solves it - 3-4 complete sentences with specific features]
+[Paragraph 3: How the property solves it - MAX 3 sentences with specific features]
 
-[Paragraph 4: Emotional impact - 2 complete sentences]
+[Paragraph 4: Emotional impact - MAX 2 sentences only]
 
 TAGLINE: [Memorable emotional statement]
 
@@ -160,13 +159,13 @@ TAGLINE: [Memorable emotional statement]
 TITLE: Serenity Found
 
 SCENARIO:
-Imagine waking up to the sweet songs of birds and the gentle rustle of leaves. Your home is surrounded by lush green parks, a sight to behold from every window. The fresh air and soothing views create a sense of tranquility, setting the tone for a peaceful day.
+Imagine waking up to the sweet songs of birds and the gentle rustle of leaves. Your home is surrounded by lush green parks visible from every window. The fresh air and soothing views create a sense of tranquility from the very first morning.
 
-As you step out, the crunch of gravel beneath your feet and the vibrant colors of blooming flowers greet you. The parks offer a serene escape from the city's hustle, where children play freely and families gather for evening walks.
+As you step out, vibrant flowers and open walkways greet you. The parks offer a serene escape where children play freely and families gather for evening walks. It's a stark contrast to the noise and congestion most city dwellers accept as normal.
 
-Inside your home, the triple-glazed windows and 80-meter green buffer zone ensure that city noise never intrudes. Your children can study without distractions, and you can work from home without closing windows. This isn't just clever architecture—it's designed wellness for your entire family.
+Inside, triple-glazed windows and an 80-meter green buffer zone ensure city noise never intrudes. Your children can study without distractions, and you can work from home with windows open. This isn't clever architecture — it's designed wellness for your entire family.
 
-The true luxury isn't the imported fittings or marble lobbies. It's the ability to hear yourself think, to sleep deeply, and to wake up refreshed every single morning.
+The true luxury isn't marble lobbies or imported fittings. It's the ability to hear yourself think, sleep deeply, and wake up refreshed every single morning.
 
 TAGLINE: Find your inner peace in perfect harmony with nature.
 
@@ -174,7 +173,11 @@ TAGLINE: Find your inner peace in perfect harmony with nature.
 
 **CRITICAL RULES:**
 - TOTAL LENGTH: 180-220 words (not counting title/tagline)
-- **TIMELINE TIME ANCHORING**: If user mentions a specific time (e.g., "3 AM", "9 AM"), START the timeline at that EXACT time or slightly before (e.g., if user says "3 AM emergency", start timeline at 3:00 AM, NOT 12:00 AM)
+- TIMELINE FORMAT: Always include ALL 4 sections — Opening line, Timeline (4 steps), Transport Options (4 options), Closing paragraph. NEVER skip any section.
+- NARRATIVE FORMAT: Always include ALL 4 paragraphs. NEVER skip any paragraph.
+- Each paragraph: MAXIMUM 3 sentences, keep it concise
+- Currency: STRICTLY use AED (UAE Dirhams) ONLY. NEVER use ₹, INR, $, €, or any other currency. Every single price must be in AED. Example: AED 25-40, AED 15-20
+- **TIMELINE TIME ANCHORING**: If user mentions a specific time (e.g., "3 AM", "9 AM"), START the timeline at that EXACT time or slightly before
 - Timeline format: Each time step on NEW LINE with clear formatting
 - Timeline intervals: Use realistic 2-5 minute gaps between steps
 - Transport options: Each option on NEW LINE with dash (-)
@@ -182,7 +185,6 @@ TAGLINE: Find your inner peace in perfect harmony with nature.
 - For narrative: Write in complete, flowing paragraphs
 - Make every sentence complete and grammatically correct
 - End with proper punctuation (. ! ?)
-- If running out of space, end the previous sentence properly - DO NOT truncate
 
 **OUTPUT FORMAT:**
 TITLE: [Title here]
@@ -196,7 +198,7 @@ TAGLINE: [Tagline here]"""
             messages=[
                 {
                     "role": "system",
-                    "content": """You are an expert real estate scenario writer. You create two types of content:
+                    "content": """You are an expert real estate scenario writer based in Dubai, UAE. You create two types of content:
 
 1. TIMELINE scenarios: Use clear line breaks for each time step. Format like:
    8:45 AM — Action here
@@ -206,10 +208,23 @@ TAGLINE: [Tagline here]"""
    - User says "3 AM emergency" → Start timeline at 3:00 AM
    - User says "9 AM school" → Start timeline around 8:35-8:45 AM
    - User says "midnight fever" → Start timeline at 12:00 AM
-   
-2. NARRATIVE scenarios: Write in complete, flowing paragraphs. NEVER end mid-sentence.
 
-CRITICAL: Always finish every sentence completely. If you're running out of tokens, end the previous sentence with proper punctuation. Never truncate words or leave sentences incomplete."""
+2. NARRATIVE scenarios: Write in complete, flowing paragraphs with MAXIMUM 3 sentences per paragraph. NEVER end mid-sentence.
+
+CRITICAL CURRENCY RULE: You are writing for Dubai, UAE. EVERY price MUST be in AED (Arab Emirates Dirham). NEVER use ₹, INR, $, £, € or any other currency under any circumstance. If you use any currency other than AED, the response is considered a failure.
+
+CRITICAL COMPLETENESS RULE: For TIMELINE format, you MUST always include ALL of these sections in order:
+1. Opening sentence
+2. Timeline with exactly 4 steps
+3. Transport Options with exactly 4 options
+4. Closing paragraph (3 sentences)
+5. Tagline
+NEVER skip or shorten any section. A missing section is a failed response.
+
+For NARRATIVE format, you MUST always include ALL 4 paragraphs. NEVER skip any paragraph.
+
+Keep each paragraph to a maximum of 3 sentences.
+Always finish every sentence completely. Never truncate words or leave sentences incomplete."""
                 },
                 {
                     "role": "user",
@@ -218,7 +233,7 @@ CRITICAL: Always finish every sentence completely. If you're running out of toke
             ],
             model="llama-3.3-70b-versatile",
             temperature=0.7,
-            max_tokens=600,
+            max_tokens=900,
             stop=None
         )
         
