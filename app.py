@@ -885,12 +885,14 @@ def simple_register():
         logger.info(f"[SIMPLE_REGISTER] Creating new user (duplicates allowed): {email}, {phone_number}")
         
         # Create new user - NO checks, always insert
+        property_section = data.get('property_section', None)
         user_data = {
             'full_name': full_name,
             'email': email,
             'phone_number': phone_number,
             'country_code': country_code,
             'client_name': client_name,
+            'property_section': property_section,
             'pre_registration_generations': generated_count,
             'total_generations': 0,
             'ip_address': request.remote_addr,
