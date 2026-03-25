@@ -1124,10 +1124,27 @@ def generate_design():
                         style=style if not is_custom_theme else 'custom',
                         custom_prompt=custom_prompt if is_custom_theme else None,
                         generated_image_url=cloudinary_url,
-                        user_id=request_user_id,      # ✅ CHANGED
-                        session_id=request_session_id  # ✅ NEW
+                        user_id=request_user_id,
+                        session_id=request_session_id
                     )
                     logger.info(f"[BACKGROUND] ✅ Saved to database")
+
+                    # ✅ Update total_generations in users table
+                    if request_user_id:
+                        try:
+                            user_result = supabase.table('users')\
+                                .select('total_generations')\
+                                .eq('id', request_user_id)\
+                                .execute()
+                            if user_result.data:
+                                current = user_result.data[0]['total_generations'] or 0
+                                supabase.table('users')\
+                                    .update({'total_generations': current + 1})\
+                                    .eq('id', request_user_id)\
+                                    .execute()
+                                logger.info(f"[DB] ✅ Updated total_generations for {request_user_id}: {current} → {current + 1}")
+                        except Exception as e:
+                            logger.warning(f"[DB] Could not update total_generations: {e}")
                 else:
                     logger.error(f"[BACKGROUND] ❌ Cloudinary upload failed")
                         
