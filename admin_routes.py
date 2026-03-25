@@ -192,7 +192,7 @@ def get_leads():
                 'phone': f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
                 'email': u.get('email', 'N/A'),
                 'inquiry_date': u.get('created_at', ''),
-                'total_generations': u.get('total_generations', 0)
+                'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0)
             })
 
         return jsonify({
@@ -261,7 +261,7 @@ def get_lead_details(user_id):
                 'phone': f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
                 'email': u.get('email', 'N/A'),
                 'registration_date': u.get('created_at', ''),
-                'total_generations': u.get('total_generations', 0),
+                'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0),
                 'images': images
             }
         }), 200
@@ -337,7 +337,7 @@ def search_leads():
                 'phone': f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
                 'email': u.get('email', 'N/A'),
                 'inquiry_date': u.get('created_at', ''),
-                'total_generations': u.get('total_generations', 0)
+                'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0)
             })
 
         return jsonify({
