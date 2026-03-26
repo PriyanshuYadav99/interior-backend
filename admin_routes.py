@@ -369,24 +369,19 @@
 #         return jsonify({'error': 'Logout failed'}), 500
 """
 admin_routes.py — PropDesk Builder Admin Dashboard
-Each builder (Skyline, Ellington, etc.) has a separate login.
-Uses: builders table (login), property_sections table (dashboard cards),
-      users table (leads), user_generations table (images).
+Sessions stored in Supabase (persistent across restarts).
 """
 
 from flask import Blueprint, request, jsonify
 from functools import wraps
 import logging
-import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import secrets
 import hashlib
 
 logger = logging.getLogger(__name__)
 admin_bp = Blueprint('admin', __name__, url_prefix='/api/admin')
 
-# ─── In-memory session store ────────────────────────────────
-builder_sessions = {}
 
 # ─── Helpers ────────────────────────────────────────────────
 
@@ -397,13 +392,32 @@ def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
 def verify_token(token):
-    if not token or token not in builder_sessions:
+    if not token:
         return None
-    session = builder_sessions[token]
-    if datetime.now() > session['expires_at']:
-        del builder_sessions[token]
+    try:
+        from app import supabase
+        now = datetime.now(timezone.utc).isoformat()
+
+        result = supabase.table('builder_sessions') \
+            .select('*') \
+            .eq('token', token) \
+            .gt('expires_at', now) \
+            .execute()
+
+        if not result.data:
+            return None
+
+        session = result.data[0]
+        return {
+            'username': session['username'],
+            'client_name': session['client_name'],
+            'company_name': session.get('company_name', ''),
+            'property_name': session.get('property_name', ''),
+            'builder_id': session['builder_id']
+        }
+    except Exception as e:
+        logger.error(f"[VERIFY_TOKEN] Error: {e}")
         return None
-    return session
 
 def builder_required(f):
     @wraps(f)
@@ -420,7 +434,6 @@ def builder_required(f):
 # ============================================================
 # 1. LOGIN
 # POST /api/admin/login
-# Body: { "username": "skyline_admin", "password": "..." }
 # ============================================================
 
 @admin_bp.route('/login', methods=['POST', 'OPTIONS'])
@@ -454,17 +467,20 @@ def builder_login():
 
         builder = result.data[0]
         token = generate_token()
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
 
-        builder_sessions[token] = {
+        # Save session to Supabase
+        supabase.table('builder_sessions').insert({
+            'token': token,
             'username': username,
             'client_name': builder['client_name'],
             'company_name': builder.get('company_name', ''),
             'property_name': builder.get('property_name', ''),
             'builder_id': builder['id'],
-            'expires_at': datetime.now() + timedelta(hours=24)
-        }
+            'expires_at': expires_at.isoformat()
+        }).execute()
 
-        logger.info(f"[LOGIN] Success: {username} ({builder['client_name']})")
+        logger.info(f"[LOGIN] Success: {username}")
 
         return jsonify({
             'success': True,
@@ -482,7 +498,6 @@ def builder_login():
 # ============================================================
 # 2. DASHBOARD
 # GET /api/admin/dashboard
-# Returns: property section cards with lead counts
 # ============================================================
 
 @admin_bp.route('/dashboard', methods=['GET'])
@@ -490,7 +505,6 @@ def builder_login():
 def get_dashboard():
     try:
         from app import supabase
-
         client_name = request.builder['client_name']
 
         sections_result = supabase.table('property_sections') \
@@ -529,7 +543,6 @@ def get_dashboard():
 # ============================================================
 # 3. LEADS LIST
 # GET /api/admin/leads?section=2bhk
-# section param is optional — omit to get all leads
 # ============================================================
 
 @admin_bp.route('/leads', methods=['GET'])
@@ -537,7 +550,6 @@ def get_dashboard():
 def get_leads():
     try:
         from app import supabase
-
         client_name = request.builder['client_name']
         section = request.args.get('section', '').strip()
 
@@ -577,8 +589,6 @@ def get_leads():
 # ============================================================
 # 4. LEAD DETAILS
 # GET /api/admin/leads/<user_id>
-# Returns full user info + all generated images
-# (includes pre-registration images linked via session_id)
 # ============================================================
 
 @admin_bp.route('/leads/<user_id>', methods=['GET'])
@@ -586,7 +596,6 @@ def get_leads():
 def get_lead_details(user_id):
     try:
         from app import supabase
-
         client_name = request.builder['client_name']
 
         user_result = supabase.table('users') \
@@ -599,11 +608,9 @@ def get_lead_details(user_id):
 
         u = user_result.data[0]
 
-        # Security: builder can only see their own leads
         if u.get('client_name') != client_name:
             return jsonify({'error': 'Unauthorized'}), 403
 
-        # Step 1: Find all session_ids linked to this user
         sessions_result = supabase.table('sessions') \
             .select('session_id') \
             .eq('user_id', user_id) \
@@ -611,9 +618,6 @@ def get_lead_details(user_id):
 
         session_ids = [s['session_id'] for s in (sessions_result.data or [])]
 
-        # Step 2: Fetch generations by user_id OR any linked session_id
-        # This captures both post-registration (user_id set) and
-        # pre-registration (only session_id set) generations
         if session_ids:
             gens_result = supabase.table('user_generations') \
                 .select('*') \
@@ -627,7 +631,6 @@ def get_lead_details(user_id):
                 .order('created_at', desc=True) \
                 .execute()
 
-        # Step 3: Deduplicate by generation_id in case a row matches both filters
         seen = set()
         images = []
         for g in (gens_result.data or []):
@@ -673,14 +676,13 @@ def get_lead_details(user_id):
 def get_analytics():
     try:
         from app import supabase
-
         client_name = request.builder['client_name']
-        today = datetime.now().date().isoformat()
+        today = datetime.now(timezone.utc).date().isoformat()
 
-        total_leads   = supabase.table('users').select('id', count='exact').eq('client_name', client_name).execute()
-        total_gens    = supabase.table('user_generations').select('id', count='exact').eq('client_name', client_name).execute()
-        today_leads   = supabase.table('users').select('id', count='exact').eq('client_name', client_name).gte('created_at', today).execute()
-        today_gens    = supabase.table('user_generations').select('id', count='exact').eq('client_name', client_name).gte('created_at', today).execute()
+        total_leads = supabase.table('users').select('id', count='exact').eq('client_name', client_name).execute()
+        total_gens  = supabase.table('user_generations').select('id', count='exact').eq('client_name', client_name).execute()
+        today_leads = supabase.table('users').select('id', count='exact').eq('client_name', client_name).gte('created_at', today).execute()
+        today_gens  = supabase.table('user_generations').select('id', count='exact').eq('client_name', client_name).gte('created_at', today).execute()
 
         return jsonify({
             'success': True,
@@ -707,7 +709,6 @@ def get_analytics():
 def search_leads():
     try:
         from app import supabase
-
         client_name = request.builder['client_name']
         q = request.args.get('q', '').strip()
 
@@ -753,8 +754,14 @@ def search_leads():
 @builder_required
 def logout():
     try:
+        from app import supabase
         token = request.headers.get('Authorization', '').replace('Bearer ', '').strip()
-        builder_sessions.pop(token, None)
+
+        supabase.table('builder_sessions') \
+            .delete() \
+            .eq('token', token) \
+            .execute()
+
         return jsonify({'success': True, 'message': 'Logged out successfully'}), 200
     except Exception as e:
         logger.error(f"[LOGOUT] Error: {e}")
