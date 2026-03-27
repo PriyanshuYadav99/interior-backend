@@ -24,9 +24,9 @@ gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY) if GOOGLE_MAPS_API_KEY else N
 DEFAULT_SEARCH_RADIUS = 5000
 
 APARTMENT_COORDINATES = {
-    'lat': 25.0694755,
-    'lng': 55.1468862,
-    'name': 'VERDE BY SOBHA'
+    'lat': 15.5080647,
+    'lng': 73.7719139,
+    'name': 'RIO ROYALE'
 }
 
 CATEGORY_MAPPING = {

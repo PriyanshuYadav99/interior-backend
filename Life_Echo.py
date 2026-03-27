@@ -176,7 +176,7 @@ TAGLINE: Find your inner peace in perfect harmony with nature.
 - TIMELINE FORMAT: Always include ALL 4 sections — Opening line, Timeline (4 steps), Transport Options (4 options), Closing paragraph. NEVER skip any section.
 - NARRATIVE FORMAT: Always include ALL 4 paragraphs. NEVER skip any paragraph.
 - Each paragraph: MAXIMUM 3 sentences, keep it concise
-- Currency: STRICTLY use AED (UAE Dirhams) ONLY. NEVER use ₹, INR, $, €, or any other currency. Every single price must be in AED. Example: AED 25-40, AED 15-20
+- Currency: STRICTLY use INR (Indian Rupees, ₹) ONLY. NEVER use AED, $, €, or any other currency. Every single price must be in ₹. Example: ₹25-40, ₹200-350
 - **TIMELINE TIME ANCHORING**: If user mentions a specific time (e.g., "3 AM", "9 AM"), START the timeline at that EXACT time or slightly before
 - Timeline format: Each time step on NEW LINE with clear formatting
 - Timeline intervals: Use realistic 2-5 minute gaps between steps
@@ -211,7 +211,7 @@ TAGLINE: [Tagline here]"""
 
 2. NARRATIVE scenarios: Write in complete, flowing paragraphs with MAXIMUM 3 sentences per paragraph. NEVER end mid-sentence.
 
-CRITICAL CURRENCY RULE: You are writing for Dubai, UAE. EVERY price MUST be in AED (Arab Emirates Dirham). NEVER use ₹, INR, $, £, € or any other currency under any circumstance. If you use any currency other than AED, the response is considered a failure.
+CRITICAL CURRENCY RULE: You are writing for India. EVERY price MUST be in INR (Indian Rupees, symbol ₹). NEVER use AED, $, £, € or any other currency under any circumstance. If you use any currency other than ₹/INR, the response is considered a failure.
 
 CRITICAL COMPLETENESS RULE: For TIMELINE format, you MUST always include ALL of these sections in order:
 1. Opening sentence
