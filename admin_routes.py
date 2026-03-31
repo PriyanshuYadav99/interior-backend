@@ -1,25 +1,19 @@
 
-
 # """
 # admin_routes.py — PropDesk Builder Admin Dashboard
-# Each builder (Skyline, Ellington, etc.) has a separate login.
-# Uses: builders table (login), property_sections table (dashboard cards),
-#       users table (leads), user_generations table (images).
+# Sessions stored in Supabase (persistent across restarts).
 # """
 
 # from flask import Blueprint, request, jsonify
 # from functools import wraps
 # import logging
-# import os
-# from datetime import datetime, timedelta
+# from datetime import datetime, timedelta, timezone
 # import secrets
 # import hashlib
 
 # logger = logging.getLogger(__name__)
 # admin_bp = Blueprint('admin', __name__, url_prefix='/api/admin')
 
-# # ─── In-memory session store ────────────────────────────────
-# builder_sessions = {}
 
 # # ─── Helpers ────────────────────────────────────────────────
 
@@ -30,13 +24,32 @@
 #     return hashlib.sha256(password.encode()).hexdigest()
 
 # def verify_token(token):
-#     if not token or token not in builder_sessions:
+#     if not token:
 #         return None
-#     session = builder_sessions[token]
-#     if datetime.now() > session['expires_at']:
-#         del builder_sessions[token]
+#     try:
+#         from app import supabase
+#         now = datetime.now(timezone.utc).isoformat()
+
+#         result = supabase.table('builder_sessions') \
+#             .select('*') \
+#             .eq('token', token) \
+#             .gt('expires_at', now) \
+#             .execute()
+
+#         if not result.data:
+#             return None
+
+#         session = result.data[0]
+#         return {
+#             'username': session['username'],
+#             'client_name': session['client_name'],
+#             'company_name': session.get('company_name', ''),
+#             'property_name': session.get('property_name', ''),
+#             'builder_id': session['builder_id']
+#         }
+#     except Exception as e:
+#         logger.error(f"[VERIFY_TOKEN] Error: {e}")
 #         return None
-#     return session
 
 # def builder_required(f):
 #     @wraps(f)
@@ -53,7 +66,6 @@
 # # ============================================================
 # # 1. LOGIN
 # # POST /api/admin/login
-# # Body: { "username": "skyline_admin", "password": "..." }
 # # ============================================================
 
 # @admin_bp.route('/login', methods=['POST', 'OPTIONS'])
@@ -87,17 +99,20 @@
 
 #         builder = result.data[0]
 #         token = generate_token()
+#         expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
 
-#         builder_sessions[token] = {
+#         # Save session to Supabase
+#         supabase.table('builder_sessions').insert({
+#             'token': token,
 #             'username': username,
 #             'client_name': builder['client_name'],
 #             'company_name': builder.get('company_name', ''),
 #             'property_name': builder.get('property_name', ''),
 #             'builder_id': builder['id'],
-#             'expires_at': datetime.now() + timedelta(hours=24)
-#         }
+#             'expires_at': expires_at.isoformat()
+#         }).execute()
 
-#         logger.info(f"[LOGIN] Success: {username} ({builder['client_name']})")
+#         logger.info(f"[LOGIN] Success: {username}")
 
 #         return jsonify({
 #             'success': True,
@@ -115,7 +130,6 @@
 # # ============================================================
 # # 2. DASHBOARD
 # # GET /api/admin/dashboard
-# # Returns: property section cards with lead counts
 # # ============================================================
 
 # @admin_bp.route('/dashboard', methods=['GET'])
@@ -123,7 +137,6 @@
 # def get_dashboard():
 #     try:
 #         from app import supabase
-
 #         client_name = request.builder['client_name']
 
 #         sections_result = supabase.table('property_sections') \
@@ -162,7 +175,6 @@
 # # ============================================================
 # # 3. LEADS LIST
 # # GET /api/admin/leads?section=2bhk
-# # section param is optional — omit to get all leads
 # # ============================================================
 
 # @admin_bp.route('/leads', methods=['GET'])
@@ -170,7 +182,6 @@
 # def get_leads():
 #     try:
 #         from app import supabase
-
 #         client_name = request.builder['client_name']
 #         section = request.args.get('section', '').strip()
 
@@ -210,7 +221,6 @@
 # # ============================================================
 # # 4. LEAD DETAILS
 # # GET /api/admin/leads/<user_id>
-# # Returns full user info + all generated images
 # # ============================================================
 
 # @admin_bp.route('/leads/<user_id>', methods=['GET'])
@@ -218,7 +228,6 @@
 # def get_lead_details(user_id):
 #     try:
 #         from app import supabase
-
 #         client_name = request.builder['client_name']
 
 #         user_result = supabase.table('users') \
@@ -231,20 +240,38 @@
 
 #         u = user_result.data[0]
 
-#         # Security: builder can only see their own leads
 #         if u.get('client_name') != client_name:
 #             return jsonify({'error': 'Unauthorized'}), 403
 
-#         gens_result = supabase.table('user_generations') \
-#             .select('*') \
+#         sessions_result = supabase.table('sessions') \
+#             .select('session_id') \
 #             .eq('user_id', user_id) \
-#             .order('created_at', desc=True) \
 #             .execute()
 
+#         session_ids = [s['session_id'] for s in (sessions_result.data or [])]
+
+#         if session_ids:
+#             gens_result = supabase.table('user_generations') \
+#                 .select('*') \
+#                 .or_(f"user_id.eq.{user_id},session_id.in.({','.join(session_ids)})") \
+#                 .order('created_at', desc=True) \
+#                 .execute()
+#         else:
+#             gens_result = supabase.table('user_generations') \
+#                 .select('*') \
+#                 .eq('user_id', user_id) \
+#                 .order('created_at', desc=True) \
+#                 .execute()
+
+#         seen = set()
 #         images = []
 #         for g in (gens_result.data or []):
+#             key = g.get('generation_id') or g.get('id')
+#             if key in seen:
+#                 continue
+#             seen.add(key)
 #             images.append({
-#                 'id': g.get('generation_id', g.get('id')),
+#                 'id': key,
 #                 'image_url': g.get('image_url', ''),
 #                 'room_type': g.get('room_type', 'N/A'),
 #                 'style': g.get('style', 'N/A'),
@@ -281,14 +308,13 @@
 # def get_analytics():
 #     try:
 #         from app import supabase
-
 #         client_name = request.builder['client_name']
-#         today = datetime.now().date().isoformat()
+#         today = datetime.now(timezone.utc).date().isoformat()
 
-#         total_leads   = supabase.table('users').select('id', count='exact').eq('client_name', client_name).execute()
-#         total_gens    = supabase.table('user_generations').select('id', count='exact').eq('client_name', client_name).execute()
-#         today_leads   = supabase.table('users').select('id', count='exact').eq('client_name', client_name).gte('created_at', today).execute()
-#         today_gens    = supabase.table('user_generations').select('id', count='exact').eq('client_name', client_name).gte('created_at', today).execute()
+#         total_leads = supabase.table('users').select('id', count='exact').eq('client_name', client_name).execute()
+#         total_gens  = supabase.table('user_generations').select('id', count='exact').eq('client_name', client_name).execute()
+#         today_leads = supabase.table('users').select('id', count='exact').eq('client_name', client_name).gte('created_at', today).execute()
+#         today_gens  = supabase.table('user_generations').select('id', count='exact').eq('client_name', client_name).gte('created_at', today).execute()
 
 #         return jsonify({
 #             'success': True,
@@ -315,7 +341,6 @@
 # def search_leads():
 #     try:
 #         from app import supabase
-
 #         client_name = request.builder['client_name']
 #         q = request.args.get('q', '').strip()
 
@@ -361,8 +386,14 @@
 # @builder_required
 # def logout():
 #     try:
+#         from app import supabase
 #         token = request.headers.get('Authorization', '').replace('Bearer ', '').strip()
-#         builder_sessions.pop(token, None)
+
+#         supabase.table('builder_sessions') \
+#             .delete() \
+#             .eq('token', token) \
+#             .execute()
+
 #         return jsonify({'success': True, 'message': 'Logged out successfully'}), 200
 #     except Exception as e:
 #         logger.error(f"[LOGOUT] Error: {e}")
@@ -469,7 +500,6 @@ def builder_login():
         token = generate_token()
         expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
 
-        # Save session to Supabase
         supabase.table('builder_sessions').insert({
             'token': token,
             'username': username,
@@ -587,7 +617,7 @@ def get_leads():
 
 
 # ============================================================
-# 4. LEAD DETAILS
+# 4. LEAD DETAILS — UPDATED
 # GET /api/admin/leads/<user_id>
 # ============================================================
 
@@ -598,6 +628,7 @@ def get_lead_details(user_id):
         from app import supabase
         client_name = request.builder['client_name']
 
+        # ── Fetch user ──────────────────────────────────────
         user_result = supabase.table('users') \
             .select('*') \
             .eq('id', user_id) \
@@ -611,6 +642,7 @@ def get_lead_details(user_id):
         if u.get('client_name') != client_name:
             return jsonify({'error': 'Unauthorized'}), 403
 
+        # ── Fetch sessions ──────────────────────────────────
         sessions_result = supabase.table('sessions') \
             .select('session_id') \
             .eq('user_id', user_id) \
@@ -618,6 +650,7 @@ def get_lead_details(user_id):
 
         session_ids = [s['session_id'] for s in (sessions_result.data or [])]
 
+        # ── Fetch generated images ──────────────────────────
         if session_ids:
             gens_result = supabase.table('user_generations') \
                 .select('*') \
@@ -648,16 +681,103 @@ def get_lead_details(user_id):
                 'download_count': g.get('download_count', 0)
             })
 
+        # ── Fetch activity logs (tools used + time spent) ───
+        activity_result = supabase.table('user_activity_logs') \
+            .select('*') \
+            .eq('user_id', user_id) \
+            .execute()
+
+        activity_data = activity_result.data or []
+
+        # Aggregate tools used and total time per tool
+        tools_summary = {}
+        for a in activity_data:
+            tool = a.get('tool_name') or a.get('activity_type') or 'unknown'
+            secs = a.get('time_spent_seconds', 0) or 0
+            if tool not in tools_summary:
+                tools_summary[tool] = {
+                    'tool': tool,
+                    'total_time_seconds': 0,
+                    'sessions_count': 0
+                }
+            tools_summary[tool]['total_time_seconds'] += secs
+            tools_summary[tool]['sessions_count'] += 1
+
+        tools_used = list(tools_summary.values())
+        total_time_seconds = sum(t['total_time_seconds'] for t in tools_used)
+
+        # ── Fetch virtual tour selections ───────────────────
+        vt_result = supabase.table('user_tool_selections') \
+            .select('*') \
+            .eq('user_id', user_id) \
+            .eq('tool_name', 'virtual_tour') \
+            .order('created_at', desc=True) \
+            .execute()
+
+        vt_selections = []
+        for v in (vt_result.data or []):
+            vt_selections.append({
+                'category': v.get('vt_category'),
+                'place_name': v.get('vt_place_name'),
+                'place_id': v.get('vt_place_id'),
+                'viewed_at': v.get('created_at')
+            })
+
+        # Unique categories explored
+        vt_categories = list({
+            v['category'] for v in vt_selections if v['category']
+        })
+
+        # ── Fetch LifeEcho selections ───────────────────────
+        le_result = supabase.table('user_tool_selections') \
+            .select('*') \
+            .eq('user_id', user_id) \
+            .eq('tool_name', 'lifeecho') \
+            .order('created_at', desc=True) \
+            .execute()
+
+        lifeecho_selections = []
+        for l in (le_result.data or []):
+            lifeecho_selections.append({
+                'scenario_id': l.get('lifeecho_scenario_id'),
+                'scenario_title': l.get('lifeecho_scenario_title'),
+                'is_custom': l.get('lifeecho_is_custom', False),
+                'custom_text': l.get('lifeecho_custom_text'),
+                'selected_at': l.get('created_at')
+            })
+
+        # ── Build final response ────────────────────────────
         return jsonify({
             'success': True,
             'lead': {
+                # Basic info
                 'id': u['id'],
                 'name': u.get('full_name', 'Unknown'),
                 'phone': f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
                 'email': u.get('email', 'N/A'),
                 'registration_date': u.get('created_at', ''),
+                'property_section': u.get('property_section'),
+
+                # Design generations
                 'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0),
-                'images': images
+                'images': images,
+
+                # Time spent + tools
+                'total_time_spent_seconds': total_time_seconds,
+                'total_time_spent_minutes': round(total_time_seconds / 60, 1),
+                'tools_used': tools_used,
+
+                # Virtual tour
+                'virtual_tour': {
+                    'categories_explored': vt_categories,
+                    'places_viewed': vt_selections
+                },
+
+                # LifeEcho
+                'lifeecho': {
+                    'total_scenarios_viewed': len(lifeecho_selections),
+                    'scenarios': lifeecho_selections
+                }
             }
         }), 200
 
