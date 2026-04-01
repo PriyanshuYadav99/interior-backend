@@ -443,7 +443,7 @@ def search_nearby():
                     'id': place['place_id'],
                     'name': place['name'],
                     'address': place.get('address', ''),
-                    'rating': place.get('rating', 0),
+                    'rating': place.get('rating'),
                     'user_ratings_total': place.get('user_ratings_total', 0),
                     'distance': round(distance, 2),
                     'coordinates': {
