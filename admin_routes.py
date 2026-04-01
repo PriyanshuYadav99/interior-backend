@@ -322,6 +322,8 @@ def get_lead_details(user_id):
                 'place_name': v.get('vt_place_name'),
                 'place_id': v.get('vt_place_id'),
                 'photo_url': v.get('vt_photo_url'),
+                'distance': v.get('vt_distance'),
+                'rating': v.get('vt_rating'),
                 'viewed_at': v.get('created_at')
             })
 
@@ -341,12 +343,13 @@ def get_lead_details(user_id):
         lifeecho_selections = []
         for l in (le_result.data or []):
             lifeecho_selections.append({
-                'scenario_id': l.get('lifeecho_scenario_id'),
-                'scenario_title': l.get('lifeecho_scenario_title'),
-                'is_custom': l.get('lifeecho_is_custom', False),
-                'custom_text': l.get('lifeecho_custom_text'),
-                'selected_at': l.get('created_at')
-            })
+    'scenario_id': l.get('lifeecho_scenario_id'),
+    'scenario_title': l.get('lifeecho_scenario_title'),
+    'scenario_icon': l.get('lifeecho_scenario_icon', 'clock'),
+    'is_custom': l.get('lifeecho_is_custom', False),
+    'custom_text': l.get('lifeecho_custom_text'),
+    'selected_at': l.get('created_at')
+})
 
         # ── Build final response ────────────────────────────
         return jsonify({
