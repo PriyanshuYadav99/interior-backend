@@ -204,10 +204,14 @@ def log_selection():
             insert_data['user_id'] = resolved_user_id
 
         # Virtual Tour specific fields
+        
         if tool_name == 'virtual_tour':
             vt_category   = data.get('vt_category', '').strip()
             vt_place_name = data.get('vt_place_name', '').strip()
             vt_place_id   = data.get('vt_place_id', '').strip()
+            vt_photo_url  = data.get('vt_photo_url', '').strip()
+            vt_distance   = data.get('vt_distance')
+            vt_rating     = data.get('vt_rating')
 
             if not vt_category:
                 return jsonify({'error': 'vt_category is required for virtual_tour'}), 400
@@ -215,6 +219,9 @@ def log_selection():
             insert_data['vt_category']   = vt_category
             insert_data['vt_place_name'] = vt_place_name or None
             insert_data['vt_place_id']   = vt_place_id or None
+            insert_data['vt_photo_url']  = vt_photo_url or None
+            insert_data['vt_distance']   = vt_distance or None
+            insert_data['vt_rating']     = vt_rating or None
 
             logger.info(f"[SELECTION] virtual_tour category={vt_category} place={vt_place_name} session={session_id}")
 
@@ -236,6 +243,7 @@ def log_selection():
                     return jsonify({'error': 'lifeecho_scenario_id is required for pre-generated scenarios'}), 400
                 insert_data['lifeecho_scenario_id']    = scenario_id
                 insert_data['lifeecho_scenario_title'] = scenario_title or None
+                insert_data['lifeecho_scenario_icon']  = data.get('lifeecho_scenario_icon', 'clock')
 
             logger.info(f"[SELECTION] lifeecho is_custom={is_custom} scenario_id={scenario_id} session={session_id}")
 
