@@ -162,7 +162,7 @@ def get_lead_intelligence(user_id):
         prompt = build_lead_prompt(lead_data)
 
         completion = client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {
                     "role": "user",
@@ -251,7 +251,7 @@ Keep it under 150 words. Return only the message text, nothing else.
 """
 
         completion = client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.9,
             max_tokens=300
