@@ -30,7 +30,7 @@ from Life_Echo import scenario_bp as Life_bp
 from virtual_tour import virtual_tour_bp 
 from admin_routes import admin_bp
 from activity_routes import activity_bp
-
+from ai_routes import ai_bp
 # Load environment variables
 load_dotenv()
 
@@ -195,6 +195,7 @@ logger.info("[BLUEPRINT] ✅ Admin Dashboard Registered!")
 logger.info("[BLUEPRINT] Registering activity blueprint...")
 app.register_blueprint(activity_bp)
 logger.info("[BLUEPRINT] ✅ Activity Tracker Registered!")
+app.register_blueprint(ai_bp)
 # List all routes to verify
 with app.app_context():
     logger.info("[ROUTES] All registered routes:")
