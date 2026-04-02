@@ -52,19 +52,20 @@ LEAD DATA:
 
 Generate TWO things:
 
-1. LEAD_INTELLIGENCE: Exactly 5 short crisp bullet points (max 8 words each) for the sales person.
-   - Focus only on actionable insights
-   - What to pitch, what to highlight, what to avoid
-   - No long sentences, no explanations
-   - Example: "Prefers modern style interiors"
-   - Example: "Interested in nearby gyms and spas"
+1. LEAD_INTELLIGENCE: Exactly 5 bullet points for the sales person.
+   - Each point must be 10-15 words
+   - Focus on actionable sales insights only
+   - Mention specific places, styles, scenarios they explored
+   - Start each with an action word like "Highlight", "Pitch", "Mention", "Emphasize", "Suggest"
+   - Example: "Highlight nearby wellness amenities like spas and gyms they explored"
+   - Example: "Pitch quiet and peaceful properties based on their LifeEcho selections"
 
-2. WHATSAPP_MESSAGE: A short professional WhatsApp message from sales agent to this lead.
+2. WHATSAPP_MESSAGE: A professional WhatsApp message from sales agent to this lead.
    - Purpose is only to open a dialogue, not to sell
-   - Reference 1-2 specific things they explored
-   - Be warm, human, not salesy
-   - End with one simple question to start conversation
-   - Max 80 words strictly
+   - Reference 2-3 specific things they explored (place names, design styles, scenarios)
+   - Be warm, professional, not salesy
+   - End with one simple open ended question
+   - Between 60-100 words strictly
 
 Respond in this exact JSON format:
 {{
