@@ -53,7 +53,7 @@ LEAD DATA:
 Generate TWO things:
 
 1. LEAD_INTELLIGENCE: Exactly 5 bullet points for the sales person.
-   - Each point must be 10-15 words
+   - Each point must be 12-15 words
    - Focus on actionable sales insights only
    - Mention specific places, styles, scenarios they explored
    - Start each with an action word like "Highlight", "Pitch", "Mention", "Emphasize", "Suggest"
@@ -65,7 +65,7 @@ Generate TWO things:
    - Reference 2-3 specific things they explored (place names, design styles, scenarios)
    - Be warm, professional, not salesy
    - End with one simple open ended question
-   - Between 60-100 words strictly
+   - Between 80-120 words strictly
 
 Respond in this exact JSON format:
 {{
