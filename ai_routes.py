@@ -64,8 +64,10 @@ Generate TWO things:
    - Purpose is only to open a dialogue, not to sell
    - Reference 2-3 specific things they explored (place names, design styles, scenarios)
    - Be warm, professional, not salesy
+   - Mentioned that we are attaching the interior images they had generated (this will be part of the Whatsapp messages)
    - End with one simple open ended question
    - Between 80-120 words strictly
+   - Also tell if they have any questions, they can ask as a message below.
 
 Respond in this exact JSON format:
 {{
