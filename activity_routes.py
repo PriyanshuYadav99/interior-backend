@@ -278,3 +278,40 @@ def health():
             'POST /api/activity/selection — log virtual tour / lifeecho selection'
         ]
     }), 200
+    
+@activity_bp.route('/link-session', methods=['POST', 'OPTIONS'])
+def link_session():
+    if request.method == 'OPTIONS':
+        return '', 204
+    try:
+        from app import supabase
+        data = request.get_json()
+        session_id = data.get('session_id', '').strip()
+        user_id    = data.get('user_id', '').strip()
+
+        if not session_id or not user_id:
+            return jsonify({'error': 'session_id and user_id required'}), 400
+
+        supabase.table('user_activity_logs') \
+            .update({'user_id': user_id}) \
+            .eq('session_id', session_id) \
+            .is_('user_id', 'null') \
+            .execute()
+
+        supabase.table('user_tool_selections') \
+            .update({'user_id': user_id}) \
+            .eq('session_id', session_id) \
+            .is_('user_id', 'null') \
+            .execute()
+
+        supabase.table('user_generations') \
+            .update({'user_id': user_id}) \
+            .eq('session_id', session_id) \
+            .is_('user_id', 'null') \
+            .execute()
+
+        return jsonify({'success': True}), 200
+
+    except Exception as e:
+        logger.error(f"[LINK SESSION ERROR] {e}")
+        return jsonify({'error': 'Failed to link session'}), 500    
