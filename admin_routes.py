@@ -842,8 +842,6 @@ def get_lead_details(user_id):
             })
 
         # ── Optional: Lead Temperature (AI scoring) ─────────
-        # Only run when ?include_temperature=true is passed,
-        # to avoid an extra Groq call on every page load.
         temperature_data = None
         if request.args.get('include_temperature', '').lower() == 'true':
             try:
@@ -874,8 +872,8 @@ def get_lead_details(user_id):
                         "virtual_tour_categories":  vt_info.get('categories_explored', [])
                     }
 
-                    temperature_prompt = f"""
-You are an expert Real Estate Sales Analyst AI for PropDeck. Analyze the buyer activity and return lead temperature.
+                    # ── FIX: use json.dumps(lead_payload_dict) directly in the f-string ──
+                    temperature_prompt = f"""You are an expert Real Estate Sales Analyst AI for PropDeck. Analyze the buyer activity and return lead temperature.
 
 Scoring (100 pts total):
 1. Session Duration (max 40 pts): 20+ min=40, 10-19=30, 3-9=20, <3=10
@@ -889,8 +887,7 @@ Return ONLY valid JSON, no markdown:
 {{"score":<int>,"temperature":"HOT|WARM|COLD","reasoning":"1-2 sentences","sales_strategy":"1-2 sentences"}}
 
 USER SESSION DATA:
-{json.dumps(lead_payload_dict, indent=2)}
-"""
+{json.dumps(lead_payload_dict, indent=2)}"""
 
                     comp = groq_client.chat.completions.create(
                         model="llama-3.3-70b-versatile",
@@ -907,7 +904,7 @@ USER SESSION DATA:
 
             except Exception as te:
                 logger.error(f"[TEMPERATURE IN DETAILS] Non-fatal error: {te}")
-                temperature_data = None   # don't fail the whole request
+                temperature_data = None
 
         # ── Build final response ────────────────────────────
         lead_response = {
@@ -936,7 +933,6 @@ USER SESSION DATA:
             }
         }
 
-        # Attach temperature block only if it was requested and succeeded
         if temperature_data:
             lead_response['temperature'] = temperature_data
 
