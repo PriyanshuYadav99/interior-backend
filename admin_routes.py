@@ -1,4 +1,5 @@
 
+
 # """
 # admin_routes.py — PropDesk Builder Admin Dashboard
 # Sessions stored in Supabase (persistent across restarts).
@@ -218,8 +219,9 @@
 
 
 # # ============================================================
-# # 4. LEAD DETAILS — UPDATED
+# # 4. LEAD DETAILS
 # # GET /api/admin/leads/<user_id>
+# # GET /api/admin/leads/<user_id>?include_temperature=true   ← opt-in AI scoring
 # # ============================================================
 
 # @admin_bp.route('/leads/<user_id>', methods=['GET'])
@@ -282,7 +284,7 @@
 #                 'download_count': g.get('download_count', 0)
 #             })
 
-#         # ── Fetch activity logs (tools used + time spent) ───
+#         # ── Fetch activity logs ─────────────────────────────
 #         activity_result = supabase.table('user_activity_logs') \
 #             .select('*') \
 #             .eq('user_id', user_id) \
@@ -290,7 +292,6 @@
 
 #         activity_data = activity_result.data or []
 
-#         # Aggregate tools used and total time per tool
 #         tools_summary = {}
 #         for a in activity_data:
 #             tool = a.get('tool_name') or a.get('activity_type') or 'unknown'
@@ -318,19 +319,16 @@
 #         vt_selections = []
 #         for v in (vt_result.data or []):
 #             vt_selections.append({
-#                 'category': v.get('vt_category'),
+#                 'category':   v.get('vt_category'),
 #                 'place_name': v.get('vt_place_name'),
-#                 'place_id': v.get('vt_place_id'),
-#                 'photo_url': v.get('vt_photo_url'),
-#                 'distance': v.get('vt_distance'),
-#                 'rating': v.get('vt_rating'),
-#                 'viewed_at': v.get('created_at')
+#                 'place_id':   v.get('vt_place_id'),
+#                 'photo_url':  v.get('vt_photo_url'),
+#                 'distance':   v.get('vt_distance'),
+#                 'rating':     v.get('vt_rating'),
+#                 'viewed_at':  v.get('created_at')
 #             })
 
-#         # Unique categories explored
-#         vt_categories = list({
-#             v['category'] for v in vt_selections if v['category']
-#         })
+#         vt_categories = list({v['category'] for v in vt_selections if v['category']})
 
 #         # ── Fetch LifeEcho selections ───────────────────────
 #         le_result = supabase.table('user_tool_selections') \
@@ -343,48 +341,110 @@
 #         lifeecho_selections = []
 #         for l in (le_result.data or []):
 #             lifeecho_selections.append({
-#     'scenario_id': l.get('lifeecho_scenario_id'),
-#     'scenario_title': l.get('lifeecho_scenario_title'),
-#     'scenario_icon': l.get('lifeecho_scenario_icon', 'clock'),
-#     'is_custom': l.get('lifeecho_is_custom', False),
-#     'custom_text': l.get('lifeecho_custom_text'),
-#     'selected_at': l.get('created_at')
-# })
+#                 'scenario_id':    l.get('lifeecho_scenario_id'),
+#                 'scenario_title': l.get('lifeecho_scenario_title'),
+#                 'scenario_icon':  l.get('lifeecho_scenario_icon', 'clock'),
+#                 'is_custom':      l.get('lifeecho_is_custom', False),
+#                 'custom_text':    l.get('lifeecho_custom_text'),
+#                 'selected_at':    l.get('created_at')
+#             })
+
+#         # ── Optional: Lead Temperature (AI scoring) ─────────
+#         temperature_data = None
+#         if request.args.get('include_temperature', '').lower() == 'true':
+#             try:
+#                 from ai_routes import build_lead_payload
+#                 from groq import Groq
+#                 import os, json, re
+
+#                 groq_client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+#                 lead_data, _ = build_lead_payload(user_id, supabase)
+
+#                 if lead_data:
+#                     design_styles  = list({img['style'] for img in lead_data.get('images', []) if img.get('style')})
+#                     vt_info        = lead_data.get('virtual_tour', {})
+#                     le_info        = lead_data.get('lifeecho', {})
+#                     tools_list     = list({t['tool'] for t in lead_data.get('tools_used', []) if t.get('tool')})
+#                     scenario_texts = [
+#                         s.get('scenario_title') or s.get('custom_text', '')
+#                         for s in le_info.get('scenarios', [])
+#                     ]
+#                     vt_places = [p['place_name'] for p in vt_info.get('places_viewed', []) if p.get('place_name')]
+
+#                     lead_payload_dict = {
+#                         "total_time_spent_minutes": lead_data.get('total_time_spent_minutes', 0),
+#                         "unique_design_styles":     design_styles,
+#                         "tools_used":               tools_list,
+#                         "lifeecho_scenarios":       scenario_texts,
+#                         "virtual_tour_places":      vt_places,
+#                         "virtual_tour_categories":  vt_info.get('categories_explored', [])
+#                     }
+
+#                     # ── FIX: use json.dumps(lead_payload_dict) directly in the f-string ──
+#                     temperature_prompt = f"""You are an expert Real Estate Sales Analyst AI for PropDeck. Analyze the buyer activity and return lead temperature.
+
+# Scoring (100 pts total):
+# 1. Session Duration (max 40 pts): 20+ min=40, 10-19=30, 3-9=20, <3=10
+# 2. Design Consistency (max 20 pts): 1 style=20, 2 styles=10, 3+ styles=0
+# 3. Tool Engagement Depth (max 20 pts): both lifeecho+virtual_tour=20, one=10, neither=0
+# 4. Intent Specificity (max 20 pts): high-intent keywords (health,daycare,elderly,school,hospital,accessibility,pets)=20, generic (shopping,market,metro,transport)=10, none=0
+
+# Thresholds: HOT=75-100, WARM=45-74, COLD<45
+
+# Return ONLY valid JSON, no markdown:
+# {{"score":<int>,"temperature":"HOT|WARM|COLD","reasoning":"1-2 sentences","sales_strategy":"1-2 sentences"}}
+
+# USER SESSION DATA:
+# {json.dumps(lead_payload_dict, indent=2)}"""
+
+#                     comp = groq_client.chat.completions.create(
+#                         model="llama-3.3-70b-versatile",
+#                         messages=[{"role": "user", "content": temperature_prompt}],
+#                         temperature=0.3,
+#                         max_tokens=400
+#                     )
+
+#                     raw = comp.choices[0].message.content.strip()
+#                     clean = re.sub(r'^```(?:json)?\s*|\s*```$', '', raw, flags=re.DOTALL).strip()
+#                     match = re.search(r'\{.*\}', clean, re.DOTALL)
+#                     if match:
+#                         temperature_data = json.loads(match.group())
+
+#             except Exception as te:
+#                 logger.error(f"[TEMPERATURE IN DETAILS] Non-fatal error: {te}")
+#                 temperature_data = None
 
 #         # ── Build final response ────────────────────────────
-#         return jsonify({
-#             'success': True,
-#             'lead': {
-#                 # Basic info
-#                 'id': u['id'],
-#                 'name': u.get('full_name', 'Unknown'),
-#                 'phone': f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
-#                 'email': u.get('email', 'N/A'),
-#                 'registration_date': u.get('created_at', ''),
-#                 'property_section': u.get('property_section'),
+#         lead_response = {
+#             'id':                u['id'],
+#             'name':              u.get('full_name', 'Unknown'),
+#             'phone':             f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
+#             'email':             u.get('email', 'N/A'),
+#             'registration_date': u.get('created_at', ''),
+#             'property_section':  u.get('property_section'),
 
-#                 # Design generations
-#                 'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0),
-#                 'images': images,
+#             'total_generations':      (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0),
+#             'images':                 images,
 
-#                 # Time spent + tools
-#                 'total_time_spent_seconds': total_time_seconds,
-#                 'total_time_spent_minutes': round(total_time_seconds / 60, 1),
-#                 'tools_used': tools_used,
+#             'total_time_spent_seconds': total_time_seconds,
+#             'total_time_spent_minutes': round(total_time_seconds / 60, 1),
+#             'tools_used':               tools_used,
 
-#                 # Virtual tour
-#                 'virtual_tour': {
-#                     'categories_explored': vt_categories,
-#                     'places_viewed': vt_selections
-#                 },
+#             'virtual_tour': {
+#                 'categories_explored': vt_categories,
+#                 'places_viewed':       vt_selections
+#             },
 
-#                 # LifeEcho
-#                 'lifeecho': {
-#                     'total_scenarios_viewed': len(lifeecho_selections),
-#                     'scenarios': lifeecho_selections
-#                 }
+#             'lifeecho': {
+#                 'total_scenarios_viewed': len(lifeecho_selections),
+#                 'scenarios':              lifeecho_selections
 #             }
-#         }), 200
+#         }
+
+#         if temperature_data:
+#             lead_response['temperature'] = temperature_data
+
+#         return jsonify({'success': True, 'lead': lead_response}), 200
 
 #     except Exception as e:
 #         logger.error(f"[LEAD DETAILS] Error: {e}")
@@ -412,9 +472,9 @@
 #         return jsonify({
 #             'success': True,
 #             'analytics': {
-#                 'total_leads': total_leads.count or 0,
+#                 'total_leads':       total_leads.count or 0,
 #                 'total_generations': total_gens.count or 0,
-#                 'today_leads': today_leads.count or 0,
+#                 'today_leads':       today_leads.count or 0,
 #                 'today_generations': today_gens.count or 0
 #             }
 #         }), 200
@@ -450,19 +510,19 @@
 #         results = []
 #         for u in (result.data or []):
 #             results.append({
-#                 'id': u['id'],
-#                 'name': u.get('full_name', 'Unknown'),
-#                 'phone': f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
-#                 'email': u.get('email', 'N/A'),
-#                 'inquiry_date': u.get('created_at', ''),
+#                 'id':                u['id'],
+#                 'name':              u.get('full_name', 'Unknown'),
+#                 'phone':             f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
+#                 'email':             u.get('email', 'N/A'),
+#                 'inquiry_date':      u.get('created_at', ''),
 #                 'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0)
 #             })
 
 #         return jsonify({
 #             'success': True,
-#             'query': q,
+#             'query':   q,
 #             'results': results,
-#             'count': len(results)
+#             'count':   len(results)
 #         }), 200
 
 #     except Exception as e:
@@ -872,19 +932,46 @@ def get_lead_details(user_id):
                         "virtual_tour_categories":  vt_info.get('categories_explored', [])
                     }
 
-                    # ── FIX: use json.dumps(lead_payload_dict) directly in the f-string ──
-                    temperature_prompt = f"""You are an expert Real Estate Sales Analyst AI for PropDeck. Analyze the buyer activity and return lead temperature.
+                    temperature_prompt = f"""You are an expert Real Estate Sales Analyst AI for PropDeck. Your job is to analyze a prospective buyer's platform activity and categorize their lead temperature (HOT, WARM, or COLD) based on a strict scoring matrix.
 
-Scoring (100 pts total):
-1. Session Duration (max 40 pts): 20+ min=40, 10-19=30, 3-9=20, <3=10
-2. Design Consistency (max 20 pts): 1 style=20, 2 styles=10, 3+ styles=0
-3. Tool Engagement Depth (max 20 pts): both lifeecho+virtual_tour=20, one=10, neither=0
-4. Intent Specificity (max 20 pts): high-intent keywords (health,daycare,elderly,school,hospital,accessibility,pets)=20, generic (shopping,market,metro,transport)=10, none=0
+You will be provided with a JSON payload of the user's session data.
 
-Thresholds: HOT=75-100, WARM=45-74, COLD<45
+Evaluate the lead using the following 100-point scoring system:
 
-Return ONLY valid JSON, no markdown:
-{{"score":<int>,"temperature":"HOT|WARM|COLD","reasoning":"1-2 sentences","sales_strategy":"1-2 sentences"}}
+1. Session Duration (Max 40 points)
+   - 7+ minutes = 40 pts
+   - 4 to 7 minutes = 30 pts
+   - 2 to 4 minutes = 20 pts
+   - Less than 1 minute = 10 pts
+
+2. Design Consistency (Max 20 points)
+   - 1 unique design style across all generated rooms = 20 pts (High focus)
+   - 2 unique design styles = 15 pts (Exploring)
+   - 3 or more unique styles = 5 pts (Scattered browsing)
+
+3. Tool Engagement Depth (Max 20 points)
+   - Used both 'LifeEcho' and 'Virtual Tour' = 20 pts
+   - Used only one of the tools = 10 pts
+
+4. Intent Specificity (Max 20 points)
+   - LifeEcho scenarios or Virtual Tour locations include high-intent life events
+     (keywords: health, daycare, elderly, school, hospital, accessibility, pets) = 20 pts
+   - Scenarios only focus on generic convenience
+     (keywords: shopping, market, metro, transport) = 10 pts
+
+Scoring Thresholds:
+- HOT:  70 to 100 points
+- WARM: 40 to 69 points
+- COLD: Less than 40 points
+
+OUTPUT FORMAT:
+You must return a valid JSON object with the following structure exactly. Do not include markdown formatting or extra text outside the JSON.
+{{
+  "score": <integer>,
+  "temperature": "<HOT|WARM|COLD>",
+  "reasoning": "<1-2 sentences explaining how the score was calculated based on the data>",
+  "sales_strategy": "<1-2 sentences giving the sales team actionable advice on how to pitch this specific lead based on their LifeEcho scenarios, Virtual Tour locations, and design choices>"
+}}
 
 USER SESSION DATA:
 {json.dumps(lead_payload_dict, indent=2)}"""
