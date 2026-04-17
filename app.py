@@ -385,6 +385,12 @@ def load_reference_image(room_type, client_name='skyline'):
                     'living_room': 'ellington_living_room.webp',
                     'kitchen': 'ellington_kitchen.webp'
                 }
+            elif client_name == 'sothebys':
+                filename_map = {
+                'master_bedroom': 'sothebys_bedroom.webp',
+                'living_room': 'sothebys_living_room.webp',
+                'kitchen': 'sothebys_kitchen.webp'
+            }    
             else:
                 logger.error(f"Unknown client: {client_name}")
                 return None
@@ -1026,7 +1032,7 @@ def generate_design():
         logger.info(f"="*70)
 
         # Validate client
-        VALID_CLIENTS = ['skyline', 'ellington']
+        VALID_CLIENTS = ['skyline', 'ellington','sothebys']
         if client_name not in VALID_CLIENTS:
             return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
 
@@ -1434,7 +1440,7 @@ def get_pending_notifications():
 def get_room_preview(client_name, room_type):
     """Serve the base reference image for a room so frontend can show it immediately on room click"""
     try:
-        VALID_CLIENTS = ['skyline', 'ellington']
+        VALID_CLIENTS = ['skyline', 'ellington','sothebys']
         if client_name not in VALID_CLIENTS:
             return jsonify({'error': f'Invalid client'}), 400
 

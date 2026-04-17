@@ -392,686 +392,984 @@ def generate_scenario():
 import random
 
 
-    
-    
 SCENARIO_POOL = [
-    # === FAMILY WITH CHILDREN (10 scenarios) ===
+    # === HOME & PROPERTY (5 scenarios) ===
     {
         'id': 1,
-        'title': 'School Run Without the Morning Rush',
-        'description': '''Your daughter's school bell rings at 8:30 AM sharp, and attendance matters.
+        'title': 'Basement Flooding Risk During Spring Snowmelt and Thaw',
+        'description': '''Spring arrives and snowmelt begins — but not every basement handles it equally. In many Ontario and Alberta neighbourhoods, low-lying lots and aging drainage infrastructure turn March and April into an annual anxiety test for homeowners.
 
-**Timeline:**
-7:45 AM — Finish breakfast and pack school bag
-7:55 AM — Walk down to parking, load backpack
-8:00 AM — Start driving via the main road
-8:12 AM — Drop at school gate, 18 minutes early
+**What to look for:**
+- Lot grading that slopes away from the foundation (not toward it)
+- Sump pump installation with a battery backup
+- No history of water intrusion (ask for receipts, not promises)
+- Municipal storm sewer capacity in the area
+- Weeping tile condition (inspectors can camera-scope it)
 
-**Transport Options Available:**
-- School Bus - Picks up from society gate at 7:40 AM
-- Own Vehicle - Covered parking, 12-minute direct route
-- Carpool - Rotate with 4 families, organized via app
-- Auto-rickshaw - Always available at gate, ₹70-90
+Properties on elevated lots or newer developments with updated drainage bylaws carry significantly lower risk. A home on a ridge line drains naturally; one in a hollow collects. Checking the city's flood risk maps before making an offer takes 10 minutes and could save you tens of thousands.
 
-The school is just 3.8 kilometers away on a signal-free corridor. No narrow lanes, no U-turns, no honking chaos. While parents in congested areas leave at 7:15 AM to battle traffic, you're enjoying a relaxed breakfast together.
-
-**Tagline:** Mornings should start with smiles, not stress.''',
-        'image_url': 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop',
-        'category': 'family'
+**Tagline:** Where dry basements mean worry-free winters.''',
+        'image_url': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
+        'category': 'home'
     },
     {
         'id': 2,
-        'title': 'Peaceful Nights for Growing Dreams',
-        'description': '''Picture this: Your newborn finally drifts off after the evening feed. The silence is sacred, and you need it to last. Outside your window, there's no traffic roar, no late-night honking, no construction drilling that jolts tiny eyes awake at midnight.
+        'title': 'Proximity to Community Hockey Rinks and Public Trails',
+        'description': '''For Canadian families, weekend life orbits around the rink and the trail. Whether it's 6 AM hockey practice, a Saturday afternoon skate, or a groomed cross-country ski loop through conservation land, proximity to these amenities isn't a bonus — it's a lifestyle decision.
 
-The triple-glazed windows and 100-meter buffer from the main road create a cocoon of calm. Your neighbors are young families too, so there are no late-night parties or loud gatherings. The society's strict 10 PM noise policy isn't just a rule—it's a culture everyone respects.
+**What's nearby:**
+- Municipal arena with public skating, hockey leagues, and learn-to-skate programs (1.2 km)
+- 18 km of groomed multi-use trail connecting to the Trans Canada Trail network
+- Two outdoor rinks maintained by the city from November through February
+- Off-leash dog trail through the adjacent ravine
+- Cycling path linking the neighbourhood to the downtown waterfront
 
-Inside, the nursery overlooks a landscaped garden with soft solar lighting. The air is cleaner here, filtered by mature trees that line the compound. Your baby sleeps through the night, and so do you.
+Parents in this area skip the 40-minute arena drives that define suburban hockey life elsewhere. Kids cycle to the outdoor rink after school in winter. Summer trails become running routes, mountain bike paths, and family weekend walks. The outdoors is genuinely within reach.
 
-**Tagline:** Where little ones sleep soundly, and parents finally rest.''',
-        'image_url': 'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=400&h=300&fit=crop',
-        'category': 'family'
+**Tagline:** Step outside and into the Canadian outdoors.''',
+        'image_url': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
+        'category': 'lifestyle'
     },
     {
         'id': 3,
-        'title': 'Room to Run, Space to Grow',
-        'description': '''Three children mean three different schedules, three homework stations, and constant motion. Your current 2BHK feels like a puzzle with missing pieces. Toys spill into the living room, online classes overlap, and finding quiet study time is a daily negotiation.
+        'title': 'Reliance on GO Transit/LRT with Heated Platform Access',
+        'description': '''Commuting without a car in Canada demands infrastructure that takes winter seriously. Standing on an exposed platform at -15°C waiting for a delayed train isn't a minor inconvenience — it's a factor in whether transit is actually usable long-term.
 
-This 4BHK changes everything. Each child gets their own dedicated room with study desks and storage. The fourth room transforms into a play zone where Lego kingdoms and art projects can stay undisturbed. The 2,400 sq ft layout includes a separate family lounge, so movie nights don't interfere with bedtime routines.
+**Transit profile for this location:**
+7:12 AM — Walk 6 minutes to Clarkson GO Station
+7:18 AM — Board GO Train (heated waiting area, enclosed platform)
+8:10 AM — Arrive Union Station, downtown Toronto
+8:18 AM — Arrive at Bay Street office via PATH network (no outdoor walking)
 
-Outside, the society's children's play area features swings, slides, and a sand pit just 50 meters from your tower. The basketball court and cycling track keep older kids engaged. Saturday mornings become parent coffee meetups while kids play safely within view.
+The Eglinton Crosstown LRT stop is 400 metres from the front door. Enclosed stations with real-time arrivals, heated waiting zones, and Level Access boarding make the system usable for elderly riders, parents with strollers, and anyone who values their Thursday morning in January. Monthly GO pass costs approximately $190 — significantly below downtown parking.
 
-**Tagline:** Spacious living where every child finds their corner.''',
-        'image_url': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=300&fit=crop',
-        'category': 'family'
+**Tagline:** Commuting in comfort, even at -20°C.''',
+        'image_url': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=300&fit=crop',
+        'category': 'transit'
     },
     {
         'id': 4,
-        'title': 'Daycare Drop-off in 8 Minutes Flat',
-        'description': '''You're a single parent juggling work calls and daycare schedules. Every minute counts when you need to drop off your toddler and make it to the office on time.
+        'title': 'Quiet Cul-de-Sac Away from Flight Paths and Highways',
+        'description': '''You found the house. Perfect layout, great yard, reasonable price. Then you notice the Pearson flight path cutting directly overhead. Or the 401 noise wall visible from the back deck. What looks like a deal often carries a hidden cost measured in sleep quality and outdoor livability.
 
-**Timeline:**
-8:15 AM — Finish getting ready, pack lunch bag
-8:20 AM — Walk to parking, buckle up safely
-8:23 AM — Drive via the residential road
-8:28 AM — Drop at daycare entrance, wave goodbye
+This cul-de-sac sits in a noise-mapped quiet zone. The nearest highway is 3.2 km away with a natural sound buffer of mature maple and pine. Pearson's primary approach corridors don't cross this area. The street has six homes and no through traffic — the only vehicles you'll hear are your neighbours.
 
-**Transport Options Available:**
-- Own Vehicle - Basement parking, 8-minute direct drive
-- Society Shuttle - Morning daycare run at 8:10 AM
-- Walking - 12-minute pedestrian path through safe lanes
-- Bicycle - Dedicated cycle track, 10 minutes
+Evening decibel levels hover around 38-42 dB (comparable to a quiet library). Residents keep windows open through June and September. Children play on the street without parents watching from behind a fence. The backyard is genuinely usable for morning coffee and evening meals, not just lawn maintenance.
 
-The daycare is 2.1 kilometers away through well-maintained residential roads with speed breakers. No highway crossings, no risky turns. The affordable rent means you're not stretching budgets, and the proximity saves both time and fuel costs every single day.
-
-**Tagline:** Parenting solo is hard enough. Convenience helps.''',
-        'image_url': 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=300&fit=crop',
-        'category': 'family'
+**Tagline:** Peace and quiet is a feature, not a luxury.''',
+        'image_url': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop',
+        'category': 'lifestyle'
     },
     {
         'id': 5,
-        'title': 'Walking to School, Building Independence',
-        'description': '''Your 9-year-old wants to walk to school with friends. It's a big step toward independence, but every parent's mind races with safety concerns: busy roads, blind turns, stray dogs, and the unpredictable traffic that makes pedestrian crossings feel like obstacle courses.
+        'title': 'High-Speed Fiber Internet for Remote "Cottage Country" Work',
+        'description': '''The promise of remote work collapses without reliable internet. Thousands of Canadians discovered this when they moved to Muskoka, Prince Edward County, or the Kawarthas only to find that their Zoom calls froze and their upload speeds peaked at 3 Mbps.
 
-This neighborhood was designed with walking in mind. The primary school is exactly 650 meters away via a dedicated pedestrian pathway lined with streetlights. There are no vehicle crossings, no open drains, and a security patrol that monitors the route during school hours. Zebra crossings have speed bumps and clear signage.
+This property is serviced by Bell Fibe gigabit infrastructure — not LTE backup, not DSL, not a rural fixed wireless solution that degrades in rain. Symmetrical 940 Mbps up and down, with a router that covers the main floor, the loft office, and the backyard deck.
 
-Other families do this daily. You'll see groups of children walking together, building friendships and confidence with every step. The route passes through well-maintained parks, and the society's CCTV coverage extends to the pathway entrance. You can track their progress on the community safety app.
+**Confirmed speeds (from existing owner logs):**
+- Download: 924 Mbps
+- Upload: 918 Mbps
+- Latency: 8 ms to Toronto servers
+- Reliability: 99.4% uptime over 18 months
 
-**Tagline:** Safe streets where children walk free and parents breathe easy.''',
-        'image_url': 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=400&h=300&fit=crop',
-        'category': 'family'
+Video calls with 12 participants, large file uploads to cloud storage, and simultaneous 4K streaming coexist without conflict. You work with the lake out the window. The city is 90 minutes away for the days you need to be there.
+
+**Tagline:** Lakeside mornings, big-city productivity.''',
+        'image_url': 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&h=300&fit=crop',
+        'category': 'home'
     },
     {
         'id': 6,
-        'title': 'Summer Splashes Every Weekend',
-        'description': '''Summer weekends used to mean packing bags, driving across town, and spending hours at crowded public pools where finding a spot felt like a competition. Your kids love swimming, but the logistics wore everyone out.
+        'title': 'Homes with Legal Basement Suites for Mortgage Assistance',
+        'description': '''At current interest rates, a second income stream isn't a nice-to-have — for many buyers, it's what makes the mortgage math work. A legal basement suite (registered with the city, separately metered, up to fire code) generates between $1,400 and $2,200/month in rental income in most major Canadian markets.
 
-Now the pool is just an elevator ride away. The society's dedicated children's pool has a shallow wading area for toddlers and a training section for older kids. It's chlorinated daily, cleaned every morning, and has certified lifeguards on duty during all operating hours. Weekend swimming classes are organized by resident coaches.
+This 4-bedroom detached home includes a fully legal 1-bedroom basement suite with:
+- Separate entrance from the side of the home
+- Independent electrical panel and water meter
+- Egress windows to current Ontario building code
+- Full kitchen, bathroom, and in-unit laundry
+- City permit on file (no retroactive legalization required)
 
-Saturday mornings become ritual: breakfast, swimsuits, and down to the pool by 10 AM. Your children learn strokes, build water confidence, and make friends with neighbors their age. Parents lounge under shaded cabanas with coffee, and nobody drives anywhere. The evening adult swim session means fitness time for you too.
+Current tenant pays $1,750/month on a month-to-month lease. At a 6.2% mortgage rate on a $900,000 purchase with 20% down, the rental income offsets approximately $290,000 of effective mortgage principal. That's the difference between stretching and breathing.
 
-**Tagline:** Dive into joy without leaving home.''',
-        'image_url': 'https://images.unsplash.com/photo-1530103043960-ef38714abb15?w=400&h=300&fit=crop',
-        'category': 'family'
+**Tagline:** Your tenant helps pay for your home.''',
+        'image_url': 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop',
+        'category': 'home'
     },
     {
         'id': 7,
-        'title': 'Focus Zones for Future Scholars',
-        'description': '''Two teenagers preparing for board exams in a cramped apartment is a masterclass in chaos management. One needs absolute silence for math problems while the other listens to history lectures aloud. Dining tables become makeshift desks, and every room echoes with competing study routines.
+        'title': 'Winter-Ready Attached Garage and Snow-Clearing Route Access',
+        'description': '''By the third week of January, the romance of a Canadian winter has fully evaporated. What remains is the daily reality: brushing off the car, shovelling the driveway, and waiting for the salt truck before you can safely reverse out. An attached garage doesn't just protect your vehicle — it changes your morning entirely.
 
-This 3BHK reimagines learning spaces. The master bedroom becomes the parents' zone. Each teenager gets their own room with a built-in study desk, floating shelves for books, and soundproof doors that close properly. The third room converts into a dedicated study library with a large desk, natural lighting, and a whiteboard wall.
+**Winter logistics from this property:**
+- Double attached garage with automatic door opener, heated to 5°C minimum
+- Driveway is 28 feet — qualifies for city's priority snow-clearing route
+- Covered walkway from garage directly into mudroom (no outdoor exposure)
+- Interlocking driveway with heated edge strips to reduce ice formation
+- Street is plowed within 4 hours of any snowfall over 5 cm
 
-The apartment's design includes acoustic insulation between bedrooms. No more arguments about noise levels or whose turn it is to use the quiet space. The high-speed internet has dual routers ensuring bandwidth for simultaneous online classes. Large windows bring in natural light that reduces eye strain during long study hours.
+You leave for work in a warm car, without scraping, without worrying whether you can exit the driveway. Grandparents visit without slipping. The side door means groceries go from trunk to kitchen in eight steps. Small design decisions that compound into a genuinely easier winter.
 
-**Tagline:** Smart spaces where brilliant minds can truly focus.''',
-        'image_url': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop',
-        'category': 'family'
+**Tagline:** Scraping ice is optional when you plan ahead.''',
+        'image_url': 'https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=400&h=300&fit=crop',
+        'category': 'home'
     },
     {
         'id': 8,
-        'title': 'No Stairs, No Worries',
-        'description': '''Your toddler is at that fearless age where everything is a climbing challenge. Stairs become adventures, and elevators are risky with little fingers exploring buttons. High-floor living means constant vigilance, carrying strollers up and down, and anxiety every time the elevator is crowded during peak hours.
+        'title': 'Energy-Efficient Builds with Heat Pumps for -30°C Winters',
+        'description': '''A natural gas furnace in a poorly insulated 1990s build can cost $4,800/year to heat in Northern Ontario winters. A cold-climate heat pump in a well-insulated new build can do the same job for $1,100 — and cool your home in summer without a separate system.
 
-A ground floor apartment changes the equation entirely. Direct access to the garden means your child can toddle outside safely without navigating stairs or waiting for lifts. The attached patio becomes an extension of your living room where they can play while you cook, always visible through the kitchen window.
+This 2023 Tarion-warranted build achieves a Net Zero Ready certification from Natural Resources Canada. Key specs:
 
-Loading groceries becomes effortless. The parking spot is right outside your door. Elderly grandparents can visit without mobility concerns. During power cuts or elevator maintenance, you're unaffected. The emergency exit is literally your front door. And when your little one trips or needs a bathroom break during outdoor play, home is always 30 seconds away.
+**Thermal envelope:**
+- R-30 walls, R-60 attic, R-20 under slab
+- Triple-pane argon-filled windows (U-0.17)
+- Air tightness: 0.6 ACH @ 50 Pa (exceeds Step 5 BC Energy Code)
 
-**Tagline:** Ground floor living where safety meets sanity.''',
-        'image_url': 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=300&fit=crop',
-        'category': 'family'
+**Mechanical system:**
+- Mitsubishi Zuba-Central cold-climate heat pump rated to -30°C
+- HRV (Heat Recovery Ventilator) for fresh air without heat loss
+- Smart thermostat with utility rate optimization
+
+**Projected annual energy cost:** $1,240 (gas equivalent would be $4,100+)
+
+The Canada Greener Homes Grant covers $5,000 of the heat pump installation cost.
+
+**Tagline:** Warm home, lower bills, cleaner future.''',
+        'image_url': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
+        'category': 'home'
     },
     {
         'id': 9,
-        'title': 'International Education at Your Doorstep',
-        'description': '''Both of you leave for work by 8:30 AM. Your daughter's school starts at 8:45 AM. The international curriculum school you researched is excellent, but it's across town—meaning either a 90-minute school bus ride or one of you constantly adjusting work schedules for drop-offs.
+        'title': 'Walking Distance to LCBO, Loblaws, and Local Libraries',
+        'description': '''Car dependency is expensive, time-consuming, and — for elderly residents, teenagers, and anyone between vehicles — a real barrier to daily life. A walkable neighbourhood isn't just convenient; for many buyers, it's a long-term quality-of-life decision.
 
-This location solves the impossible puzzle. The Cambridge-affiliated international school is 2.7 kilometers away via a four-lane road with minimal traffic during morning hours. The 15-minute drive means your daughter gets extra sleep, you're never late for client calls, and family breakfast together becomes the norm, not a luxury.
+**Walk Score: 87 (Very Walkable)**
 
-The school bus service from this society runs a dedicated route with just three stops. Your child boards at 8:20 AM and reaches school by 8:40 AM. When one of you has early meetings, the other handles drop-off without derailing anyone's day. School event participation becomes feasible because you're not losing two hours to travel.
+Within 800 metres of this address:
+- Loblaws (full grocery, pharmacy, Joe Fresh) — 6-minute walk
+- LCBO — 7-minute walk
+- Oakville Public Library branch — 9-minute walk
+- TD Bank, RBC, and Scotiabank branches
+- Independent coffee shop, dry cleaner, and dentist
+- Transit stop with 10-minute frequency during peak hours
 
-**Tagline:** World-class education without the daily marathon.''',
-        'image_url': 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=300&fit=crop',
-        'category': 'family'
+You don't own a car and you don't need one for everyday errands. Teenagers can move independently. When one car is in the shop, the household doesn't grind to a halt. Retirement becomes easier to imagine when the infrastructure supports it.
+
+**Tagline:** Everything you need, steps from your door.''',
+        'image_url': 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=400&h=300&fit=crop',
+        'category': 'lifestyle'
     },
     {
         'id': 10,
-        'title': 'Childhood Reimagined in Green Spaces',
-        'description': '''Screen time battles. Indoor restlessness. Asking "Can we go to the park?" and hearing yourself say "Later, beta" because the nearest decent park is a 20-minute drive through congested traffic. Your children's childhood is slipping into pixels and closed rooms.
+        'title': 'Wildfire-Resilient Landscaping in High-Risk Wooded Areas',
+        'description': '''BC's wildfire interface zone now includes communities that weren't on anyone's risk map a decade ago. Kelowna, Kamloops, and hundreds of smaller communities have learned that proximity to beautiful forested land comes with a responsibility — and sometimes a bill — that buyers rarely factor into their purchase decision.
 
-This community was designed around 12,000 square feet of central green space. The children's park has age-appropriate play equipment certified for safety, soft rubber flooring, and shaded seating for parents. Swings, slides, monkey bars, and a miniature rock climbing wall give kids varied physical activity.
+This property has been professionally assessed and retrofitted to FireSmart Canada standards:
 
-Every evening becomes outdoor time. Children from the complex gather here, building friendships through spontaneous cricket matches and treasure hunts. Parents form support networks over evening chai. The park is gated within the society, so kids can play freely while you're always within shouting distance. Weekend mornings mean frisbee throws and picnic mats under trees.
+**Structure:**
+- Metal roof and ember-resistant vents (no mesh gaps over 1.6 mm)
+- Non-combustible cladding on lower 1.5 metres of exterior walls
+- Multi-pane windows with tempered glass
 
-**Tagline:** Where children grow wild, free, and happy.''',
-        'image_url': 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=400&h=300&fit=crop',
-        'category': 'family'
+**Landscaping (Zone 1 — within 1.5 metres of structure):**
+- No combustible materials (wood mulch, cedar hedges removed)
+- Gravel surround and stone patio
+
+**Zone 2 (1.5–10 metres):**
+- Low-growing, high-moisture native plants replacing dry grass
+- Tree canopy thinned to 3-metre separation between crowns
+
+Insurance premium reduced 18% following FireSmart certification.
+
+**Tagline:** Beautiful property, built to endure.''',
+        'image_url': 'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=400&h=300&fit=crop',
+        'category': 'safety'
     },
-    
-    # === ELDERLY & MULTI-GENERATIONAL (6 scenarios) ===
+
+    # === SCHOOL CATCHMENT (5 scenarios) ===
     {
         'id': 11,
-        'title': 'Dignity Meets Design in Every Detail',
-        'description': '''Your parents are moving in, and suddenly every staircase feels like an obstacle course. High-rise apartments mean elevator dependency. One power cut, one maintenance day, and mobility becomes a crisis. Your father's knee surgery last year makes stairs impossible, and your mother worries about being trapped on the 12th floor during emergencies.
+        'title': 'Within Strict Boundaries for Top-Ranked Secondary Schools',
+        'description': '''Secondary school catchment boundaries in Ontario, BC, and Alberta are drawn street by street — and the difference between one side of a road and the other can mean the difference between a top-decile school and a mid-tier one. Buyers who don't verify the boundary before signing a deal sometimes discover this after closing.
 
-A ground floor villa eliminates every barrier. Direct entry from the parking means no steps between car and living room. Wide doorways accommodate walkers or wheelchairs if ever needed. The bathroom has grab bars pre-installed and anti-slip tiles. The bedroom has natural ventilation, so they're never dependent on air conditioning during power outages.
+This address falls within the confirmed catchment for Westmount Secondary, ranked in the top 4% of Ontario public schools by the Fraser Institute (2024 edition). Enrolment is guaranteed by address; no lottery, no application process.
 
-The attached garden becomes morning ritual space. Your father does his physiotherapy exercises on the lawn. Your mother's evening walks happen safely within the compound. Guests can visit without your parents worrying about escort duties in elevators. Emergency exits are instant. Medical equipment deliveries happen at the door.
+**School profile:**
+- Fraser Institute score: 9.2/10
+- University acceptance rate: 91% (class of 2023)
+- IB Programme offered (one of 14 schools in the region)
+- STEM specialization stream
+- Average class size: 22 students
 
-**Tagline:** Independence preserved with thoughtful design.''',
-        'image_url': 'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=400&h=300&fit=crop',
-        'category': 'elderly'
+The boundary has been stable for 11 years with no redistricting proposals on record. Neighbouring streets west of Trafalgar Road fall into a different catchment with a Fraser score of 5.7.
+
+**Tagline:** The right address opens the right doors.''',
+        'image_url': 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=400&h=300&fit=crop',
+        'category': 'school'
     },
     {
         'id': 12,
-        'title': 'Retirement Haven in Quiet Corners',
-        'description': '''After 35 years of morning alarms and office deadlines, retirement should feel like exhaling. But your current apartment overlooks a busy intersection. Traffic noise starts at 6 AM. The balcony collects dust and exhaust fumes. The garden you always dreamed of maintaining remains a Pinterest dream.
+        'title': 'Short Walking Distance to French Immersion Elementary Schools',
+        'description': '''French Immersion waitlists in most major Canadian cities are long — sometimes years long. But proximity to the school doesn't guarantee enrollment in a competitive program. What it does mean is that once your child is enrolled, the daily logistics become dramatically simpler.
 
-This 2BHK on the second floor overlooks a landscaped garden spanning 8,000 square feet. Floor-to-ceiling windows frame mature trees and flowering shrubs. The balcony is deep enough for a rocking chair, a small table, and potted plants that actually thrive. Mornings begin with bird songs, not honking.
+The designated French Immersion feeder school for this address is École Riverside, 550 metres away via a signalized pedestrian crossing. No highway crossings, no stroller-unfriendly curbs, and a school crossing guard stationed at the intersection from 8:00–8:45 AM and 3:00–3:45 PM.
 
-The society's senior citizens club meets twice weekly for yoga, book discussions, and light exercise sessions. The garden has meandering walking paths with benches every 50 meters. You can garden in the designated allotment beds growing tomatoes and herbs. Evenings mean chai on the balcony watching sunsets paint the sky.
+**Program details:**
+- Early French Immersion: entry at JK (full French instruction)
+- Late French Immersion: entry at Grade 4
+- Graduates continue to Collège Frontenac (3.1 km, transit served)
+- After-school French tutoring program run by parent council
 
-**Tagline:** Where golden years truly shimmer with peace.''',
-        'image_url': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&h=300&fit=crop',
-        'category': 'elderly'
+Parents on this street routinely walk children to school together. The route passes through a small park with a splash pad — a genuine improvement over a 20-minute drive to a different catchment school.
+
+**Tagline:** Bilingual futures begin on the walk to school.''',
+        'image_url': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop',
+        'category': 'school'
     },
     {
         'id': 13,
-        'title': 'Healthcare When Minutes Matter Most',
-        'description': '''Your mother had a cardiac event last year. The cardiologist said response time is everything. But the nearest multispecialty hospital is 45 minutes away through unpredictable traffic. Every chest pain becomes a decision tree of worry: Is this serious? Should we wait? Can we make it in time?
+        'title': 'Property Falls Under a Specific Catholic (Separate) School Board',
+        'description': '''In Ontario, a property's municipal address determines not just which public school board serves it, but whether it falls under the publicly funded Catholic (Separate) school board catchment. This matters deeply to families seeking faith-based education without private school tuition — and it's entirely determined by where you live.
 
-This apartment is 1.8 kilometers from City Central Hospital with a 24/7 emergency department, cardiac care unit, and specialist doctors on call. The route is a straight road with zero traffic lights and minimal congestion even during peak hours.
+This property is confirmed within the Halton Catholic District School Board catchment, with the following feeder schools:
 
-**Timeline:**
-2:15 AM — Chest discomfort wakes your mother up
-2:17 AM — You help her sit up, grab medications
-2:20 AM — Exit building, security opens gate immediately  
-2:24 AM — Arrive at emergency entrance, doctors assess
+**Elementary:** St. Patrick Catholic Elementary School (680 m, walking distance)
+- Full sacramental preparation program
+- Faith-integrated curriculum across all subjects
+- Hot lunch program
 
-The hospital has her complete medical history on file. Your family has met the cardiologist during routine checkups. Ambulance services know this route. While other families gamble with golden hour windows, you have certainty built into your address.
+**Secondary:** Bishop Reding Catholic Secondary School (2.4 km, bus served)
+- Fraser Institute score: 8.1/10
+- Chaplaincy, retreat, and service-learning programs
+- 94% graduation rate
 
-**Tagline:** Peace of mind measured in minutes, not miles.''',
-        'image_url': 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=400&h=300&fit=crop',
-        'category': 'elderly'
+Catholic school enrollment is not guaranteed by address alone — at least one parent must be a Catholic separate school supporter on the property tax roll. The listing agent can confirm the tax support designation and assist with the transfer process if needed.
+
+**Tagline:** Faith-based education, right in your catchment.''',
+        'image_url': 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=300&fit=crop',
+        'category': 'school'
     },
     {
         'id': 14,
-        'title': 'Freedom Engineered Into Every Floor',
-        'description': '''Your father uses a walker after his hip replacement. Buildings without elevators are impossible. But even buildings with lifts become problematic when elevators are under repair, or when they're too narrow, or when lift lobbies have steps. Mobility shouldn't mean isolation, yet that's what most buildings offer.
+        'title': 'High Fraser Institute Ranking for Local Elementary Education',
+        'description': '''The Fraser Institute's annual school rankings draw controversy, but they remain the most widely referenced independent dataset Canadian buyers use when evaluating school catchments. A consistently high-ranking elementary school — one that has held its score across multiple years — signals a stable academic environment that many families treat as a non-negotiable.
 
-This apartment complex was built with universal design principles. The elevator is spacious enough for wheelchairs, with buttons at reachable heights and audio announcements at every floor. The lobby has a ramp entrance with handrails on both sides. Corridors are wide enough for two wheelchairs to pass comfortably.
+Riverside Meadows Elementary (the feeder school for this address) has scored between 8.4 and 9.1 out of 10 over the past six years, placing it consistently in the top 8% of British Columbia public elementary schools.
 
-Inside the apartment, doorways are 38 inches wide—the standard for wheelchair access. The bathroom has a walk-in shower with a foldable seat, grab bars near the toilet, and slip-resistant tiles throughout. The kitchen counters have variable heights. Light switches are positioned lower than standard. Even the parking spot is wider, close to the elevator, and marked clearly.
+**What drives the ranking:**
+- Foundation Skills Assessment (FSA) results in reading, writing, and numeracy
+- Scores reported over a 5-year rolling average (not a single-year blip)
+- School improvement trend included in published methodology
 
-**Tagline:** Where mobility challenges meet invisible solutions.''',
-        'image_url': 'https://images.unsplash.com/photo-1541883125728-68f4e11a3e8d?w=400&h=300&fit=crop',
-        'category': 'elderly'
+**What the ranking doesn't capture:** arts programs, French Immersion availability, extracurricular range, and teacher tenure — worth visiting the school to assess directly.
+
+The ranking has been stable enough that families on adjacent streets have explicitly purchased on this side of the block to secure catchment.
+
+**Tagline:** Data-backed schools, peace-of-mind parenting.''',
+        'image_url': 'https://images.unsplash.com/photo-1471286174890-9c112ac6476d?w=400&h=300&fit=crop',
+        'category': 'school'
     },
     {
         'id': 15,
-        'title': 'Golden Years Among Friends Who Understand',
-        'description': '''Retirement communities abroad have senior clubs, book groups, and organized activities. Indian apartments? You're lucky if you find one neighbor your age. Your parents moved into their current flat five years ago and still barely know anyone. Loneliness isn't just emotional—it's a health risk for seniors.
+        'title': 'Avoiding "Holding Schools" in New Suburban Developments',
+        'description': '''When a new subdivision opens before its permanent school is built, the school board assigns students to a "holding school" — often a portable-heavy facility several kilometres away, sometimes in a different neighbourhood entirely. It's a temporary arrangement that can last 3 to 7 years, and it's something most buyers in new developments discover only after move-in.
 
-This society's senior citizen club isn't a token amenity—it's a thriving community of 40+ members aged 60 and above. Tuesday mornings are yoga and meditation sessions led by a certified instructor. Thursday evenings feature book club discussions and documentary screenings. The club has organized day trips to nearby temples and heritage sites.
+This resale property is in an established neighbourhood served by a permanent, purpose-built school that opened in 2009. There are no outstanding boundary consultations, no planned portable additions, and no history of overflow to holding schools in this subdivision.
 
-The dedicated club room has comfortable seating, a library with large-print books, and indoor games like chess and carrom. Members share WhatsApp groups for health tips and emergency contacts. During festivals, the club organizes low-impact celebrations. Coffee mornings become friendship circles. Your parents won't just live here—they'll belong here.
+**Red flags buyers should ask about in new builds:**
+- "What school will my child attend at time of occupancy?" (not at project completion)
+- Is a new school funded in the capital budget, or only "proposed"?
+- How many portables does the current feeder school operate?
+- What is the school board's current enrolment vs. capacity for the catchment?
 
-**Tagline:** Age gracefully surrounded by peers who get it.''',
-        'image_url': 'https://images.unsplash.com/photo-1573497161161-c3e73707e25c?w=400&h=300&fit=crop',
-        'category': 'elderly'
+Purchasing a resale home in a mature neighbourhood with a built school eliminates this uncertainty entirely.
+
+**Tagline:** A permanent school before you sign on the dotted line.''',
+        'image_url': 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
+        'category': 'school'
     },
-    {
-        'id': 16,
-        'title': 'Three Generations Under One Expansive Roof',
-        'description': '''Your traditional joint family setup is non-negotiable. Grandparents, you and your spouse, your children, and even your unmarried younger brother—seven people with different schedules, needs, and personal space requirements. Current 3BHKs feel like they're bursting at the seams.
-
-This 5BHK villa spans 3,200 square feet across two levels. Grandparents occupy the ground floor master suite with attached bathroom and private sit-out area. The first floor has three bedrooms for your family and your brother. The fifth room is a multi-purpose space: prayer room in the morning, study area during afternoon, entertainment zone in evening.
-
-Separate living and dining areas mean multiple activities can happen simultaneously without conflict. Your children do homework in the family lounge while grandparents watch TV in their private living space. The kitchen is large enough for your mother and wife to cook together comfortably. Outdoor space includes a front yard for tulsi plant and family gatherings.
-
-**Tagline:** Togetherness without tripping over each other.''',
-        'image_url': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
-        'category': 'elderly'
-    },
+]    
     
-    # === PROFESSIONAL & WORK (8 scenarios) ===
-    {
-        'id': 17,
-        'title': 'Metro Minutes from Work and Life',
-        'description': '''Your first corporate job pays decently, but Delhi NCR traffic eats three hours daily. Cab costs drain your salary. Living far from the metro means adding auto-rickshaw uncertainty to your commute equation. You've been late to work twice this month because of traffic unpredictability.
+# SCENARIO_POOL = [
+#     # === FAMILY WITH CHILDREN (10 scenarios) ===
+#     {
+#         'id': 1,
+#         'title': 'School Run Without the Morning Rush',
+#         'description': '''Your daughter's school bell rings at 8:30 AM sharp, and attendance matters.
 
-This studio apartment is 280 meters from the metro station—a 4-minute walk even during monsoon. Exit your building, turn right, cross the pedestrian bridge, and you're on the platform. Your office is six metro stops away, 32 minutes door-to-door including the walk. Predictable, affordable, air-conditioned.
+# **Timeline:**
+# 7:45 AM — Finish breakfast and pack school bag
+# 7:55 AM — Walk down to parking, load backpack
+# 8:00 AM — Start driving via the main road
+# 8:12 AM — Drop at school gate, 18 minutes early
 
-**Timeline:**
-8:40 AM — Grab breakfast and laptop bag
-8:45 AM — Exit building, walk to metro entry
-8:49 AM — Board metro train heading to office
-9:21 AM — Reach office station, walk to building
+# **Transport Options Available:**
+# - School Bus - Picks up from society gate at 7:40 AM
+# - Own Vehicle - Covered parking, 12-minute direct route
+# - Carpool - Rotate with 4 families, organized via app
+# - Auto-rickshaw - Always available at gate, ₹70-90
 
-The studio's 450 square feet is efficiently designed with a murphy bed, compact kitchen, and workspace near the window. No landlord drama, no brokerage renewal hassles. Your monthly savings increase. Evening gym time becomes possible. Work-life balance starts with location logic.
+# The school is just 3.8 kilometers away on a signal-free corridor. No narrow lanes, no U-turns, no honking chaos. While parents in congested areas leave at 7:15 AM to battle traffic, you're enjoying a relaxed breakfast together.
 
-**Tagline:** Commute less, live more, grow faster.''',
-        'image_url': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
-        'category': 'professional'
-    },
-    {
-        'id': 18,
-        'title': 'Your Office Is Now Your Sanctuary',
-        'description': '''Remote work sounded like freedom until your bedroom became your office. Client calls happen with your bed visible in the background. The dining table is perpetually covered with laptops and chargers. Your back hurts from working hunched on the sofa. Professional and personal spaces have blurred into exhausting overlap.
+# **Tagline:** Mornings should start with smiles, not stress.''',
+#         'image_url': 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 2,
+#         'title': 'Peaceful Nights for Growing Dreams',
+#         'description': '''Picture this: Your newborn finally drifts off after the evening feed. The silence is sacred, and you need it to last. Outside your window, there's no traffic roar, no late-night honking, no construction drilling that jolts tiny eyes awake at midnight.
 
-This 2BHK redefines work-from-home. The second bedroom converts into a proper home office with a dedicated entrance. Built-in desk runs along the window providing natural light and garden views. Floating shelves organize files. The door closes, creating physical and mental separation between work and home.
+# The triple-glazed windows and 100-meter buffer from the main road create a cocoon of calm. Your neighbors are young families too, so there are no late-night parties or loud gatherings. The society's strict 10 PM noise policy isn't just a rule—it's a culture everyone respects.
 
-The internet infrastructure is future-ready with dual fiber connections and power backup that extends to the home office. Acoustic insulation in walls means your spouse's calls don't interfere with yours. The window opens to tree-lined silence, not traffic chaos. Video call backgrounds look professional without artificial backdrops. After work, you close the office door and leave.
+# Inside, the nursery overlooks a landscaped garden with soft solar lighting. The air is cleaner here, filtered by mature trees that line the compound. Your baby sleeps through the night, and so do you.
 
-**Tagline:** Work from home without living at work.''',
-        'image_url': 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=400&h=300&fit=crop',
-        'category': 'professional'
-    },
-    {
-        'id': 19,
-        'title': 'Tech Career Without Traffic Tax',
-        'description': '''Your IT job is in the Outer Ring Road corridor. The salary is excellent. The catch? You live 18 kilometers away, which translates to 90 minutes in morning traffic on good days, two hours when it rains. You wake at 6:30 AM to reach by 9:30 AM. You're exhausted before work even begins.
+# **Tagline:** Where little ones sleep soundly, and parents finally rest.''',
+#         'image_url': 'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 3,
+#         'title': 'Room to Run, Space to Grow',
+#         'description': '''Three children mean three different schedules, three homework stations, and constant motion. Your current 2BHK feels like a puzzle with missing pieces. Toys spill into the living room, online classes overlap, and finding quiet study time is a daily negotiation.
 
-This apartment is 7.3 kilometers from your office campus via the elevated expressway. Morning commute is 22 minutes. Evening return takes 28 minutes even during peak hours. You reclaim two hours daily—that's 40 hours monthly or 480 hours yearly. That's 20 entire days of your life returned.
+# This 4BHK changes everything. Each child gets their own dedicated room with study desks and storage. The fourth room transforms into a play zone where Lego kingdoms and art projects can stay undisturbed. The 2,400 sq ft layout includes a separate family lounge, so movie nights don't interfere with bedtime routines.
 
-**Transport Options Available:**
-- Own Vehicle - Dedicated covered parking, smooth expressway route
-- Office Cab - Pickup point 100 meters from your gate
-- Metro - Upcoming station (Phase 3) will be walkable
-- Carpool - Four colleagues live in this society
+# Outside, the society's children's play area features swings, slides, and a sand pit just 50 meters from your tower. The basketball court and cycling track keep older kids engaged. Saturday mornings become parent coffee meetups while kids play safely within view.
 
-You wake at 8:00 AM now. Morning workout becomes feasible. Evening energy remains for learning new tech stacks. Your productivity increases because you're not arriving drained. The apartment's higher rent pays for itself in saved fuel, reduced vehicle wear, and preserved sanity.
+# **Tagline:** Spacious living where every child finds their corner.''',
+#         'image_url': 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 4,
+#         'title': 'Daycare Drop-off in 8 Minutes Flat',
+#         'description': '''You're a single parent juggling work calls and daycare schedules. Every minute counts when you need to drop off your toddler and make it to the office on time.
 
-**Tagline:** Closer to work, closer to life's actual work.''',
-        'image_url': 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=400&h=300&fit=crop',
-        'category': 'professional'
-    },
-    {
-        'id': 20,
-        'title': 'Business Hub Built Into Your Address',
-        'description': '''Your consulting business operates from home, but zoning laws prohibit commercial activity in residential complexes. Client meetings in your living room feel unprofessional. Renting separate office space doubles your overhead. Coworking memberships eat profits. You need flexibility without legal tangles.
+# **Timeline:**
+# 8:15 AM — Finish getting ready, pack lunch bag
+# 8:20 AM — Walk to parking, buckle up safely
+# 8:23 AM — Drive via the residential road
+# 8:28 AM — Drop at daycare entrance, wave goodbye
 
-This mixed-use space is officially zoned for both residential and commercial activity. The ground floor includes a separate entrance designed for client access without going through residential areas. The 900 square foot space divides naturally: front area configured as professional office with reception desk and meeting zone, back area as comfortable living quarters.
+# **Transport Options Available:**
+# - Own Vehicle - Basement parking, 8-minute direct drive
+# - Society Shuttle - Morning daycare run at 8:10 AM
+# - Walking - 12-minute pedestrian path through safe lanes
+# - Bicycle - Dedicated cycle track, 10 minutes
 
-Signage is permitted. Business registration uses this address without landlord objections. GST-registered office location matches your residence. Clients arrive, park in designated visitor spots, and enter a proper office environment. After work hours, you simply close the partition door and the space transforms back to home. Electricty meters are split for accounting clarity.
+# The daycare is 2.1 kilometers away through well-maintained residential roads with speed breakers. No highway crossings, no risky turns. The affordable rent means you're not stretching budgets, and the proximity saves both time and fuel costs every single day.
 
-**Tagline:** Build your empire from a foundation of flexibility.''',
-        'image_url': 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
-        'category': 'professional'
-    },
-    {
-        'id': 21,
-        'title': 'Silence as a Creative Currency',
-        'description': '''You're a writer, designer, or content creator. Your currency is focus, and focus demands silence. But your current apartment overlooks a construction site. Drilling starts at 8 AM. Honking persists until midnight. You've tried noise-canceling headphones, but creative work needs natural awareness, not artificial isolation.
+# **Tagline:** Parenting solo is hard enough. Convenience helps.''',
+#         'image_url': 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 5,
+#         'title': 'Walking to School, Building Independence',
+#         'description': '''Your 9-year-old wants to walk to school with friends. It's a big step toward independence, but every parent's mind races with safety concerns: busy roads, blind turns, stray dogs, and the unpredictable traffic that makes pedestrian crossings feel like obstacle courses.
 
-This apartment sits in a residential cul-de-sac 150 meters from the main road. The approach road has speed breakers every 50 meters, naturally calming traffic. No commercial establishments mean no delivery trucks, no constant footfall, no blaring music. The building houses mostly young professionals and retired couples who value quiet.
+# This neighborhood was designed with walking in mind. The primary school is exactly 650 meters away via a dedicated pedestrian pathway lined with streetlights. There are no vehicle crossings, no open drains, and a security patrol that monitors the route during school hours. Zebra crossings have speed bumps and clear signage.
 
-The third-floor corner unit has windows on three sides opening to tree canopy, not buildings. You hear rustling leaves, occasional bird calls, and distant life—not jarring noise. The acoustic design includes concrete walls between units and insulated false ceilings. Your creative hours are yours again, undisturbed and generative.
+# Other families do this daily. You'll see groups of children walking together, building friendships and confidence with every step. The route passes through well-maintained parks, and the society's CCTV coverage extends to the pathway entrance. You can track their progress on the community safety app.
 
-**Tagline:** Where silence isn't luxury, it's infrastructure.''',
-        'image_url': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
-        'category': 'professional'
-    },
-    {
-        'id': 22,
-        'title': 'Status Delivered Through Strategic Location',
-        'description': '''You've reached senior management. Clients visit occasionally. Your address reflects professional standing. Living in a mediocre locality sends wrong signals. Your current apartment is spacious, but the neighborhood lacks prestige. Relocating isn't about vanity—it's about perception that impacts business relationships.
+# **Tagline:** Safe streets where children walk free and parents breathe easy.''',
+#         'image_url': 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 6,
+#         'title': 'Summer Splashes Every Weekend',
+#         'description': '''Summer weekends used to mean packing bags, driving across town, and spending hours at crowded public pools where finding a spot felt like a competition. Your kids love swimming, but the logistics wore everyone out.
 
-This luxury 3BHK sits in the city's prime business district. The building's glass facade is an architectural landmark. Your floor has only two apartments ensuring exclusivity. Imported marble lobbies, concierge services, and valet parking signal success. The address on your business card opens conversations at networking events.
+# Now the pool is just an elevator ride away. The society's dedicated children's pool has a shallow wading area for toddlers and a training section for older kids. It's chlorinated daily, cleaned every morning, and has certified lifeguards on duty during all operating hours. Weekend swimming classes are organized by resident coaches.
 
-Floor-to-ceiling windows frame city skyline views. Modular Italian kitchen with wine cooler. Home automation controls lighting, temperature, and security via smartphone. The society hosts CEO families, diplomats, and senior corporate leaders. Your professional network expands through elevator conversations. Client meetings in the society's business lounge look impressive without booking external venues.
+# Saturday mornings become ritual: breakfast, swimsuits, and down to the pool by 10 AM. Your children learn strokes, build water confidence, and make friends with neighbors their age. Parents lounge under shaded cabanas with coffee, and nobody drives anywhere. The evening adult swim session means fitness time for you too.
 
-**Tagline:** An address that speaks before you do.''',
-        'image_url': 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
-        'category': 'professional'
-    },
-    {
-        'id': 23,
-        'title': 'Sleep Soundly While the City Wakes',
-        'description': '''You work night shifts at the hospital—7 PM to 7 AM. You return home exhausted when the world is starting its day. But sleep? Impossible. Construction drilling starts at 8 AM. School buses honk. Delivery trucks beep while reversing. Daytime sleep isn't just difficult—it's a medical necessity you're being denied.
+# **Tagline:** Dive into joy without leaving home.''',
+#         'image_url': 'https://images.unsplash.com/photo-1530103043960-ef38714abb15?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 7,
+#         'title': 'Focus Zones for Future Scholars',
+#         'description': '''Two teenagers preparing for board exams in a cramped apartment is a masterclass in chaos management. One needs absolute silence for math problems while the other listens to history lectures aloud. Dining tables become makeshift desks, and every room echoes with competing study routines.
 
-This apartment in a residential tower has strategic design for your reality. The bedroom faces the inner courtyard, not the road. Triple-glazed windows with blackout curtains block 90% of external noise and 100% of light. The building has strict daytime noise regulations that residents actually follow because many are doctors, pilots, and IT professionals with similar schedules.
+# This 3BHK reimagines learning spaces. The master bedroom becomes the parents' zone. Each teenager gets their own room with a built-in study desk, floating shelves for books, and soundproof doors that close properly. The third room converts into a dedicated study library with a large desk, natural lighting, and a whiteboard wall.
 
-The neighborhood is naturally quiet—no nearby schools generating morning rush, no commercial markets creating vendor chaos. The society's maintenance work is scheduled between 3-5 PM only. Your phone stays on DND. The bedroom's ventilation is mechanical, so windows stay closed. You finally get the 7-8 hours your body desperately needs.
+# The apartment's design includes acoustic insulation between bedrooms. No more arguments about noise levels or whose turn it is to use the quiet space. The high-speed internet has dual routers ensuring bandwidth for simultaneous online classes. Large windows bring in natural light that reduces eye strain during long study hours.
 
-**Tagline:** Night warriors deserve daytime peace.''',
-        'image_url': 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=400&h=300&fit=crop',
-        'category': 'professional'
-    },
-    {
-        'id': 24,
-        'title': 'Central Point for Divided Directions',
-        'description': '''You work in Cyber City. Your spouse works in Connaught Place. Opposite directions, 40 kilometers apart. Every housing decision becomes a negotiation of whose commute matters more. Current setup means one of you travels 90 minutes while the other manages 30. Resentment builds in traffic jams.
+# **Tagline:** Smart spaces where brilliant minds can truly focus.''',
+#         'image_url': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 8,
+#         'title': 'No Stairs, No Worries',
+#         'description': '''Your toddler is at that fearless age where everything is a climbing challenge. Stairs become adventures, and elevators are risky with little fingers exploring buttons. High-floor living means constant vigilance, carrying strollers up and down, and anxiety every time the elevator is crowded during peak hours.
 
-This apartment in Dwarka Sector 21 is geometrically equitable. You take the metro—three stops to Cyber City, 35 minutes total. Your spouse drives via the Ring Road—22 kilometers to CP, 40 minutes in morning traffic. Both commutes are manageable, neither feels sacrificed for the other's convenience.
+# A ground floor apartment changes the equation entirely. Direct access to the garden means your child can toddle outside safely without navigating stairs or waiting for lifts. The attached patio becomes an extension of your living room where they can play while you cook, always visible through the kitchen window.
 
-**Transport Options Available:**
-- Metro - Dwarka Sector 21 station is 400m walk
-- Own Vehicle - Covered parking, easy Ring Road access
-- Office Cabs - Multiple IT companies provide pick-up
-- Carpooling - Active groups for both directions
+# Loading groceries becomes effortless. The parking spot is right outside your door. Elderly grandparents can visit without mobility concerns. During power cuts or elevator maintenance, you're unaffected. The emergency exit is literally your front door. And when your little one trips or needs a bathroom break during outdoor play, home is always 30 seconds away.
 
-Evenings mean you both return around 7:30 PM. Energy remains for cooking together, gym time, or simply talking without exhaustion. Weekends aren't spent recovering from commute fatigue. The apartment becomes a home, not just a resting point between battles with distance.
+# **Tagline:** Ground floor living where safety meets sanity.''',
+#         'image_url': 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 9,
+#         'title': 'International Education at Your Doorstep',
+#         'description': '''Both of you leave for work by 8:30 AM. Your daughter's school starts at 8:45 AM. The international curriculum school you researched is excellent, but it's across town—meaning either a 90-minute school bus ride or one of you constantly adjusting work schedules for drop-offs.
 
-**Tagline:** Marriage is partnership, location should be too.''',
-        'image_url': 'https://images.unsplash.com/photo-1560264280-88b68371db39?w=400&h=300&fit=crop',
-        'category': 'professional'
-    },
+# This location solves the impossible puzzle. The Cambridge-affiliated international school is 2.7 kilometers away via a four-lane road with minimal traffic during morning hours. The 15-minute drive means your daughter gets extra sleep, you're never late for client calls, and family breakfast together becomes the norm, not a luxury.
+
+# The school bus service from this society runs a dedicated route with just three stops. Your child boards at 8:20 AM and reaches school by 8:40 AM. When one of you has early meetings, the other handles drop-off without derailing anyone's day. School event participation becomes feasible because you're not losing two hours to travel.
+
+# **Tagline:** World-class education without the daily marathon.''',
+#         'image_url': 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
+#     {
+#         'id': 10,
+#         'title': 'Childhood Reimagined in Green Spaces',
+#         'description': '''Screen time battles. Indoor restlessness. Asking "Can we go to the park?" and hearing yourself say "Later, beta" because the nearest decent park is a 20-minute drive through congested traffic. Your children's childhood is slipping into pixels and closed rooms.
+
+# This community was designed around 12,000 square feet of central green space. The children's park has age-appropriate play equipment certified for safety, soft rubber flooring, and shaded seating for parents. Swings, slides, monkey bars, and a miniature rock climbing wall give kids varied physical activity.
+
+# Every evening becomes outdoor time. Children from the complex gather here, building friendships through spontaneous cricket matches and treasure hunts. Parents form support networks over evening chai. The park is gated within the society, so kids can play freely while you're always within shouting distance. Weekend mornings mean frisbee throws and picnic mats under trees.
+
+# **Tagline:** Where children grow wild, free, and happy.''',
+#         'image_url': 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=400&h=300&fit=crop',
+#         'category': 'family'
+#     },
     
-    # === LIFESTYLE & WELLNESS (7 scenarios) ===
-{
-    'id': 25,
-    'title': 'Fitness Built Into Your Daily Address',
-    'description': '''You've paid for gym memberships that go unused because driving 4 kilometers after work drains motivation. Morning runs require walking to find safe routes through traffic. Fitness goals repeatedly fail not from lack of discipline but from friction between intention and infrastructure.
-
-This society was designed around active lifestyles. The gym on the ground floor has cardio machines, free weights, and functional training equipment. It opens at 5:30 AM for early birds. Evening batch runs from 6-9 PM. No commute, no excuses—just elevator down and you're working out.
-
-The 800-meter jogging track circles the complex with rubber pavement that's joint-friendly. Distance markers every 100 meters help track progress. Outdoor gym equipment provides bodyweight training options. The yoga deck hosts sunrise sessions on weekends. Badminton and tennis courts book via app.
-
-Your fitness routine becomes default, not heroic effort. Morning jog before coffee. Evening weights after work. Weekend tennis matches with neighbors. Health isn't a goal anymore—it's just how you live here.
-
-**Tagline:** Where wellness is woven into daily life.''',
-    'image_url': 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop',
-    'category': 'lifestyle'
-},
-{
-    'id': 26,
-    'title': 'Breathing Space in Concrete Jungles',
-    'description': '''You moved to the city for career opportunities, but every year you feel more disconnected from nature. Your current apartment overlooks other buildings. The nearest park is 3 kilometers away. Weekends mean escaping the city just to see trees. You're tired of choosing between professional growth and environmental sanity.
-
-This apartment complex sits on 5 acres where 60% is designated green space. Over 200 mature trees were preserved during construction—you're not moving into a new development waiting for saplings to grow. Floor-to-ceiling windows in your apartment frame canopy views. Bird calls replace alarm clocks.
-
-The landscaping includes native species that attract butterflies and birds. Walking paths meander through gardens with seating alcoves under trees. A small water feature creates soothing sounds. The children's play area blends into natural terrain rather than sitting on concrete. Evenings mean balcony time watching sunsets filter through leaves.
-
-The building design maximizes cross-ventilation, reducing AC dependency. Rainwater harvesting and organic waste composting happen behind the scenes. You're not compromising urban convenience—you're accessing it through a green filter.
-
-**Tagline:** City living that remembers you're still human.''',
-    'image_url': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
-    'category': 'lifestyle'
-},
-{
-    'id': 27,
-    'title': 'Wagging Tails Welcome Here',
-    'description': '''Your Labrador is family, but finding housing that agrees is exhausting. Landlords say no pets. Societies have breed restrictions. The nearest park for walks is across a busy highway. Your dog's quality of life suffers, and so does yours from the constant guilt and logistical stress.
-
-This pet-friendly community doesn't just tolerate animals—it celebrates them. The society has a dedicated dog park with agility equipment, waste stations, and separate zones for small and large breeds. The park is 150 meters from your building. Morning and evening dog-walker groups form naturally among residents.
-
-Building rules explicitly permit pets with simple registration. Elevators have designated pet-friendly timings. The ground floor has a pet washing station. Veterinary clinics and pet stores are within 2 kilometers. The nearby public park has a 1.5-kilometer walking trail perfect for longer walks without crossing roads.
-
-Your dog makes friends. You make friends through your dog. Weekend meetups happen organically. Your pet isn't a complication anymore—they're your entry ticket into a community that gets it.
-
-**Tagline:** Where four-legged family members belong too.''',
-    'image_url': 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=400&h=300&fit=crop',
-    'category': 'lifestyle'
-},
-{
-    'id': 28,
-    'title': 'Sanctuary for the Soul Seeker',
-    'description': '''Your meditation practice requires silence, but your current apartment sits above a restaurant. Kitchen exhaust fans run until midnight. Weekend mornings bring delivery trucks. You've tried early morning sessions, but construction noise starts at 7 AM. Inner peace feels like a luxury you can't afford at this address.
-
-This apartment is positioned in the society's quietest corner, away from the main gate and parking areas. The building houses mindfulness-oriented residents—yoga teachers, therapists, and wellness professionals who chose this location for the same reasons you seek it. Shared values create shared respect for silence.
-
-The bedroom faces east, welcoming sunrise for morning sadhana. The balcony is deep enough for a meditation cushion and small altar. Acoustic insulation in walls and double-glazed windows buffer external sounds. The society's yoga pavilion hosts group meditation sessions twice weekly and is available for personal practice during off-hours.
-
-Nearby is a 2-kilometer tree-lined walking path around a lake. The neighborhood has two wellness centers offering sound healing and pranayama classes. Your practice deepens not through willpower but through environmental support. Peace isn't something you create despite your surroundings—it's what your surroundings naturally offer.
-
-**Tagline:** Where stillness isn't stolen, it's given.''',
-    'image_url': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
-    'category': 'lifestyle'
-},
-{
-    'id': 29,
-    'title': 'Community That Feels Like Family',
-    'description': '''You thrive on social connection, but your current apartment feels isolated. Neighbors are strangers. Weekend evenings mean scrolling phones alone. You've tried joining clubs across town, but distance kills consistency. You're lonely in a city of millions, and it's affecting your mental health.
-
-This society's clubhouse isn't just infrastructure—it's the beating heart of community life. Weekly events calendars include book clubs, board game nights, cooking competitions, and festival celebrations. The residents' WhatsApp group actively coordinates potlucks, movie screenings, and group outings to concerts and exhibitions.
-
-The clubhouse has a multipurpose hall that hosts Saturday night Bollywood dance classes, Sunday morning acoustic music sessions, and midweek trivia nights. There's a café corner that becomes informal gathering space. The pool deck hosts summer evening socials. Birthday party bookings happen year-round.
-
-You'll know your neighbors' names within weeks, not years. Friday evenings mean clubhouse dinner with eight friends you've made organically. Your social calendar fills with building events, not forced networking. Connection happens naturally because the architecture and culture enable it.
-
-**Tagline:** Where neighbors become the family you choose.''',
-    'image_url': 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop',
-    'category': 'lifestyle'
-},
-{
-    'id': 30,
-    'title': 'Literary Life at Your Doorstep',
-    'description': '''You're a voracious reader, but your current apartment is kilometers from any decent library. Online books miss the tactile joy of physical pages. Buying books is expensive and storage-intensive. Reading groups you'd love to join meet too far away for weeknight commitment.
-
-The public library is 850 meters from your building—a 12-minute walk through a tree-lined residential street. The library has over 50,000 titles, coworking spaces for writers, and hosts author talks twice monthly. Your library card also gives access to online databases and audiobooks. Weekend afternoons mean browsing stacks and discovering unexpected gems.
-
-Your apartment's second bedroom converts into a personal library with floor-to-ceiling shelving. Large windows provide natural reading light. The reading nook has a comfortable chair and adjustable lamp. The neighborhood is quiet enough that you can read with windows open, accompanied by bird songs and rustling leaves.
-
-The library's book club meets Thursday evenings. You've joined two reading groups—one for contemporary fiction, another for non-fiction. Coffee shops within walking distance become post-library discussion venues. Your intellectual life flourishes not through online algorithms but through human curation and conversation.
-
-**Tagline:** Where pages turn and minds expand naturally.''',
-    'image_url': 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400&h=300&fit=crop',
-    'category': 'lifestyle'
-},
-{
-    'id': 31,
-    'title': 'Culinary Adventures on Every Corner',
-    'description': '''You love exploring cuisines, trying new restaurants, and discovering hidden café gems. But your current location offers two options: home delivery with soggy food or driving 8 kilometers to restaurant districts. Weekend dinner plans become logistical projects involving parking and traffic calculations.
-
-This apartment sits in a vibrant neighborhood with 30+ restaurants within 1-kilometer radius. South Indian breakfast joints, North Indian dhabas, Chinese eateries, Italian bistros, Mexican cafés, and experimental fusion restaurants line the streets. New places open quarterly. Food delivery takes 15 minutes, but walking is more enjoyable.
-
-Friday evenings mean spontaneous dinner dates—just walk out and choose based on mood. Weekend brunches become neighborhood explorations. That new café everyone's talking about? It's 400 meters away. The bakery with legendary croissants? Morning walk distance. The rooftop bar with city views? You can walk back safely at night.
-
-Your kitchen stays stocked for serious cooking when inspiration strikes, but dining out isn't a production—it's just stepping outside. Food blogger meetups happen locally. Cooking classes run at the community center. Your relationship with food shifts from convenience-driven to curiosity-driven.
-
-**Tagline:** Where every meal is an adventure, not an expedition.''',
-    'image_url': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
-    'category': 'lifestyle'
-},
-
-# === RELIGIOUS & CULTURAL (3 scenarios) ===
-{
-    'id': 32,
-    'title': 'Daily Devotion Without Disruption',
-    'description': '''Your morning and evening prayers at the temple are non-negotiable spiritual anchors. But the temple is 6 kilometers away through congested traffic. Morning darshan means waking at 5 AM to travel and return before work. Evening prayers conflict with dinner and family time. Your devotion creates daily logistical stress.
-
-The ancient Shiva temple is 700 meters from your building—an 8-minute walk via a pedestrian-friendly route with streetlights. Morning aarti at 6 AM is accessible with a 5:45 AM departure. Evening prayer at 7 PM means leaving home at 6:52 PM and returning by 7:30 PM for family dinner.
-
-**Timeline:**
-5:45 AM — Leave apartment in traditional attire
-5:53 AM — Arrive at temple for morning aarti
-6:15 AM — Complete prayers and prasad
-6:25 AM — Return home, ready for office by 8 AM
-
-The temple community recognizes regular devotees. Festival celebrations become neighborhood events. The walking route passes through quiet residential areas where morning walkers nod respectfully. Your spiritual practice deepens because accessibility removes friction. Prayer becomes meditation, not obligation shadowed by clock-watching.
-
-**Tagline:** Faith flourishes when devotion meets convenience.''',
-    'image_url': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-    'category': 'religion'
-},
-{
-    'id': 33,
-    'title': 'Prayer Call Within Walking Distance',
-    'description': '''Five daily prayers define your spiritual rhythm, but the nearest mosque is 4 kilometers away. Fajr prayer at dawn requires driving through dark streets. Jummah prayers on Fridays mean leaving work early and battling traffic. Your teenage son wants to attend mosque regularly but can't drive yet.
-
-The neighborhood mosque is 600 meters away via a safe, well-lit pathway. Fajr prayer is a 7-minute walk, returning home in time for family breakfast. Maghrib and Isha prayers fit naturally into evening routines. Your son walks independently to Zuhr and Asr prayers after school, building responsibility and religious connection.
-
-**Transport Options Available:**
-- Walking - Dedicated pedestrian path, 7-9 minutes
-- Bicycle - Covered parking available at mosque
-- Auto-rickshaw - Available but unnecessary for this distance
-- Society shuttle - Runs for elderly residents on Fridays
-
-Friday Jummah becomes community gathering without work disruption. The mosque runs Quran classes for children after school. During Ramadan, Taraweeh prayers are accessible without family separation. Islamic bookshops and halal restaurants nearby strengthen cultural connection. Your faith practice becomes integrated into daily life, not scheduled around transportation logistics.
-
-**Tagline:** Where the call to prayer is answered with footsteps, not car keys.''',
-    'image_url': 'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=400&h=300&fit=crop',
-    'category': 'religion'
-},
-{
-    'id': 34,
-    'title': 'Sunday Service Without the Rush',
-    'description': '''Sunday morning service at 9 AM is family tradition, but the church is across town. You leave at 8 AM to find parking, arrive rushed, and miss the opening hymns. Post-service fellowship is brief because you're worried about lunch timing and traffic back home.
-
-St. Mary's Church is 1.2 kilometers away—a 15-minute walk or 5-minute drive with guaranteed parking in the church compound. Sunday mornings transform from stressful sprints to peaceful rituals. You wake at 7:30 AM, enjoy family breakfast, dress leisurely, and still arrive 10 minutes early.
-
-**Timeline:**
-8:15 AM — Finish breakfast and get dressed
-8:35 AM — Walk together as family to church
-8:50 AM — Arrive, greet community, find seats
-10:30 AM — Service ends, fellowship in courtyard
-11:15 AM — Walk home, lunch prep without rush
-
-The church community becomes your extended family. Your children attend Sunday school while you're in service. Midweek Bible study groups are accessible for evening attendance. Christmas and Easter celebrations don't require advance travel planning. The priest recognizes your family. Church volunteer opportunities fit into weekly schedules.
-
-**Tagline:** Worship in peace, fellowship without watching the clock.''',
-    'image_url': 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=400&h=300&fit=crop',
-    'category': 'religion'
-},
-
-# === SAFETY & SECURITY (3 scenarios) ===
-{
-    'id': 35,
-    'title': 'Safe Haven for Independent Living',
-    'description': '''You're a young professional woman living alone. Every apartment viewing includes mental checklists: Can I walk from parking to my floor alone at night? Are there security cameras? Will the guard actually respond if something happens? Your independence shouldn't require constant hypervigilance.
-
-This gated community has 24/7 manned security with three guards on each shift. Facial recognition entry for residents and mandatory registration for all visitors with photo ID verification. CCTV cameras cover every entry point, parking area, elevator lobby, and corridor with 30-day footage retention.
-
-The apartment complex has 40% female residents living independently—it's not an exception, it's the norm. A women's safety WhatsApp group shares real-time updates. Escort services available from gate to apartment after 10 PM. Well-lit pathways eliminate dark corners. Panic buttons installed in elevators. The society conducts quarterly self-defense workshops.
-
-You return from late work shifts without anxiety. Grocery shopping at 8 PM feels normal. Morning runs at 6 AM happen safely within the complex. Your parents visit without worry. Independence isn't compromised by gender—it's supported by infrastructure designed with awareness.
-
-**Tagline:** Where safety is infrastructure, not afterthought.''',
-    'image_url': 'https://images.unsplash.com/photo-1527482797697-8795b05a13fe?w=400&h=300&fit=crop',
-    'category': 'safety'
-},
-{
-    'id': 36,
-    'title': 'Watchful Eyes for Peace of Mind',
-    'description': '''Your children play in the park while you're visible from the balcony, but gaps in fencing make you nervous. Delivery personnel enter freely without verification. Neighborhood kids you don't recognize play alongside yours. Parenting in open layouts means constant low-level anxiety about who's watching when you're not.
-
-This gated community operates like a secure campus. Single entry-exit point with boom barrier and security cabin. Every vehicle gets an RFID sticker for residents and temporary passes for guests. Delivery personnel hand packages to security who coordinate with residents via intercom. Amazon and food delivery stay at the gate.
-
-Over 120 CCTV cameras networked across the complex with monitoring station in security office. Parks and play areas have dedicated camera coverage. Parents access live feeds via society app. All visitors registered with phone number, photo, and visiting flat number. Domestic help requires police verification and society-issued ID cards.
-
-Your children play freely while you cook dinner, monitoring via app when needed. The park stays resident-only, so unfamiliar faces are rare. Emergency protocols drilled quarterly. Fire exits clearly marked with quarterly inspections. The security isn't paranoia—it's systematic design that lets families breathe easier.
-
-**Tagline:** Gated means guarded, guarded means peaceful.''',
-    'image_url': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
-    'category': 'safety'
-},
-{
-    'id': 37,
-    'title': 'Emergency Exits That Actually Work',
-    'description': '''The building fire last year across town killed three people because stairwell doors were locked and fire exits opened to walls. You've started noticing these details everywhere: fire extinguishers never inspected, emergency lighting that doesn't work, exit signs faded and ignored. Most buildings treat safety compliance as paperwork, not protection.
-
-This apartment complex has NOC certificates from fire department displayed publicly. Two staircases per tower with pressurized stairwells that stay smoke-free during fires. Emergency lighting powered by backup generators. Fire extinguishers inspected monthly with visible tags. Sprinkler systems tested quarterly.
-
-Every apartment has smoke detectors wired to central alarm system. Fire doors are never locked and open outward. Building management conducts fire drills twice yearly with mandatory participation. Printed emergency evacuation maps in every apartment showing two exit routes. Society maintains 50,000-liter water reserve specifically for fire fighting.
-
-The builder provided completion certificate only after full safety compliance. Insurance companies charge lower premiums here because risk assessment confirms standards. You've walked the fire exits yourself during a drill—they're wide, well-lit, and actually lead outside, not to locked gates or storage rooms.
-
-**Tagline:** Safety standards that protect, not just check boxes.''',
-    'image_url': 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400&h=300&fit=crop',
-    'category': 'safety'
-},
-
-# === TRANSPORT & CONNECTIVITY (3 scenarios) ===
-{
-    'id': 38,
-    'title': 'Jet-Setter Living Minutes from Takeoff',
-    'description': '''You fly twice monthly for work. Every trip begins with anxiety: Did I leave enough time for traffic? Will I make my 6 AM flight? Early morning departures mean 3 AM wake-ups because airport is 90 minutes away through unpredictable traffic. You've missed flights. You've paid surge pricing for last-minute cabs. Business travel exhaustion begins before boarding.
-
-This apartment is 8.5 kilometers from the airport terminal via the elevated expressway.
-
-**Timeline:**
-4:45 AM — Wake up, shower, grab pre-packed luggage
-5:15 AM — Drive out of covered parking
-5:32 AM — Arrive at departure terminal, park in hourly lot
-5:40 AM — Check-in counter, 80 minutes before 7 AM flight
-
-Late evening return flights mean reaching home by 11 PM, not midnight. Cab drivers never cancel these bookings because distance is predictable. Your car stays in secure parking during trips. International flights with 3-hour advance requirements feel manageable. The mental load of travel reduces when logistics become simple mathematics.
-
-Airport noise? The flight path is perpendicular to this area, so no overhead air traffic. You get proximity benefits without the sonic costs.
-
-**Tagline:** Where business travel starts from peace, not panic.''',
-    'image_url': 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop',
-    'category': 'transport'
-},
-{
-    'id': 39,
-    'title': 'Car-Free Living That Actually Works',
-    'description': '''You've never owned a car by choice—environmental reasons, cost savings, and urban lifestyle preferences. But your current apartment makes this choice punishing. The bus stop is 1.2 kilometers away via roads without footpaths. Auto-rickshaws refuse short trips. Grocery shopping becomes elaborate planning. Rainy seasons mean isolation.
-
-The main bus stop is 180 meters from your building gate—a 2-minute walk with covered pathway. Six bus routes pass through, connecting to three different metro stations, the main market, and hospital area. Buses run every 12 minutes during peak hours, every 20 minutes off-peak.
-
-**Transport Options Available:**
-- Bus Service - 180m walk, connects 6 routes, ₹10-30
-- Auto Stand - Always available at society gate, app booking
-- Metro Feeder - Society shuttle runs to station, free for residents
-- Cycle Sharing - 4 rental stations within 500m radius
-- App Cabs - 3-minute average waiting time
-
-The neighborhood has wide footpaths with street lighting. Markets, pharmacy, and restaurants within 700 meters walking distance. Your monthly transport costs are ₹2,500 versus ₹15,000 for car ownership. The choice that felt restrictive elsewhere becomes liberating here through design that respects non-car mobility.
-
-**Tagline:** Car-free by choice, not by compromise.''',
-    'image_url': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=300&fit=crop',
-    'category': 'transport'
-},
-{
-    'id': 40,
-    'title': 'Metro Corridor Living at Its Finest',
-    'description': '''You take the metro to work, but your current apartment is 2.5 kilometers from the station. Morning auto rides are unreliable. Shared autos pack six people in space for four. Walking takes 30 minutes. Your metro commute is efficient, but reaching the metro isn't. The first-last mile problem drains energy before your workday begins.
-
-The metro station is 320 meters from your tower—a 4-minute walk via covered pathway with zebra crossings. Exit gate 3 deposits you on the pedestrian bridge that connects directly to your society entrance. Morning rush means 8:42 AM departure puts you at office by 9:15 AM. Evening return is equally predictable.
-
-**Timeline:**
-8:35 AM — Leave apartment with coffee tumbler
-8:42 AM — Tap metro card at entry gate
-9:14 AM — Exit at office station
-9:22 AM — Reach office desk, 8 minutes early
-
-The apartment's resale value appreciates faster because metro proximity is permanent infrastructure, not dependent on traffic patterns. Your vehicle costs are minimal. Rainy seasons don't disrupt commutes. Late work nights don't require cab budgets. The metro becomes extension of your building—reliable, safe, and stress-free.
-
-**Tagline:** When the metro is this close, the city becomes smaller.''',
-    'image_url': 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
-    'category': 'transport'
-},
-{
-    'id': 41,
-    'title': 'Weekend Getaways Without Traffic Stress',
-    'description': '''Friday evening exodus from cities means hours stuck in traffic. Your weekend trips to hill stations or beaches start with frustration before they begin with relaxation.
-
-This location sits on the outer ring road with direct highway access. Friday 6 PM departure means you're on the expressway by 6:15 PM, beating the worst congestion. Weekend return journeys on Sunday evening avoid reverse traffic flow.
-
-**Timeline:**
-6:00 PM — Leave office on Friday
-6:15 PM — Already on highway, traffic clearing
-8:30 PM — Reach hill station resort, 2.5 hours only
-
-**Transport Options Available:**
-- Own Vehicle - Direct highway access, minimal city roads
-- Car Rental - Multiple agencies within 2km radius
-- Bus Terminal - Interstate buses, 1.5km away
-- Carpool Groups - Active weekend travel community
-
-Your weekends become actual breaks, not endurance tests. The location's strategic positioning means spontaneous Friday evening departures become feasible, not fantasies requiring Thursday planning.
-
-**Tagline:** Where weekend adventures start stress-free.''',
-    'image_url': 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
-    'category': 'transport'
-},
-{
-    'id': 42,
-    'title': 'Elderly Parents Living Independently, Nearby',
-    'description': '''Your parents want independence but you need peace of mind. Living too far means you can't help during emergencies. Living together creates friction despite good intentions.
-
-This society has a separate tower designated for senior living with specialized amenities. Your parents get their own 2BHK with grab bars, emergency buttons, and senior-friendly design. You live in the adjacent tower, 2 minutes walk away.
-
-Daily check-ins happen naturally through evening walks in the shared garden. Emergency help is instant—you can reach their apartment in under 3 minutes. They maintain independence and social life through the senior citizens club, while you maintain your own family routine.
-
-The building has 24/7 medical staff on call, pharmacy delivery services, and accessible design throughout. Your children visit grandparents spontaneously after school. Sunday lunches together don't require travel planning. Support is available without intrusion, proximity without loss of privacy.
-
-**Tagline:** Close enough to care, separate enough to thrive.''',
-    'image_url': 'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=400&h=300&fit=crop',
-    'category': 'elderly'
-}
-]
+#     # === ELDERLY & MULTI-GENERATIONAL (6 scenarios) ===
+#     {
+#         'id': 11,
+#         'title': 'Dignity Meets Design in Every Detail',
+#         'description': '''Your parents are moving in, and suddenly every staircase feels like an obstacle course. High-rise apartments mean elevator dependency. One power cut, one maintenance day, and mobility becomes a crisis. Your father's knee surgery last year makes stairs impossible, and your mother worries about being trapped on the 12th floor during emergencies.
+
+# A ground floor villa eliminates every barrier. Direct entry from the parking means no steps between car and living room. Wide doorways accommodate walkers or wheelchairs if ever needed. The bathroom has grab bars pre-installed and anti-slip tiles. The bedroom has natural ventilation, so they're never dependent on air conditioning during power outages.
+
+# The attached garden becomes morning ritual space. Your father does his physiotherapy exercises on the lawn. Your mother's evening walks happen safely within the compound. Guests can visit without your parents worrying about escort duties in elevators. Emergency exits are instant. Medical equipment deliveries happen at the door.
+
+# **Tagline:** Independence preserved with thoughtful design.''',
+#         'image_url': 'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=400&h=300&fit=crop',
+#         'category': 'elderly'
+#     },
+#     {
+#         'id': 12,
+#         'title': 'Retirement Haven in Quiet Corners',
+#         'description': '''After 35 years of morning alarms and office deadlines, retirement should feel like exhaling. But your current apartment overlooks a busy intersection. Traffic noise starts at 6 AM. The balcony collects dust and exhaust fumes. The garden you always dreamed of maintaining remains a Pinterest dream.
+
+# This 2BHK on the second floor overlooks a landscaped garden spanning 8,000 square feet. Floor-to-ceiling windows frame mature trees and flowering shrubs. The balcony is deep enough for a rocking chair, a small table, and potted plants that actually thrive. Mornings begin with bird songs, not honking.
+
+# The society's senior citizens club meets twice weekly for yoga, book discussions, and light exercise sessions. The garden has meandering walking paths with benches every 50 meters. You can garden in the designated allotment beds growing tomatoes and herbs. Evenings mean chai on the balcony watching sunsets paint the sky.
+
+# **Tagline:** Where golden years truly shimmer with peace.''',
+#         'image_url': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&h=300&fit=crop',
+#         'category': 'elderly'
+#     },
+#     {
+#         'id': 13,
+#         'title': 'Healthcare When Minutes Matter Most',
+#         'description': '''Your mother had a cardiac event last year. The cardiologist said response time is everything. But the nearest multispecialty hospital is 45 minutes away through unpredictable traffic. Every chest pain becomes a decision tree of worry: Is this serious? Should we wait? Can we make it in time?
+
+# This apartment is 1.8 kilometers from City Central Hospital with a 24/7 emergency department, cardiac care unit, and specialist doctors on call. The route is a straight road with zero traffic lights and minimal congestion even during peak hours.
+
+# **Timeline:**
+# 2:15 AM — Chest discomfort wakes your mother up
+# 2:17 AM — You help her sit up, grab medications
+# 2:20 AM — Exit building, security opens gate immediately  
+# 2:24 AM — Arrive at emergency entrance, doctors assess
+
+# The hospital has her complete medical history on file. Your family has met the cardiologist during routine checkups. Ambulance services know this route. While other families gamble with golden hour windows, you have certainty built into your address.
+
+# **Tagline:** Peace of mind measured in minutes, not miles.''',
+#         'image_url': 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=400&h=300&fit=crop',
+#         'category': 'elderly'
+#     },
+#     {
+#         'id': 14,
+#         'title': 'Freedom Engineered Into Every Floor',
+#         'description': '''Your father uses a walker after his hip replacement. Buildings without elevators are impossible. But even buildings with lifts become problematic when elevators are under repair, or when they're too narrow, or when lift lobbies have steps. Mobility shouldn't mean isolation, yet that's what most buildings offer.
+
+# This apartment complex was built with universal design principles. The elevator is spacious enough for wheelchairs, with buttons at reachable heights and audio announcements at every floor. The lobby has a ramp entrance with handrails on both sides. Corridors are wide enough for two wheelchairs to pass comfortably.
+
+# Inside the apartment, doorways are 38 inches wide—the standard for wheelchair access. The bathroom has a walk-in shower with a foldable seat, grab bars near the toilet, and slip-resistant tiles throughout. The kitchen counters have variable heights. Light switches are positioned lower than standard. Even the parking spot is wider, close to the elevator, and marked clearly.
+
+# **Tagline:** Where mobility challenges meet invisible solutions.''',
+#         'image_url': 'https://images.unsplash.com/photo-1541883125728-68f4e11a3e8d?w=400&h=300&fit=crop',
+#         'category': 'elderly'
+#     },
+#     {
+#         'id': 15,
+#         'title': 'Golden Years Among Friends Who Understand',
+#         'description': '''Retirement communities abroad have senior clubs, book groups, and organized activities. Indian apartments? You're lucky if you find one neighbor your age. Your parents moved into their current flat five years ago and still barely know anyone. Loneliness isn't just emotional—it's a health risk for seniors.
+
+# This society's senior citizen club isn't a token amenity—it's a thriving community of 40+ members aged 60 and above. Tuesday mornings are yoga and meditation sessions led by a certified instructor. Thursday evenings feature book club discussions and documentary screenings. The club has organized day trips to nearby temples and heritage sites.
+
+# The dedicated club room has comfortable seating, a library with large-print books, and indoor games like chess and carrom. Members share WhatsApp groups for health tips and emergency contacts. During festivals, the club organizes low-impact celebrations. Coffee mornings become friendship circles. Your parents won't just live here—they'll belong here.
+
+# **Tagline:** Age gracefully surrounded by peers who get it.''',
+#         'image_url': 'https://images.unsplash.com/photo-1573497161161-c3e73707e25c?w=400&h=300&fit=crop',
+#         'category': 'elderly'
+#     },
+#     {
+#         'id': 16,
+#         'title': 'Three Generations Under One Expansive Roof',
+#         'description': '''Your traditional joint family setup is non-negotiable. Grandparents, you and your spouse, your children, and even your unmarried younger brother—seven people with different schedules, needs, and personal space requirements. Current 3BHKs feel like they're bursting at the seams.
+
+# This 5BHK villa spans 3,200 square feet across two levels. Grandparents occupy the ground floor master suite with attached bathroom and private sit-out area. The first floor has three bedrooms for your family and your brother. The fifth room is a multi-purpose space: prayer room in the morning, study area during afternoon, entertainment zone in evening.
+
+# Separate living and dining areas mean multiple activities can happen simultaneously without conflict. Your children do homework in the family lounge while grandparents watch TV in their private living space. The kitchen is large enough for your mother and wife to cook together comfortably. Outdoor space includes a front yard for tulsi plant and family gatherings.
+
+# **Tagline:** Togetherness without tripping over each other.''',
+#         'image_url': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
+#         'category': 'elderly'
+#     },
+    
+#     # === PROFESSIONAL & WORK (8 scenarios) ===
+#     {
+#         'id': 17,
+#         'title': 'Metro Minutes from Work and Life',
+#         'description': '''Your first corporate job pays decently, but Delhi NCR traffic eats three hours daily. Cab costs drain your salary. Living far from the metro means adding auto-rickshaw uncertainty to your commute equation. You've been late to work twice this month because of traffic unpredictability.
+
+# This studio apartment is 280 meters from the metro station—a 4-minute walk even during monsoon. Exit your building, turn right, cross the pedestrian bridge, and you're on the platform. Your office is six metro stops away, 32 minutes door-to-door including the walk. Predictable, affordable, air-conditioned.
+
+# **Timeline:**
+# 8:40 AM — Grab breakfast and laptop bag
+# 8:45 AM — Exit building, walk to metro entry
+# 8:49 AM — Board metro train heading to office
+# 9:21 AM — Reach office station, walk to building
+
+# The studio's 450 square feet is efficiently designed with a murphy bed, compact kitchen, and workspace near the window. No landlord drama, no brokerage renewal hassles. Your monthly savings increase. Evening gym time becomes possible. Work-life balance starts with location logic.
+
+# **Tagline:** Commute less, live more, grow faster.''',
+#         'image_url': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
+#         'category': 'professional'
+#     },
+#     {
+#         'id': 18,
+#         'title': 'Your Office Is Now Your Sanctuary',
+#         'description': '''Remote work sounded like freedom until your bedroom became your office. Client calls happen with your bed visible in the background. The dining table is perpetually covered with laptops and chargers. Your back hurts from working hunched on the sofa. Professional and personal spaces have blurred into exhausting overlap.
+
+# This 2BHK redefines work-from-home. The second bedroom converts into a proper home office with a dedicated entrance. Built-in desk runs along the window providing natural light and garden views. Floating shelves organize files. The door closes, creating physical and mental separation between work and home.
+
+# The internet infrastructure is future-ready with dual fiber connections and power backup that extends to the home office. Acoustic insulation in walls means your spouse's calls don't interfere with yours. The window opens to tree-lined silence, not traffic chaos. Video call backgrounds look professional without artificial backdrops. After work, you close the office door and leave.
+
+# **Tagline:** Work from home without living at work.''',
+#         'image_url': 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=400&h=300&fit=crop',
+#         'category': 'professional'
+#     },
+#     {
+#         'id': 19,
+#         'title': 'Tech Career Without Traffic Tax',
+#         'description': '''Your IT job is in the Outer Ring Road corridor. The salary is excellent. The catch? You live 18 kilometers away, which translates to 90 minutes in morning traffic on good days, two hours when it rains. You wake at 6:30 AM to reach by 9:30 AM. You're exhausted before work even begins.
+
+# This apartment is 7.3 kilometers from your office campus via the elevated expressway. Morning commute is 22 minutes. Evening return takes 28 minutes even during peak hours. You reclaim two hours daily—that's 40 hours monthly or 480 hours yearly. That's 20 entire days of your life returned.
+
+# **Transport Options Available:**
+# - Own Vehicle - Dedicated covered parking, smooth expressway route
+# - Office Cab - Pickup point 100 meters from your gate
+# - Metro - Upcoming station (Phase 3) will be walkable
+# - Carpool - Four colleagues live in this society
+
+# You wake at 8:00 AM now. Morning workout becomes feasible. Evening energy remains for learning new tech stacks. Your productivity increases because you're not arriving drained. The apartment's higher rent pays for itself in saved fuel, reduced vehicle wear, and preserved sanity.
+
+# **Tagline:** Closer to work, closer to life's actual work.''',
+#         'image_url': 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=400&h=300&fit=crop',
+#         'category': 'professional'
+#     },
+#     {
+#         'id': 20,
+#         'title': 'Business Hub Built Into Your Address',
+#         'description': '''Your consulting business operates from home, but zoning laws prohibit commercial activity in residential complexes. Client meetings in your living room feel unprofessional. Renting separate office space doubles your overhead. Coworking memberships eat profits. You need flexibility without legal tangles.
+
+# This mixed-use space is officially zoned for both residential and commercial activity. The ground floor includes a separate entrance designed for client access without going through residential areas. The 900 square foot space divides naturally: front area configured as professional office with reception desk and meeting zone, back area as comfortable living quarters.
+
+# Signage is permitted. Business registration uses this address without landlord objections. GST-registered office location matches your residence. Clients arrive, park in designated visitor spots, and enter a proper office environment. After work hours, you simply close the partition door and the space transforms back to home. Electricty meters are split for accounting clarity.
+
+# **Tagline:** Build your empire from a foundation of flexibility.''',
+#         'image_url': 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
+#         'category': 'professional'
+#     },
+#     {
+#         'id': 21,
+#         'title': 'Silence as a Creative Currency',
+#         'description': '''You're a writer, designer, or content creator. Your currency is focus, and focus demands silence. But your current apartment overlooks a construction site. Drilling starts at 8 AM. Honking persists until midnight. You've tried noise-canceling headphones, but creative work needs natural awareness, not artificial isolation.
+
+# This apartment sits in a residential cul-de-sac 150 meters from the main road. The approach road has speed breakers every 50 meters, naturally calming traffic. No commercial establishments mean no delivery trucks, no constant footfall, no blaring music. The building houses mostly young professionals and retired couples who value quiet.
+
+# The third-floor corner unit has windows on three sides opening to tree canopy, not buildings. You hear rustling leaves, occasional bird calls, and distant life—not jarring noise. The acoustic design includes concrete walls between units and insulated false ceilings. Your creative hours are yours again, undisturbed and generative.
+
+# **Tagline:** Where silence isn't luxury, it's infrastructure.''',
+#         'image_url': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
+#         'category': 'professional'
+#     },
+#     {
+#         'id': 22,
+#         'title': 'Status Delivered Through Strategic Location',
+#         'description': '''You've reached senior management. Clients visit occasionally. Your address reflects professional standing. Living in a mediocre locality sends wrong signals. Your current apartment is spacious, but the neighborhood lacks prestige. Relocating isn't about vanity—it's about perception that impacts business relationships.
+
+# This luxury 3BHK sits in the city's prime business district. The building's glass facade is an architectural landmark. Your floor has only two apartments ensuring exclusivity. Imported marble lobbies, concierge services, and valet parking signal success. The address on your business card opens conversations at networking events.
+
+# Floor-to-ceiling windows frame city skyline views. Modular Italian kitchen with wine cooler. Home automation controls lighting, temperature, and security via smartphone. The society hosts CEO families, diplomats, and senior corporate leaders. Your professional network expands through elevator conversations. Client meetings in the society's business lounge look impressive without booking external venues.
+
+# **Tagline:** An address that speaks before you do.''',
+#         'image_url': 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+#         'category': 'professional'
+#     },
+#     {
+#         'id': 23,
+#         'title': 'Sleep Soundly While the City Wakes',
+#         'description': '''You work night shifts at the hospital—7 PM to 7 AM. You return home exhausted when the world is starting its day. But sleep? Impossible. Construction drilling starts at 8 AM. School buses honk. Delivery trucks beep while reversing. Daytime sleep isn't just difficult—it's a medical necessity you're being denied.
+
+# This apartment in a residential tower has strategic design for your reality. The bedroom faces the inner courtyard, not the road. Triple-glazed windows with blackout curtains block 90% of external noise and 100% of light. The building has strict daytime noise regulations that residents actually follow because many are doctors, pilots, and IT professionals with similar schedules.
+
+# The neighborhood is naturally quiet—no nearby schools generating morning rush, no commercial markets creating vendor chaos. The society's maintenance work is scheduled between 3-5 PM only. Your phone stays on DND. The bedroom's ventilation is mechanical, so windows stay closed. You finally get the 7-8 hours your body desperately needs.
+
+# **Tagline:** Night warriors deserve daytime peace.''',
+#         'image_url': 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=400&h=300&fit=crop',
+#         'category': 'professional'
+#     },
+#     {
+#         'id': 24,
+#         'title': 'Central Point for Divided Directions',
+#         'description': '''You work in Cyber City. Your spouse works in Connaught Place. Opposite directions, 40 kilometers apart. Every housing decision becomes a negotiation of whose commute matters more. Current setup means one of you travels 90 minutes while the other manages 30. Resentment builds in traffic jams.
+
+# This apartment in Dwarka Sector 21 is geometrically equitable. You take the metro—three stops to Cyber City, 35 minutes total. Your spouse drives via the Ring Road—22 kilometers to CP, 40 minutes in morning traffic. Both commutes are manageable, neither feels sacrificed for the other's convenience.
+
+# **Transport Options Available:**
+# - Metro - Dwarka Sector 21 station is 400m walk
+# - Own Vehicle - Covered parking, easy Ring Road access
+# - Office Cabs - Multiple IT companies provide pick-up
+# - Carpooling - Active groups for both directions
+
+# Evenings mean you both return around 7:30 PM. Energy remains for cooking together, gym time, or simply talking without exhaustion. Weekends aren't spent recovering from commute fatigue. The apartment becomes a home, not just a resting point between battles with distance.
+
+# **Tagline:** Marriage is partnership, location should be too.''',
+#         'image_url': 'https://images.unsplash.com/photo-1560264280-88b68371db39?w=400&h=300&fit=crop',
+#         'category': 'professional'
+#     },
+    
+#     # === LIFESTYLE & WELLNESS (7 scenarios) ===
+# {
+#     'id': 25,
+#     'title': 'Fitness Built Into Your Daily Address',
+#     'description': '''You've paid for gym memberships that go unused because driving 4 kilometers after work drains motivation. Morning runs require walking to find safe routes through traffic. Fitness goals repeatedly fail not from lack of discipline but from friction between intention and infrastructure.
+
+# This society was designed around active lifestyles. The gym on the ground floor has cardio machines, free weights, and functional training equipment. It opens at 5:30 AM for early birds. Evening batch runs from 6-9 PM. No commute, no excuses—just elevator down and you're working out.
+
+# The 800-meter jogging track circles the complex with rubber pavement that's joint-friendly. Distance markers every 100 meters help track progress. Outdoor gym equipment provides bodyweight training options. The yoga deck hosts sunrise sessions on weekends. Badminton and tennis courts book via app.
+
+# Your fitness routine becomes default, not heroic effort. Morning jog before coffee. Evening weights after work. Weekend tennis matches with neighbors. Health isn't a goal anymore—it's just how you live here.
+
+# **Tagline:** Where wellness is woven into daily life.''',
+#     'image_url': 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop',
+#     'category': 'lifestyle'
+# },
+# {
+#     'id': 26,
+#     'title': 'Breathing Space in Concrete Jungles',
+#     'description': '''You moved to the city for career opportunities, but every year you feel more disconnected from nature. Your current apartment overlooks other buildings. The nearest park is 3 kilometers away. Weekends mean escaping the city just to see trees. You're tired of choosing between professional growth and environmental sanity.
+
+# This apartment complex sits on 5 acres where 60% is designated green space. Over 200 mature trees were preserved during construction—you're not moving into a new development waiting for saplings to grow. Floor-to-ceiling windows in your apartment frame canopy views. Bird calls replace alarm clocks.
+
+# The landscaping includes native species that attract butterflies and birds. Walking paths meander through gardens with seating alcoves under trees. A small water feature creates soothing sounds. The children's play area blends into natural terrain rather than sitting on concrete. Evenings mean balcony time watching sunsets filter through leaves.
+
+# The building design maximizes cross-ventilation, reducing AC dependency. Rainwater harvesting and organic waste composting happen behind the scenes. You're not compromising urban convenience—you're accessing it through a green filter.
+
+# **Tagline:** City living that remembers you're still human.''',
+#     'image_url': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
+#     'category': 'lifestyle'
+# },
+# {
+#     'id': 27,
+#     'title': 'Wagging Tails Welcome Here',
+#     'description': '''Your Labrador is family, but finding housing that agrees is exhausting. Landlords say no pets. Societies have breed restrictions. The nearest park for walks is across a busy highway. Your dog's quality of life suffers, and so does yours from the constant guilt and logistical stress.
+
+# This pet-friendly community doesn't just tolerate animals—it celebrates them. The society has a dedicated dog park with agility equipment, waste stations, and separate zones for small and large breeds. The park is 150 meters from your building. Morning and evening dog-walker groups form naturally among residents.
+
+# Building rules explicitly permit pets with simple registration. Elevators have designated pet-friendly timings. The ground floor has a pet washing station. Veterinary clinics and pet stores are within 2 kilometers. The nearby public park has a 1.5-kilometer walking trail perfect for longer walks without crossing roads.
+
+# Your dog makes friends. You make friends through your dog. Weekend meetups happen organically. Your pet isn't a complication anymore—they're your entry ticket into a community that gets it.
+
+# **Tagline:** Where four-legged family members belong too.''',
+#     'image_url': 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=400&h=300&fit=crop',
+#     'category': 'lifestyle'
+# },
+# {
+#     'id': 28,
+#     'title': 'Sanctuary for the Soul Seeker',
+#     'description': '''Your meditation practice requires silence, but your current apartment sits above a restaurant. Kitchen exhaust fans run until midnight. Weekend mornings bring delivery trucks. You've tried early morning sessions, but construction noise starts at 7 AM. Inner peace feels like a luxury you can't afford at this address.
+
+# This apartment is positioned in the society's quietest corner, away from the main gate and parking areas. The building houses mindfulness-oriented residents—yoga teachers, therapists, and wellness professionals who chose this location for the same reasons you seek it. Shared values create shared respect for silence.
+
+# The bedroom faces east, welcoming sunrise for morning sadhana. The balcony is deep enough for a meditation cushion and small altar. Acoustic insulation in walls and double-glazed windows buffer external sounds. The society's yoga pavilion hosts group meditation sessions twice weekly and is available for personal practice during off-hours.
+
+# Nearby is a 2-kilometer tree-lined walking path around a lake. The neighborhood has two wellness centers offering sound healing and pranayama classes. Your practice deepens not through willpower but through environmental support. Peace isn't something you create despite your surroundings—it's what your surroundings naturally offer.
+
+# **Tagline:** Where stillness isn't stolen, it's given.''',
+#     'image_url': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
+#     'category': 'lifestyle'
+# },
+# {
+#     'id': 29,
+#     'title': 'Community That Feels Like Family',
+#     'description': '''You thrive on social connection, but your current apartment feels isolated. Neighbors are strangers. Weekend evenings mean scrolling phones alone. You've tried joining clubs across town, but distance kills consistency. You're lonely in a city of millions, and it's affecting your mental health.
+
+# This society's clubhouse isn't just infrastructure—it's the beating heart of community life. Weekly events calendars include book clubs, board game nights, cooking competitions, and festival celebrations. The residents' WhatsApp group actively coordinates potlucks, movie screenings, and group outings to concerts and exhibitions.
+
+# The clubhouse has a multipurpose hall that hosts Saturday night Bollywood dance classes, Sunday morning acoustic music sessions, and midweek trivia nights. There's a café corner that becomes informal gathering space. The pool deck hosts summer evening socials. Birthday party bookings happen year-round.
+
+# You'll know your neighbors' names within weeks, not years. Friday evenings mean clubhouse dinner with eight friends you've made organically. Your social calendar fills with building events, not forced networking. Connection happens naturally because the architecture and culture enable it.
+
+# **Tagline:** Where neighbors become the family you choose.''',
+#     'image_url': 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop',
+#     'category': 'lifestyle'
+# },
+# {
+#     'id': 30,
+#     'title': 'Literary Life at Your Doorstep',
+#     'description': '''You're a voracious reader, but your current apartment is kilometers from any decent library. Online books miss the tactile joy of physical pages. Buying books is expensive and storage-intensive. Reading groups you'd love to join meet too far away for weeknight commitment.
+
+# The public library is 850 meters from your building—a 12-minute walk through a tree-lined residential street. The library has over 50,000 titles, coworking spaces for writers, and hosts author talks twice monthly. Your library card also gives access to online databases and audiobooks. Weekend afternoons mean browsing stacks and discovering unexpected gems.
+
+# Your apartment's second bedroom converts into a personal library with floor-to-ceiling shelving. Large windows provide natural reading light. The reading nook has a comfortable chair and adjustable lamp. The neighborhood is quiet enough that you can read with windows open, accompanied by bird songs and rustling leaves.
+
+# The library's book club meets Thursday evenings. You've joined two reading groups—one for contemporary fiction, another for non-fiction. Coffee shops within walking distance become post-library discussion venues. Your intellectual life flourishes not through online algorithms but through human curation and conversation.
+
+# **Tagline:** Where pages turn and minds expand naturally.''',
+#     'image_url': 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400&h=300&fit=crop',
+#     'category': 'lifestyle'
+# },
+# {
+#     'id': 31,
+#     'title': 'Culinary Adventures on Every Corner',
+#     'description': '''You love exploring cuisines, trying new restaurants, and discovering hidden café gems. But your current location offers two options: home delivery with soggy food or driving 8 kilometers to restaurant districts. Weekend dinner plans become logistical projects involving parking and traffic calculations.
+
+# This apartment sits in a vibrant neighborhood with 30+ restaurants within 1-kilometer radius. South Indian breakfast joints, North Indian dhabas, Chinese eateries, Italian bistros, Mexican cafés, and experimental fusion restaurants line the streets. New places open quarterly. Food delivery takes 15 minutes, but walking is more enjoyable.
+
+# Friday evenings mean spontaneous dinner dates—just walk out and choose based on mood. Weekend brunches become neighborhood explorations. That new café everyone's talking about? It's 400 meters away. The bakery with legendary croissants? Morning walk distance. The rooftop bar with city views? You can walk back safely at night.
+
+# Your kitchen stays stocked for serious cooking when inspiration strikes, but dining out isn't a production—it's just stepping outside. Food blogger meetups happen locally. Cooking classes run at the community center. Your relationship with food shifts from convenience-driven to curiosity-driven.
+
+# **Tagline:** Where every meal is an adventure, not an expedition.''',
+#     'image_url': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
+#     'category': 'lifestyle'
+# },
+
+# # === RELIGIOUS & CULTURAL (3 scenarios) ===
+# {
+#     'id': 32,
+#     'title': 'Daily Devotion Without Disruption',
+#     'description': '''Your morning and evening prayers at the temple are non-negotiable spiritual anchors. But the temple is 6 kilometers away through congested traffic. Morning darshan means waking at 5 AM to travel and return before work. Evening prayers conflict with dinner and family time. Your devotion creates daily logistical stress.
+
+# The ancient Shiva temple is 700 meters from your building—an 8-minute walk via a pedestrian-friendly route with streetlights. Morning aarti at 6 AM is accessible with a 5:45 AM departure. Evening prayer at 7 PM means leaving home at 6:52 PM and returning by 7:30 PM for family dinner.
+
+# **Timeline:**
+# 5:45 AM — Leave apartment in traditional attire
+# 5:53 AM — Arrive at temple for morning aarti
+# 6:15 AM — Complete prayers and prasad
+# 6:25 AM — Return home, ready for office by 8 AM
+
+# The temple community recognizes regular devotees. Festival celebrations become neighborhood events. The walking route passes through quiet residential areas where morning walkers nod respectfully. Your spiritual practice deepens because accessibility removes friction. Prayer becomes meditation, not obligation shadowed by clock-watching.
+
+# **Tagline:** Faith flourishes when devotion meets convenience.''',
+#     'image_url': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+#     'category': 'religion'
+# },
+# {
+#     'id': 33,
+#     'title': 'Prayer Call Within Walking Distance',
+#     'description': '''Five daily prayers define your spiritual rhythm, but the nearest mosque is 4 kilometers away. Fajr prayer at dawn requires driving through dark streets. Jummah prayers on Fridays mean leaving work early and battling traffic. Your teenage son wants to attend mosque regularly but can't drive yet.
+
+# The neighborhood mosque is 600 meters away via a safe, well-lit pathway. Fajr prayer is a 7-minute walk, returning home in time for family breakfast. Maghrib and Isha prayers fit naturally into evening routines. Your son walks independently to Zuhr and Asr prayers after school, building responsibility and religious connection.
+
+# **Transport Options Available:**
+# - Walking - Dedicated pedestrian path, 7-9 minutes
+# - Bicycle - Covered parking available at mosque
+# - Auto-rickshaw - Available but unnecessary for this distance
+# - Society shuttle - Runs for elderly residents on Fridays
+
+# Friday Jummah becomes community gathering without work disruption. The mosque runs Quran classes for children after school. During Ramadan, Taraweeh prayers are accessible without family separation. Islamic bookshops and halal restaurants nearby strengthen cultural connection. Your faith practice becomes integrated into daily life, not scheduled around transportation logistics.
+
+# **Tagline:** Where the call to prayer is answered with footsteps, not car keys.''',
+#     'image_url': 'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=400&h=300&fit=crop',
+#     'category': 'religion'
+# },
+# {
+#     'id': 34,
+#     'title': 'Sunday Service Without the Rush',
+#     'description': '''Sunday morning service at 9 AM is family tradition, but the church is across town. You leave at 8 AM to find parking, arrive rushed, and miss the opening hymns. Post-service fellowship is brief because you're worried about lunch timing and traffic back home.
+
+# St. Mary's Church is 1.2 kilometers away—a 15-minute walk or 5-minute drive with guaranteed parking in the church compound. Sunday mornings transform from stressful sprints to peaceful rituals. You wake at 7:30 AM, enjoy family breakfast, dress leisurely, and still arrive 10 minutes early.
+
+# **Timeline:**
+# 8:15 AM — Finish breakfast and get dressed
+# 8:35 AM — Walk together as family to church
+# 8:50 AM — Arrive, greet community, find seats
+# 10:30 AM — Service ends, fellowship in courtyard
+# 11:15 AM — Walk home, lunch prep without rush
+
+# The church community becomes your extended family. Your children attend Sunday school while you're in service. Midweek Bible study groups are accessible for evening attendance. Christmas and Easter celebrations don't require advance travel planning. The priest recognizes your family. Church volunteer opportunities fit into weekly schedules.
+
+# **Tagline:** Worship in peace, fellowship without watching the clock.''',
+#     'image_url': 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=400&h=300&fit=crop',
+#     'category': 'religion'
+# },
+
+# # === SAFETY & SECURITY (3 scenarios) ===
+# {
+#     'id': 35,
+#     'title': 'Safe Haven for Independent Living',
+#     'description': '''You're a young professional woman living alone. Every apartment viewing includes mental checklists: Can I walk from parking to my floor alone at night? Are there security cameras? Will the guard actually respond if something happens? Your independence shouldn't require constant hypervigilance.
+
+# This gated community has 24/7 manned security with three guards on each shift. Facial recognition entry for residents and mandatory registration for all visitors with photo ID verification. CCTV cameras cover every entry point, parking area, elevator lobby, and corridor with 30-day footage retention.
+
+# The apartment complex has 40% female residents living independently—it's not an exception, it's the norm. A women's safety WhatsApp group shares real-time updates. Escort services available from gate to apartment after 10 PM. Well-lit pathways eliminate dark corners. Panic buttons installed in elevators. The society conducts quarterly self-defense workshops.
+
+# You return from late work shifts without anxiety. Grocery shopping at 8 PM feels normal. Morning runs at 6 AM happen safely within the complex. Your parents visit without worry. Independence isn't compromised by gender—it's supported by infrastructure designed with awareness.
+
+# **Tagline:** Where safety is infrastructure, not afterthought.''',
+#     'image_url': 'https://images.unsplash.com/photo-1527482797697-8795b05a13fe?w=400&h=300&fit=crop',
+#     'category': 'safety'
+# },
+# {
+#     'id': 36,
+#     'title': 'Watchful Eyes for Peace of Mind',
+#     'description': '''Your children play in the park while you're visible from the balcony, but gaps in fencing make you nervous. Delivery personnel enter freely without verification. Neighborhood kids you don't recognize play alongside yours. Parenting in open layouts means constant low-level anxiety about who's watching when you're not.
+
+# This gated community operates like a secure campus. Single entry-exit point with boom barrier and security cabin. Every vehicle gets an RFID sticker for residents and temporary passes for guests. Delivery personnel hand packages to security who coordinate with residents via intercom. Amazon and food delivery stay at the gate.
+
+# Over 120 CCTV cameras networked across the complex with monitoring station in security office. Parks and play areas have dedicated camera coverage. Parents access live feeds via society app. All visitors registered with phone number, photo, and visiting flat number. Domestic help requires police verification and society-issued ID cards.
+
+# Your children play freely while you cook dinner, monitoring via app when needed. The park stays resident-only, so unfamiliar faces are rare. Emergency protocols drilled quarterly. Fire exits clearly marked with quarterly inspections. The security isn't paranoia—it's systematic design that lets families breathe easier.
+
+# **Tagline:** Gated means guarded, guarded means peaceful.''',
+#     'image_url': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
+#     'category': 'safety'
+# },
+# {
+#     'id': 37,
+#     'title': 'Emergency Exits That Actually Work',
+#     'description': '''The building fire last year across town killed three people because stairwell doors were locked and fire exits opened to walls. You've started noticing these details everywhere: fire extinguishers never inspected, emergency lighting that doesn't work, exit signs faded and ignored. Most buildings treat safety compliance as paperwork, not protection.
+
+# This apartment complex has NOC certificates from fire department displayed publicly. Two staircases per tower with pressurized stairwells that stay smoke-free during fires. Emergency lighting powered by backup generators. Fire extinguishers inspected monthly with visible tags. Sprinkler systems tested quarterly.
+
+# Every apartment has smoke detectors wired to central alarm system. Fire doors are never locked and open outward. Building management conducts fire drills twice yearly with mandatory participation. Printed emergency evacuation maps in every apartment showing two exit routes. Society maintains 50,000-liter water reserve specifically for fire fighting.
+
+# The builder provided completion certificate only after full safety compliance. Insurance companies charge lower premiums here because risk assessment confirms standards. You've walked the fire exits yourself during a drill—they're wide, well-lit, and actually lead outside, not to locked gates or storage rooms.
+
+# **Tagline:** Safety standards that protect, not just check boxes.''',
+#     'image_url': 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400&h=300&fit=crop',
+#     'category': 'safety'
+# },
+
+# # === TRANSPORT & CONNECTIVITY (3 scenarios) ===
+# {
+#     'id': 38,
+#     'title': 'Jet-Setter Living Minutes from Takeoff',
+#     'description': '''You fly twice monthly for work. Every trip begins with anxiety: Did I leave enough time for traffic? Will I make my 6 AM flight? Early morning departures mean 3 AM wake-ups because airport is 90 minutes away through unpredictable traffic. You've missed flights. You've paid surge pricing for last-minute cabs. Business travel exhaustion begins before boarding.
+
+# This apartment is 8.5 kilometers from the airport terminal via the elevated expressway.
+
+# **Timeline:**
+# 4:45 AM — Wake up, shower, grab pre-packed luggage
+# 5:15 AM — Drive out of covered parking
+# 5:32 AM — Arrive at departure terminal, park in hourly lot
+# 5:40 AM — Check-in counter, 80 minutes before 7 AM flight
+
+# Late evening return flights mean reaching home by 11 PM, not midnight. Cab drivers never cancel these bookings because distance is predictable. Your car stays in secure parking during trips. International flights with 3-hour advance requirements feel manageable. The mental load of travel reduces when logistics become simple mathematics.
+
+# Airport noise? The flight path is perpendicular to this area, so no overhead air traffic. You get proximity benefits without the sonic costs.
+
+# **Tagline:** Where business travel starts from peace, not panic.''',
+#     'image_url': 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=300&fit=crop',
+#     'category': 'transport'
+# },
+# {
+#     'id': 39,
+#     'title': 'Car-Free Living That Actually Works',
+#     'description': '''You've never owned a car by choice—environmental reasons, cost savings, and urban lifestyle preferences. But your current apartment makes this choice punishing. The bus stop is 1.2 kilometers away via roads without footpaths. Auto-rickshaws refuse short trips. Grocery shopping becomes elaborate planning. Rainy seasons mean isolation.
+
+# The main bus stop is 180 meters from your building gate—a 2-minute walk with covered pathway. Six bus routes pass through, connecting to three different metro stations, the main market, and hospital area. Buses run every 12 minutes during peak hours, every 20 minutes off-peak.
+
+# **Transport Options Available:**
+# - Bus Service - 180m walk, connects 6 routes, ₹10-30
+# - Auto Stand - Always available at society gate, app booking
+# - Metro Feeder - Society shuttle runs to station, free for residents
+# - Cycle Sharing - 4 rental stations within 500m radius
+# - App Cabs - 3-minute average waiting time
+
+# The neighborhood has wide footpaths with street lighting. Markets, pharmacy, and restaurants within 700 meters walking distance. Your monthly transport costs are ₹2,500 versus ₹15,000 for car ownership. The choice that felt restrictive elsewhere becomes liberating here through design that respects non-car mobility.
+
+# **Tagline:** Car-free by choice, not by compromise.''',
+#     'image_url': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=300&fit=crop',
+#     'category': 'transport'
+# },
+# {
+#     'id': 40,
+#     'title': 'Metro Corridor Living at Its Finest',
+#     'description': '''You take the metro to work, but your current apartment is 2.5 kilometers from the station. Morning auto rides are unreliable. Shared autos pack six people in space for four. Walking takes 30 minutes. Your metro commute is efficient, but reaching the metro isn't. The first-last mile problem drains energy before your workday begins.
+
+# The metro station is 320 meters from your tower—a 4-minute walk via covered pathway with zebra crossings. Exit gate 3 deposits you on the pedestrian bridge that connects directly to your society entrance. Morning rush means 8:42 AM departure puts you at office by 9:15 AM. Evening return is equally predictable.
+
+# **Timeline:**
+# 8:35 AM — Leave apartment with coffee tumbler
+# 8:42 AM — Tap metro card at entry gate
+# 9:14 AM — Exit at office station
+# 9:22 AM — Reach office desk, 8 minutes early
+
+# The apartment's resale value appreciates faster because metro proximity is permanent infrastructure, not dependent on traffic patterns. Your vehicle costs are minimal. Rainy seasons don't disrupt commutes. Late work nights don't require cab budgets. The metro becomes extension of your building—reliable, safe, and stress-free.
+
+# **Tagline:** When the metro is this close, the city becomes smaller.''',
+#     'image_url': 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+#     'category': 'transport'
+# },
+# {
+#     'id': 41,
+#     'title': 'Weekend Getaways Without Traffic Stress',
+#     'description': '''Friday evening exodus from cities means hours stuck in traffic. Your weekend trips to hill stations or beaches start with frustration before they begin with relaxation.
+
+# This location sits on the outer ring road with direct highway access. Friday 6 PM departure means you're on the expressway by 6:15 PM, beating the worst congestion. Weekend return journeys on Sunday evening avoid reverse traffic flow.
+
+# **Timeline:**
+# 6:00 PM — Leave office on Friday
+# 6:15 PM — Already on highway, traffic clearing
+# 8:30 PM — Reach hill station resort, 2.5 hours only
+
+# **Transport Options Available:**
+# - Own Vehicle - Direct highway access, minimal city roads
+# - Car Rental - Multiple agencies within 2km radius
+# - Bus Terminal - Interstate buses, 1.5km away
+# - Carpool Groups - Active weekend travel community
+
+# Your weekends become actual breaks, not endurance tests. The location's strategic positioning means spontaneous Friday evening departures become feasible, not fantasies requiring Thursday planning.
+
+# **Tagline:** Where weekend adventures start stress-free.''',
+#     'image_url': 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+#     'category': 'transport'
+# },
+# {
+#     'id': 42,
+#     'title': 'Elderly Parents Living Independently, Nearby',
+#     'description': '''Your parents want independence but you need peace of mind. Living too far means you can't help during emergencies. Living together creates friction despite good intentions.
+
+# This society has a separate tower designated for senior living with specialized amenities. Your parents get their own 2BHK with grab bars, emergency buttons, and senior-friendly design. You live in the adjacent tower, 2 minutes walk away.
+
+# Daily check-ins happen naturally through evening walks in the shared garden. Emergency help is instant—you can reach their apartment in under 3 minutes. They maintain independence and social life through the senior citizens club, while you maintain your own family routine.
+
+# The building has 24/7 medical staff on call, pharmacy delivery services, and accessible design throughout. Your children visit grandparents spontaneously after school. Sunday lunches together don't require travel planning. Support is available without intrusion, proximity without loss of privacy.
+
+# **Tagline:** Close enough to care, separate enough to thrive.''',
+#     'image_url': 'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=400&h=300&fit=crop',
+#     'category': 'elderly'
+# }
+# ]
 
 # Track current batch index (shared across all users)
 current_batch_index = 0
