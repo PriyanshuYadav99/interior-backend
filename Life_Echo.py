@@ -231,11 +231,12 @@ Always finish every sentence completely. Never truncate words or leave sentences
                     "content": prompt
                 }
             ],
-            model="llama-3.3-70b-versatile",
-            temperature=0.7,
-            max_tokens=900,
-            stop=None
-        )
+            model="openai/gpt-oss-120b",
+    temperature=0.7,
+    max_tokens=2000,          # increased from 900
+    reasoning_effort="low",   # ask it to spend fewer tokens "thinking"
+    stop=None
+)
         
         response_text = chat_completion.choices[0].message.content.strip()
         

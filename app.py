@@ -32,6 +32,7 @@ from virtual_tour import virtual_tour_bp
 from admin_routes import admin_bp
 from activity_routes import activity_bp
 from ai_routes import ai_bp
+from news_routes import news_bp
 
 
 # ============================================================
@@ -183,7 +184,7 @@ logger.info("="*70)
 logger.info("[BLUEPRINT] Registering Life_Echo blueprint...")
 
 app.register_blueprint(Life_bp)
-
+app.register_blueprint(news_bp)
 logger.info("[BLUEPRINT] ✅ Registered!")
 # After Life_Echo_bp registration, ADD:
 logger.info("[BLUEPRINT] Registering virtual tour blueprint...")
