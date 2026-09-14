@@ -22,8 +22,20 @@ def dispatch_message(user, channel, message):
         channel, or hide the SMS tab on the frontend until it exists.
     """
     try:
-        country_code = user.get('country_code', '91')
-        phone = f"+{country_code}{user.get('phone_number', '')}"
+        country_code = str(user.get('country_code', '91')).strip()
+        phone_number = str(user.get('phone_number', '')).strip()
+
+        # country_code may be stored as a numeric dialing code ('91', '1')
+        # or an ISO abbreviation ('US', 'IN') depending on how the lead was
+        # captured. Map the common ones; numeric values pass through as-is.
+        ISO_TO_DIALING_CODE = {
+            'US': '1', 'CA': '1', 'IN': '91', 'GB': '44', 'UK': '44',
+            'AE': '971', 'AU': '61', 'SG': '65'
+        }
+        if not country_code.isdigit():
+            country_code = ISO_TO_DIALING_CODE.get(country_code.upper(), country_code)
+
+        phone = f"+{country_code}{phone_number}"
 
         if channel == 'whatsapp':
             from services.whatsapp_service import send_whatsapp_message

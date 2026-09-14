@@ -609,7 +609,7 @@ def score_lead_temperature(lead_data):
         "virtual_tour_categories": vt.get('categories_explored', [])
     }
 
-    temperature_prompt = f"""You are an expert Real Estate Sales Analyst AI for PropDeck. Your job is to analyze a prospective buyer's platform activity and categorize their lead temperature (HOT, WARM, or COLD) based on a strict scoring matrix.
+    temperature_prompt = f"""You are an expert Real Estate Sales Analyst AI for Sightro. Your job is to analyze a prospective buyer's platform activity and categorize their lead temperature (HOT, WARM, or COLD) based on a strict scoring matrix.
 
 You will be provided with a JSON payload of the user's session data.
 
