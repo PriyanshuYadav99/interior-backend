@@ -51,14 +51,24 @@ def _get_property(supabase, client_name, section_key):
 
 
 def _get_property_leads(supabase, client_name, section_key):
-    interests = supabase.table('user_property_interests') \
+    interest_rows = supabase.table('user_property_interests') \
         .select('user_id') \
         .eq('client_name', client_name) \
         .eq('property_section', section_key) \
         .execute().data or []
-    user_ids = list({i['user_id'] for i in interests})
+    interest_user_ids = {r['user_id'] for r in interest_rows}
+
+    legacy_users = supabase.table('users') \
+        .select('id') \
+        .eq('client_name', client_name) \
+        .eq('property_section', section_key) \
+        .execute().data or []
+    legacy_user_ids = {u['id'] for u in legacy_users}
+
+    user_ids = list(interest_user_ids | legacy_user_ids)
     if not user_ids:
         return []
+
     return supabase.table('users') \
         .select('*') \
         .in_('id', user_ids) \
