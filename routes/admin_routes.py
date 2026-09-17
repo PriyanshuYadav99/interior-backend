@@ -191,7 +191,17 @@ def get_leads():
                 .eq('client_name', client_name) \
                 .eq('property_section', section) \
                 .execute().data or []
-            user_ids = list({r['user_id'] for r in interest_rows})
+            interest_user_ids = {r['user_id'] for r in interest_rows}
+
+            legacy_users = supabase.table('users') \
+                .select('id') \
+                .eq('client_name', client_name) \
+                .eq('property_section', section) \
+                .execute().data or []
+            legacy_user_ids = {u['id'] for u in legacy_users}
+
+            user_ids = list(interest_user_ids | legacy_user_ids)
+
             if not user_ids:
                 return jsonify({'success': True, 'section': section, 'leads': [], 'total': 0}), 200
 
