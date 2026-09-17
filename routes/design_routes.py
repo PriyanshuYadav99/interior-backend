@@ -394,7 +394,20 @@ def generate_design():
 
             except Exception as e:
                 logger.error(f"[BACKGROUND] ❌ Error: {e}")
+            if request_user_id:
+                try:
+                    supabase.table('user_property_interests').insert({
+                        'user_id': request_user_id,
+                        'client_name': client_name,
+                        'room_type': room_type,
+                        'style': style if not is_custom_theme else 'custom'
+                    }).execute()
+                except Exception as e:
+                    logger.warning(f"[BACKGROUND] Could not log interest: {e}")
 
+                    
+    except Exception as e:
+        logger.warning(f"[BACKGROUND] Could not log interest: {e}")            
         # Start background thread
         upload_thread = threading.Thread(target=background_upload, daemon=True)
         upload_thread.start()
@@ -625,3 +638,36 @@ def get_room_preview(client_name, room_type):
     except Exception as e:
         logger.error(f"[ROOM PREVIEW] Error: {e}")
         return jsonify({'error': str(e)}), 500
+
+@design_bp.route('/api/track-interest', methods=['POST', 'OPTIONS'])
+def track_interest():
+    """Log every property/room/style click as its own interest record — never overwrites."""
+    if request.method == 'OPTIONS':
+        return '', 204
+
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        client_name = data.get('client_name', 'skyline')
+        property_section = data.get('property_section')
+        room_type = data.get('room_type')
+        style = data.get('style')
+
+        if not user_id:
+            return jsonify({'error': 'user_id is required'}), 400
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+
+        supabase.table('user_property_interests').insert({
+            'user_id': user_id,
+            'client_name': client_name,
+            'property_section': property_section,
+            'room_type': room_type,
+            'style': style
+        }).execute()
+
+        return jsonify({'success': True}), 200
+
+    except Exception as e:
+        logger.error(f"[TRACK_INTEREST] Error: {e}")
+        return jsonify({'error': 'Failed to log interest'}), 500
