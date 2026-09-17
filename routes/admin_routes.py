@@ -184,25 +184,64 @@ def get_leads():
         client_name = request.builder['client_name']
         section = request.args.get('section', '').strip()
 
-        query = supabase.table('users') \
-            .select('*') \
-            .eq('client_name', client_name) \
-            .order('created_at', desc=True)
-
+        # ── Find which users have an interest matching this section (if filtering) ──
         if section:
-            query = query.eq('property_section', section)
+            interest_rows = supabase.table('user_property_interests') \
+                .select('user_id') \
+                .eq('client_name', client_name) \
+                .eq('property_section', section) \
+                .execute().data or []
+            user_ids = list({r['user_id'] for r in interest_rows})
+            if not user_ids:
+                return jsonify({'success': True, 'section': section, 'leads': [], 'total': 0}), 200
+
+            query = supabase.table('users') \
+                .select('*') \
+                .eq('client_name', client_name) \
+                .in_('id', user_ids) \
+                .order('created_at', desc=True)
+        else:
+            query = supabase.table('users') \
+                .select('*') \
+                .eq('client_name', client_name) \
+                .order('created_at', desc=True)
 
         result = query.execute()
+        users = result.data or []
+        user_ids_all = [u['id'] for u in users]
+
+        # ── Pull ALL property interests for these users in one go ──
+        all_interests = []
+        if user_ids_all:
+            all_interests = supabase.table('user_property_interests') \
+                .select('user_id, property_section') \
+                .in_('user_id', user_ids_all) \
+                .execute().data or []
+
+        interests_by_user = {}
+        for i in all_interests:
+            uid = i['user_id']
+            sec = i.get('property_section')
+            if not sec:
+                continue
+            interests_by_user.setdefault(uid, set()).add(sec)
 
         leads = []
-        for u in (result.data or []):
+        for u in users:
+            uid = u['id']
+            unit_interests = sorted(interests_by_user.get(uid, set()))
+            # Fallback: if no interest rows yet, show the legacy single value so nothing looks empty
+            if not unit_interests and u.get('property_section'):
+                unit_interests = [u['property_section']]
+
             leads.append({
-                'id': u['id'],
+                'id': uid,
                 'name': u.get('full_name', 'Unknown'),
                 'phone': f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
                 'email': u.get('email', 'N/A'),
                 'inquiry_date': u.get('created_at', ''),
-                'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0)
+                'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0),
+                'unit_interest': unit_interests
             })
 
         return jsonify({
