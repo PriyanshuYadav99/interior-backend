@@ -257,6 +257,7 @@ def generate_design():
         room_type = data.get('room_type')
         client_name = data.get('client_name', 'skyline')
         style = data.get('style')
+        property_section = data.get('property_section')
         custom_prompt = data.get('custom_prompt', '').strip()
         width = data.get('width', 1024)
         height = data.get('height', 1024)
@@ -265,7 +266,7 @@ def generate_design():
         logger.info(f"="*70)
 
         # Validate client
-        VALID_CLIENTS = ['skyline', 'ellington','sothebys']
+        VALID_CLIENTS = ['skyline', 'ellington', 'sothebys']
         if client_name not in VALID_CLIENTS:
             return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
 
@@ -312,9 +313,9 @@ def generate_design():
         start_time = time.time()
 
         if is_custom_theme:
-            result = generate_with_openai_custom_theme(prompt, reference_image,width,height)
+            result = generate_with_openai_custom_theme(prompt, reference_image, width, height)
         else:
-            result = generate_with_openai_style_based(prompt, room_type, reference_image,width,height)
+            result = generate_with_openai_style_based(prompt, room_type, reference_image, width, height)
 
         if not result or not result.get('success'):
             error_msg = result.get('error', 'Unknown error') if result else 'No result returned'
@@ -330,10 +331,9 @@ def generate_design():
         # PREPARE RESPONSE IMMEDIATELY (NO BLOCKING)
         image_base64 = result['image_base64']
 
-        # Generate response
         response_data = {
             'id': int(time.time()),
-            'image_base64': image_base64,  # Keep for backward compatibility
+            'image_base64': image_base64,
             'client_name': client_name,
             'room_type': room_type,
             'style': style if not is_custom_theme else 'custom',
@@ -351,17 +351,14 @@ def generate_design():
         def background_upload():
             """Upload to Cloudinary and save to DB in background"""
             try:
-                # Upload to Cloudinary
                 cloudinary_url = upload_to_cloudinary(image_base64, client_name, room_type)
 
                 if cloudinary_url:
                     logger.info(f"[BACKGROUND] ✅ Uploaded to Cloudinary: {cloudinary_url}")
 
-                    # GET user_id and session_id from request data
                     request_user_id = data.get('user_id')
                     request_session_id = data.get('session_id')
 
-                    # Save to database
                     save_generation_to_db(
                         client_name=client_name,
                         room_type=room_type,
@@ -373,7 +370,6 @@ def generate_design():
                     )
                     logger.info(f"[BACKGROUND] ✅ Saved to database")
 
-                    # Update total_generations in users table
                     if request_user_id:
                         try:
                             user_result = supabase.table('users')\
@@ -389,25 +385,25 @@ def generate_design():
                                 logger.info(f"[DB] ✅ Updated total_generations for {request_user_id}: {current} → {current + 1}")
                         except Exception as e:
                             logger.warning(f"[DB] Could not update total_generations: {e}")
+
+                    try:
+                        supabase.table('user_property_interests').insert({
+                            'user_id': request_user_id,
+                            'client_name': client_name,
+                            'property_section': property_section,
+                            'room_type': room_type,
+                            'style': style if not is_custom_theme else 'custom'
+                        }).execute()
+                        logger.info(f"[BACKGROUND] ✅ Logged property interest")
+                    except Exception as e:
+                        logger.warning(f"[BACKGROUND] Could not log interest: {e}")
+
                 else:
                     logger.error(f"[BACKGROUND] ❌ Cloudinary upload failed")
 
             except Exception as e:
                 logger.error(f"[BACKGROUND] ❌ Error: {e}")
-            if request_user_id:
-                try:
-                    supabase.table('user_property_interests').insert({
-                        'user_id': request_user_id,
-                        'client_name': client_name,
-                        'room_type': room_type,
-                        'style': style if not is_custom_theme else 'custom'
-                    }).execute()
-                except Exception as e:
-                    logger.warning(f"[BACKGROUND] Could not log interest: {e}")
 
-                    
-    except Exception as e:
-        logger.warning(f"[BACKGROUND] Could not log interest: {e}")            
         # Start background thread
         upload_thread = threading.Thread(target=background_upload, daemon=True)
         upload_thread.start()
