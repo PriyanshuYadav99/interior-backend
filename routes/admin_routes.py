@@ -277,6 +277,7 @@ def get_leads():
 def get_lead_details(user_id):
     try:
         from app import supabase
+        from routes.lead_insights import build_lead_detail
         client_name = request.builder['client_name']
 
         # ── Fetch user ──────────────────────────────────────
@@ -293,115 +294,26 @@ def get_lead_details(user_id):
         if u.get('client_name') != client_name:
             return jsonify({'error': 'Unauthorized'}), 403
 
-        # ── Fetch sessions ──────────────────────────────────
-        sessions_result = supabase.table('sessions') \
-            .select('session_id') \
-            .eq('user_id', user_id) \
-            .execute()
+        # ── section_key -> display name (e.g. 2bhk -> "2BR") ──
+        secs = supabase.table('property_sections') \
+            .select('section_key, section_name') \
+            .eq('client_name', client_name) \
+            .execute().data or []
+        section_names = {s['section_key']: s['section_name'] for s in secs}
 
-        session_ids = [s['session_id'] for s in (sessions_result.data or [])]
+        # ── Everything the modal needs (images, tools, insights, messages...) ──
+        lead_response = build_lead_detail(
+            supabase, u, section_names,
+            property_name=request.builder.get('property_name', ''),
+            force_ai=request.args.get('refresh') == 'true',
+            debug=request.args.get('debug') == 'true',
+        )
 
-        # ── Fetch generated images ──────────────────────────
-        if session_ids:
-            gens_result = supabase.table('user_generations') \
-                .select('*') \
-                .or_(f"user_id.eq.{user_id},session_id.in.({','.join(session_ids)})") \
-                .order('created_at', desc=True) \
-                .execute()
-        else:
-            gens_result = supabase.table('user_generations') \
-                .select('*') \
-                .eq('user_id', user_id) \
-                .order('created_at', desc=True) \
-                .execute()
-
-        seen = set()
-        images = []
-        for g in (gens_result.data or []):
-            key = g.get('generation_id') or g.get('id')
-            if key in seen:
-                continue
-            seen.add(key)
-            images.append({
-                'id': key,
-                'image_url': g.get('image_url', ''),
-                'room_type': g.get('room_type', 'N/A'),
-                'style': g.get('style', 'N/A'),
-                'created_at': g.get('created_at', ''),
-                'downloaded': g.get('downloaded', False),
-                'download_count': g.get('download_count', 0)
-            })
-
-        # ── Fetch activity logs ─────────────────────────────
-        activity_result = supabase.table('user_activity_logs') \
-            .select('*') \
-            .eq('user_id', user_id) \
-            .execute()
-
-        activity_data = activity_result.data or []
-
-        tools_summary = {}
-        for a in activity_data:
-            tool = a.get('tool_name') or a.get('activity_type') or 'unknown'
-            secs = a.get('time_spent_seconds', 0) or 0
-            if tool not in tools_summary:
-                tools_summary[tool] = {
-                    'tool': tool,
-                    'total_time_seconds': 0,
-                    'sessions_count': 0
-                }
-            tools_summary[tool]['total_time_seconds'] += secs
-            tools_summary[tool]['sessions_count'] += 1
-
-        tools_used = [t for t in tools_summary.values() if t['total_time_seconds'] > 0]
-        total_time_seconds = sum(t['total_time_seconds'] for t in tools_used)
-
-        # ── Fetch virtual tour selections ───────────────────
-        vt_result = supabase.table('user_tool_selections') \
-            .select('*') \
-            .eq('user_id', user_id) \
-            .eq('tool_name', 'virtual_tour') \
-            .order('created_at', desc=True) \
-            .execute()
-
-        vt_selections = []
-        for v in (vt_result.data or []):
-            vt_selections.append({
-                'category':   v.get('vt_category'),
-                'place_name': v.get('vt_place_name'),
-                'place_id':   v.get('vt_place_id'),
-                'photo_url':  v.get('vt_photo_url'),
-                'distance':   v.get('vt_distance'),
-                'rating':     v.get('vt_rating'),
-                'viewed_at':  v.get('created_at')
-            })
-
-        vt_categories = list({v['category'] for v in vt_selections if v['category']})
-
-        # ── Fetch LifeEcho selections ───────────────────────
-        le_result = supabase.table('user_tool_selections') \
-            .select('*') \
-            .eq('user_id', user_id) \
-            .eq('tool_name', 'lifeecho') \
-            .order('created_at', desc=True) \
-            .execute()
-
-        lifeecho_selections = []
-        for l in (le_result.data or []):
-            lifeecho_selections.append({
-                'scenario_id':    l.get('lifeecho_scenario_id'),
-                'scenario_title': l.get('lifeecho_scenario_title'),
-                'scenario_icon':  l.get('lifeecho_scenario_icon', 'clock'),
-                'is_custom':      l.get('lifeecho_is_custom', False),
-                'custom_text':    l.get('lifeecho_custom_text'),
-                'selected_at':    l.get('created_at')
-            })
-
-        # ── Optional: Lead Temperature (AI scoring) ─────────
+        # ── YOUR ORIGINAL: Lead Temperature (AI scoring) ────
         temperature_data = None
         if request.args.get('include_temperature', '').lower() == 'true':
             try:
-                from ai_routes import build_lead_payload
+                from routes.ai_routes import build_lead_payload   # was `from ai_routes` (wrong path)
                 from groq import Groq
                 import os, json, re
 
@@ -489,35 +401,11 @@ USER SESSION DATA:
                 logger.error(f"[TEMPERATURE IN DETAILS] Non-fatal error: {te}")
                 temperature_data = None
 
-        # ── Build final response ────────────────────────────
-        lead_response = {
-            'id':                u['id'],
-            'name':              u.get('full_name', 'Unknown'),
-            'phone':             f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
-            'email':             u.get('email', 'N/A'),
-            'registration_date': u.get('created_at', ''),
-            'property_section':  u.get('property_section'),
-
-            'total_generations':      (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0),
-            'images':                 images,
-
-            'total_time_spent_seconds': total_time_seconds,
-            'total_time_spent_minutes': round(total_time_seconds / 60, 1),
-            'tools_used':               tools_used,
-
-            'virtual_tour': {
-                'categories_explored': vt_categories,
-                'places_viewed':       vt_selections
-            },
-
-            'lifeecho': {
-                'total_scenarios_viewed': len(lifeecho_selections),
-                'scenarios':              lifeecho_selections
-            }
-        }
-
+        # Your AI result wins over the saved/fallback score
         if temperature_data:
             lead_response['temperature'] = temperature_data
+            if temperature_data.get('score') is not None:
+                lead_response['intent_score'] = temperature_data['score']
 
         return jsonify({'success': True, 'lead': lead_response}), 200
 
