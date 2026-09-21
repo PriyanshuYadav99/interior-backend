@@ -1,4 +1,3 @@
-
 """
 admin_routes.py — PropDesk Builder Admin Dashboard
 Sessions stored in Supabase (persistent across restarts).
@@ -172,8 +171,67 @@ def get_dashboard():
 
 
 # ============================================================
-# 3. LEADS LIST
-# GET /api/admin/leads?section=2bhk
+# 3a. PROPERTY DROPDOWN OPTIONS   (NEW)
+# GET /api/admin/property-filter
+# ============================================================
+
+@admin_bp.route('/property-filter', methods=['GET'])
+@builder_required
+def get_property_filter():
+    try:
+        from app import supabase
+        client_name = request.builder['client_name']   # a builder only ever sees ITS OWN properties
+
+        sections = supabase.table('property_sections') \
+            .select('section_key, section_name, property_type, display_order') \
+            .eq('client_name', client_name) \
+            .eq('is_active', True) \
+            .order('display_order') \
+            .execute().data or []
+
+        # distinct leads per property: interest rows + the legacy users.property_section value
+        interests = supabase.table('user_property_interests') \
+            .select('user_id, property_section') \
+            .eq('client_name', client_name) \
+            .execute().data or []
+        users = supabase.table('users') \
+            .select('id, property_section') \
+            .eq('client_name', client_name) \
+            .execute().data or []
+
+        leads_by_section = {}
+        for r in interests:
+            if r.get('user_id') and r.get('property_section'):
+                leads_by_section.setdefault(r['property_section'], set()).add(r['user_id'])
+        for u in users:
+            if u.get('property_section'):
+                leads_by_section.setdefault(u['property_section'], set()).add(u['id'])
+
+        options = [{
+            'key': s['section_key'],
+            'name': s['section_name'],
+            'type': s.get('property_type'),
+            'leads': len(leads_by_section.get(s['section_key'], ())),
+        } for s in sections]
+
+        return jsonify({
+            'success': True,
+            'total_leads': len(users),   # shown on the "All properties" option
+            'options': options,
+        }), 200
+
+    except Exception as e:
+        logger.error(f"[PROPERTY FILTER] Error: {e}")
+        return jsonify({'error': 'Failed to load property filter'}), 500
+
+
+# ============================================================
+# 3b. LEADS LIST   (UPDATED: status filter, pagination, status + intent_score)
+# GET /api/admin/leads?section=1bhk&status=hot&page=1&limit=8
+#
+#   section : property key from /property-filter   (optional; omit = all properties)
+#   status  : hot | warm | cold | new              (optional; omit = all leads)
+#   page, limit : pagination                       (optional; omit limit = return everything, as before)
 # ============================================================
 
 @admin_bp.route('/leads', methods=['GET'])
@@ -181,8 +239,36 @@ def get_dashboard():
 def get_leads():
     try:
         from app import supabase
+        from routes.lead_insights import format_phone
+
         client_name = request.builder['client_name']
         section = request.args.get('section', '').strip()
+        status_filter = request.args.get('status', '').strip().lower()
+
+        def _int_arg(name, default, lo, hi):
+            try:
+                return min(max(int(request.args.get(name, default)), lo), hi)
+            except (TypeError, ValueError):
+                return default
+
+        page = _int_arg('page', 1, 1, 100000)
+        limit = _int_arg('limit', 0, 0, 100) if request.args.get('limit') else 0
+
+        def _paged(leads_list):
+            total = len(leads_list)
+            if limit:
+                start = (page - 1) * limit
+                leads_list = leads_list[start:start + limit]
+            return {
+                'success': True,
+                'section': section or 'all',
+                'status': status_filter or 'all',
+                'leads': leads_list,
+                'total': total,
+                'page': page if limit else 1,
+                'limit': limit or total,
+                'total_pages': (-(-total // limit)) if limit else 1,
+            }
 
         # ── Find which users have an interest matching this section (if filtering) ──
         if section:
@@ -191,7 +277,7 @@ def get_leads():
                 .eq('client_name', client_name) \
                 .eq('property_section', section) \
                 .execute().data or []
-            interest_user_ids = {r['user_id'] for r in interest_rows}
+            interest_user_ids = {r['user_id'] for r in interest_rows if r.get('user_id')}
 
             legacy_users = supabase.table('users') \
                 .select('id') \
@@ -203,7 +289,7 @@ def get_leads():
             user_ids = list(interest_user_ids | legacy_user_ids)
 
             if not user_ids:
-                return jsonify({'success': True, 'section': section, 'leads': [], 'total': 0}), 200
+                return jsonify(_paged([])), 200
 
             query = supabase.table('users') \
                 .select('*') \
@@ -219,6 +305,13 @@ def get_leads():
         result = query.execute()
         users = result.data or []
         user_ids_all = [u['id'] for u in users]
+
+        # ── chip labels: section_key -> property_type ("2bhk" -> "2BHK", "villa" -> "Villa") ──
+        type_rows = supabase.table('property_sections') \
+            .select('section_key, property_type') \
+            .eq('client_name', client_name) \
+            .execute().data or []
+        type_by_key = {r['section_key']: r.get('property_type') or r['section_key'] for r in type_rows}
 
         # ── Pull ALL property interests for these users in one go ──
         all_interests = []
@@ -244,22 +337,25 @@ def get_leads():
             if not unit_interests and u.get('property_section'):
                 unit_interests = [u['property_section']]
 
+            temp = (u.get('lead_temperature') or '').lower()
+            status = temp if temp in ('hot', 'warm', 'cold') else 'new'
+            if status_filter and status != status_filter:
+                continue
+
             leads.append({
                 'id': uid,
                 'name': u.get('full_name', 'Unknown'),
-                'phone': f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
+                'phone': format_phone(u),
                 'email': u.get('email', 'N/A'),
                 'inquiry_date': u.get('created_at', ''),
                 'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0),
-                'unit_interest': unit_interests
+                'unit_interest': unit_interests,                                          # keys, as before
+                'unit_interest_labels': [type_by_key.get(k, k) for k in unit_interests],  # chips: "1BHK", "Villa"
+                'status': status.title(),                                                 # Hot / Warm / Cold / New
+                'intent_score': u.get('lead_score'),
             })
 
-        return jsonify({
-            'success': True,
-            'section': section or 'all',
-            'leads': leads,
-            'total': len(leads)
-        }), 200
+        return jsonify(_paged(leads)), 200
 
     except Exception as e:
         logger.error(f"[LEADS] Error: {e}")
@@ -457,6 +553,7 @@ def get_analytics():
 def search_leads():
     try:
         from app import supabase
+        from routes.lead_insights import format_phone
         client_name = request.builder['client_name']
         q = request.args.get('q', '').strip()
 
@@ -475,7 +572,7 @@ def search_leads():
             results.append({
                 'id':                u['id'],
                 'name':              u.get('full_name', 'Unknown'),
-                'phone':             f"+{u.get('country_code', '91')} {u.get('phone_number', 'N/A')}",
+                'phone':             format_phone(u),
                 'email':             u.get('email', 'N/A'),
                 'inquiry_date':      u.get('created_at', ''),
                 'total_generations': (u.get('total_generations', 0) or 0) + (u.get('pre_registration_generations', 0) or 0)
