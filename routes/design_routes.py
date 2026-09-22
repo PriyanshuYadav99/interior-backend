@@ -668,7 +668,7 @@ def track_interest():
         logger.error(f"[TRACK_INTEREST] Error: {e}")
         return jsonify({'error': 'Failed to log interest'}), 500
 
-    @design_bp.route('/api/flat-types/<client_name>', methods=['GET'])
+@design_bp.route('/api/flat-types/<client_name>', methods=['GET'])
 def get_flat_types(client_name):
     try:
         VALID_CLIENTS = ['skyline', 'ellington', 'sothebys']
