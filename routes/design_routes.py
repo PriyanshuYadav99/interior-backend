@@ -667,3 +667,28 @@ def track_interest():
     except Exception as e:
         logger.error(f"[TRACK_INTEREST] Error: {e}")
         return jsonify({'error': 'Failed to log interest'}), 500
+
+    @design_bp.route('/api/flat-types/<client_name>', methods=['GET'])
+def get_flat_types(client_name):
+    try:
+        VALID_CLIENTS = ['skyline', 'ellington', 'sothebys']
+        if client_name not in VALID_CLIENTS:
+            return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
+
+        sections = supabase.table('property_sections') \
+            .select('section_key, section_name, property_type, display_order') \
+            .eq('client_name', client_name) \
+            .eq('is_active', True) \
+            .order('display_order') \
+            .execute().data or []
+
+        flat_types = [{
+            'id': s['section_key'],
+            'name': s.get('property_type') or s['section_name'],
+        } for s in sections]
+
+        return jsonify({'success': True, 'client_name': client_name, 'flat_types': flat_types}), 200
+
+    except Exception as e:
+        logger.error(f"[FLAT TYPES] Error: {e}")
+        return jsonify({'error': 'Failed to load flat types'}), 500
