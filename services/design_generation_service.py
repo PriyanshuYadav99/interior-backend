@@ -410,7 +410,7 @@ def generate_interior_design_unified(
         logger.info(f"[{flow_name}] Polling (ID: {prediction_id[:12]}...)...")
 
         # Fast polling - 0.5 second intervals
-        max_attempts = 200
+        max_attempts = 250
         attempt = 0
 
         while attempt < max_attempts:
