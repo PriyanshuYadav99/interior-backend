@@ -21,7 +21,6 @@ from config.settings import REPLICATE_API_TOKEN, EMAIL_USER, EMAIL_PASSWORD
 from content.design_content import ROOM_IMAGES, FIXED_ROOM_LAYOUTS, INTERIOR_STYLES
 from content.prompts import construct_prompt, validate_inputs
 from services.external_clients import supabase
-from services.client_config import get_client_config
 from services.design_generation_service import (
     image_cache,
     get_cached_image,
@@ -37,7 +36,7 @@ from services.design_generation_service import (
 from services.email_service import send_welcome_email
 from services.scheduler import schedule_user_notification
 from utils.decorators import timeout_decorator
-from services.client_config import get_client_config
+
 logger = logging.getLogger(__name__)
 
 design_bp = Blueprint('design', __name__)
@@ -268,8 +267,8 @@ def generate_design():
 
         # Validate client
         VALID_CLIENTS = ['skyline', 'ellington', 'sothebys']
-        if not get_client_config(client_name):
-            return jsonify({'error': 'Invalid client'}), 400
+        if client_name not in VALID_CLIENTS:
+            return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
 
         # Validate inputs
         is_valid, message = validate_inputs(room_type, style, custom_prompt)
@@ -618,8 +617,8 @@ def get_room_preview(client_name, room_type):
     """Serve the base reference image for a room so frontend can show it immediately on room click"""
     try:
         VALID_CLIENTS = ['skyline', 'ellington','sothebys']
-        if not get_client_config(client_name):
-            return jsonify({'error': 'Invalid client'}), 400
+        if client_name not in VALID_CLIENTS:
+            return jsonify({'error': f'Invalid client'}), 400
 
         image_base64 = load_reference_image(room_type, client_name)
         if not image_base64:
@@ -673,8 +672,8 @@ def track_interest():
 def get_flat_types(client_name):
     try:
         VALID_CLIENTS = ['skyline', 'ellington', 'sothebys']
-        if not get_client_config(client_name):
-            return jsonify({'error': 'Invalid client'}), 400
+        if client_name not in VALID_CLIENTS:
+            return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
 
         sections = supabase.table('property_sections') \
             .select('section_key, section_name, property_type, display_order') \
@@ -693,11 +692,3 @@ def get_flat_types(client_name):
     except Exception as e:
         logger.error(f"[FLAT TYPES] Error: {e}")
         return jsonify({'error': 'Failed to load flat types'}), 500
-
-@design_bp.route('/api/client-config/<client_name>', methods=['GET'])
-def client_config_route(client_name):
-    cfg = get_client_config(client_name)
-    if not cfg:
-        return jsonify({'error': 'Unknown client'}), 404
-    return jsonify({'success': True, 'config': cfg}), 200
-
