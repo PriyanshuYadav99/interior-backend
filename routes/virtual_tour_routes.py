@@ -11,7 +11,7 @@ import logging
 import googlemaps
 from math import radians, sin, cos, sqrt, atan2
 from datetime import datetime
-
+from services.client_config import get_client_config
 logger = logging.getLogger(__name__)
 
 # ============================================================
@@ -23,11 +23,7 @@ gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY) if GOOGLE_MAPS_API_KEY else N
 
 DEFAULT_SEARCH_RADIUS = 5000
 
-APARTMENT_COORDINATES = {
-    'lat': 43.645416,
-    'lng': -79.387360,
-    'name': 'SOTHEBY\'S APARTMENT'
-}
+
 
 CATEGORY_MAPPING = {
     'dining': ['restaurant', 'cafe', 'bakery', 'meal_takeaway', 'meal_delivery'],
@@ -56,11 +52,12 @@ def calculate_distance(coord1, coord2):
     return R * c
 
 
-def geocode_address(address):
+def geocode_address(address, country_code=None):
     try:
         if not gmaps:
             return None
-        geocode_result = gmaps.geocode(address)
+        kwargs = {'components': {'country': country_code}} if country_code else {}
+        geocode_result = gmaps.geocode(address, **kwargs)
         if geocode_result:
             location = geocode_result[0]['geometry']['location']
             coordinates = (location['lat'], location['lng'])
@@ -141,7 +138,7 @@ def search_places_by_keyword(keyword, location, radius=DEFAULT_SEARCH_RADIUS):
         logger.info(f"[KEYWORD SEARCH] Found {len(places)} results for '{keyword}'")
 
         formatted = []
-        apartment_coords = (APARTMENT_COORDINATES['lat'], APARTMENT_COORDINATES['lng'])
+        apartment_coords = location
 
         for place in places:
             place_id = place['place_id']
@@ -279,34 +276,15 @@ def health():
         'google_maps_configured': bool(gmaps),
         'default_radius_km': DEFAULT_SEARCH_RADIUS / 1000,
         'available_categories': list(CATEGORY_MAPPING.keys()),
-        'apartment': APARTMENT_COORDINATES
+        
     }), 200
 
 
 @virtual_tour_bp.route('/search', methods=['POST'])
 def search_nearby():
     """
-    Three modes of search:
-
-    MODE 1: Category-based search (is_custom_search = False, no keyword)
-    - Search for category places near apartment
-
-    MODE 2: Keyword search (is_keyword_search = True)
-    - Search for specific keyword near apartment (e.g. 'Indian restaurant', 'Starbucks')
-    - Returns multiple matching places sorted by distance
-
-    MODE 3: Custom location search (is_custom_search = True)
-    - Geocode a custom address and return distance from apartment
-
-    Request Body:
-    {
-        "location": "address or lat,lng string",
-        "category": "dining|education|...",
-        "radius": 5000,
-        "is_custom_search": true/false,
-        "is_keyword_search": true/false,
-        "keyword": "Indian restaurant"
-    }
+    Modes: category search, keyword search (is_keyword_search), custom location (is_custom_search).
+    Always measured from the CLIENT's property (client_name -> client_config).
     """
     try:
         if not gmaps:
@@ -319,9 +297,16 @@ def search_nearby():
         if not data:
             return jsonify({'error': 'No data provided'}), 400
 
+        cfg = get_client_config(data.get('client_name'))
+        if not cfg:
+            return jsonify({'error': 'Unknown client'}), 400
+
+        origin = {'lat': cfg['lat'], 'lng': cfg['lng'], 'name': cfg['display_name']}
+        apartment_coords = (cfg['lat'], cfg['lng'])
+
         location = data.get('location')
         category = data.get('category', 'dining')
-        radius = data.get('radius', DEFAULT_SEARCH_RADIUS)
+        radius = data.get('radius') or cfg.get('search_radius_m') or DEFAULT_SEARCH_RADIUS
         is_custom_search = data.get('is_custom_search', False)
         is_keyword_search = data.get('is_keyword_search', False)
         keyword = data.get('keyword', '').strip()
@@ -329,48 +314,29 @@ def search_nearby():
         if not location:
             return jsonify({'error': 'Location is required'}), 400
 
-        apartment_coords = (APARTMENT_COORDINATES['lat'], APARTMENT_COORDINATES['lng'])
-
-        # ✅ MODE 2: KEYWORD SEARCH
+        # MODE 2: KEYWORD SEARCH
         if is_keyword_search and keyword:
-            logger.info(f"[SEARCH] 🔍 Keyword search mode: '{keyword}'")
-
             places = search_places_by_keyword(keyword, apartment_coords, radius)
-
             if not places:
                 return jsonify({
-                    'success': True,
-                    'mode': 'keyword_search',
-                    'keyword': keyword,
-                    'places': [],
-                    'count': 0,
+                    'success': True, 'mode': 'keyword_search', 'keyword': keyword,
+                    'places': [], 'count': 0,
                     'message': f'No results found for "{keyword}" within {radius/1000}km'
                 }), 200
-
             return jsonify({
-                'success': True,
-                'mode': 'keyword_search',
-                'keyword': keyword,
-                'origin': {
-                    'lat': apartment_coords[0],
-                    'lng': apartment_coords[1],
-                    'name': APARTMENT_COORDINATES['name']
-                },
-                'places': places,
-                'count': len(places),
+                'success': True, 'mode': 'keyword_search', 'keyword': keyword,
+                'origin': origin, 'places': places, 'count': len(places),
                 'radius_km': radius / 1000
             }), 200
 
-        # ✅ MODE 3: CUSTOM LOCATION SEARCH
+        # MODE 3: CUSTOM LOCATION SEARCH
         elif is_custom_search:
-            logger.info("[SEARCH] 📍 Custom location mode")
-
-            geocode_result = geocode_address(location)
+            geocode_result = geocode_address(location, cfg.get('country_code'))
             if not geocode_result:
                 return jsonify({
                     'error': 'Could not find location',
                     'location_provided': location,
-                    'suggestion': 'Try a more specific address (e.g., "Burj Khalifa, Dubai")'
+                    'suggestion': f'Try a more specific address in {cfg["city"]}'
                 }), 400
 
             custom_coords = geocode_result['coordinates']
@@ -381,56 +347,33 @@ def search_nearby():
             return jsonify({
                 'success': True,
                 'mode': 'custom_location',
-                'origin': {
-                    'lat': APARTMENT_COORDINATES['lat'],
-                    'lng': APARTMENT_COORDINATES['lng'],
-                    'name': APARTMENT_COORDINATES['name']
-                },
-                'places': [
-                    {
-                        'id': f"custom_{custom_coords[0]}_{custom_coords[1]}",
-                        'name': place_name,
-                        'address': formatted_address,
-                        'rating': 0,
-                        'user_ratings_total': 0,
-                        'distance': round(distance, 2),
-                        'coordinates': {
-                            'lat': custom_coords[0],
-                            'lng': custom_coords[1]
-                        },
-                        'photo_url': '',
-                        'types': ['custom_location'],
-                        'is_open': None,
-                        'is_custom': True
-                    }
-                ],
+                'origin': origin,
+                'places': [{
+                    'id': f"custom_{custom_coords[0]}_{custom_coords[1]}",
+                    'name': place_name,
+                    'address': formatted_address,
+                    'rating': 0,
+                    'user_ratings_total': 0,
+                    'distance': round(distance, 2),
+                    'coordinates': {'lat': custom_coords[0], 'lng': custom_coords[1]},
+                    'photo_url': '',
+                    'types': ['custom_location'],
+                    'is_open': None,
+                    'is_custom': True
+                }],
                 'count': 1,
-                'message': f'{place_name} is {round(distance, 2)}km from {APARTMENT_COORDINATES["name"]}'
+                'message': f'{place_name} is {round(distance, 2)}km from {origin["name"]}'
             }), 200
 
-        # ✅ MODE 1: CATEGORY-BASED SEARCH
+        # MODE 1: CATEGORY SEARCH
         else:
-            logger.info(f"[SEARCH] 📂 Category mode: {category}")
-
             place_types = CATEGORY_MAPPING.get(category.lower(), ['restaurant'])
-            places = search_nearby_places(
-                location=apartment_coords,
-                place_types=place_types,
-                radius=radius
-            )
+            places = search_nearby_places(location=apartment_coords, place_types=place_types, radius=radius)
 
             if not places:
                 return jsonify({
-                    'success': True,
-                    'mode': 'category_search',
-                    'origin': {
-                        'lat': apartment_coords[0],
-                        'lng': apartment_coords[1],
-                        'name': APARTMENT_COORDINATES['name']
-                    },
-                    'category': category,
-                    'places': [],
-                    'count': 0,
+                    'success': True, 'mode': 'category_search', 'origin': origin,
+                    'category': category, 'places': [], 'count': 0,
                     'radius_km': radius / 1000,
                     'message': f'No {category} places found within {radius/1000}km'
                 }), 200
@@ -446,10 +389,7 @@ def search_nearby():
                     'rating': place.get('rating'),
                     'user_ratings_total': place.get('user_ratings_total', 0),
                     'distance': round(distance, 2),
-                    'coordinates': {
-                        'lat': place['lat'],
-                        'lng': place['lng']
-                    },
+                    'coordinates': {'lat': place['lat'], 'lng': place['lng']},
                     'photo_url': place.get('photo_url', ''),
                     'types': place.get('types', []),
                     'is_open': place.get('is_open', None),
@@ -459,27 +399,16 @@ def search_nearby():
             formatted_places.sort(key=lambda x: x['distance'])
 
             return jsonify({
-                'success': True,
-                'mode': 'category_search',
-                'origin': {
-                    'lat': apartment_coords[0],
-                    'lng': apartment_coords[1],
-                    'name': APARTMENT_COORDINATES['name']
-                },
-                'category': category,
-                'places': formatted_places,
-                'count': len(formatted_places),
-                'radius_km': radius / 1000
+                'success': True, 'mode': 'category_search', 'origin': origin,
+                'category': category, 'places': formatted_places,
+                'count': len(formatted_places), 'radius_km': radius / 1000
             }), 200
 
     except Exception as e:
         logger.error(f"[SEARCH ERROR] ❌ {str(e)}")
         import traceback
         traceback.print_exc()
-        return jsonify({
-            'error': 'Internal server error',
-            'details': str(e)
-        }), 500
+        return jsonify({'error': 'Internal server error', 'details': str(e)}), 500
 
 
 @virtual_tour_bp.route('/directions', methods=['POST'])
