@@ -3,14 +3,20 @@
 """
 Virtual Tour Module - Enhanced Version
 Provides nearby places search and directions using Google Maps/Places API
+
+client_name is OPTIONAL on every request. If omitted (which is what the
+current frontend does), it falls back to FALLBACK_LOCATION (the original
+hardcoded Sotheby's pin) — so existing behavior is unchanged until the
+frontend is updated to send client_name.
 """
 
 from flask import Blueprint, request, jsonify
-import os
 import logging
-import googlemaps
 from math import radians, sin, cos, sqrt, atan2
 from datetime import datetime
+
+from services.geo_service import gmaps, GOOGLE_MAPS_API_KEY
+from services.location_service import get_location_by_client
 
 logger = logging.getLogger(__name__)
 
@@ -18,15 +24,12 @@ logger = logging.getLogger(__name__)
 # CONFIGURATION
 # ============================================================
 
-GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
-gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY) if GOOGLE_MAPS_API_KEY else None
-
 DEFAULT_SEARCH_RADIUS = 5000
 
-APARTMENT_COORDINATES = {
+FALLBACK_LOCATION = {
     'lat': 43.645416,
     'lng': -79.387360,
-    'name': 'SOTHEBY\'S APARTMENT'
+    'name': "SOTHEBY'S APARTMENT",
 }
 
 CATEGORY_MAPPING = {
@@ -40,6 +43,27 @@ CATEGORY_MAPPING = {
 }
 
 virtual_tour_bp = Blueprint('virtual_tour', __name__, url_prefix='/api/virtual-tour')
+
+
+def get_client_location(client_name):
+    """
+    Resolve a client's registered lat/lng/name from client_locations.
+    Falls back to FALLBACK_LOCATION if client_name is missing or not
+    yet registered — this is what keeps the current frontend working
+    unchanged while this feature isn't live there yet.
+    """
+    if not client_name:
+        return FALLBACK_LOCATION
+    location = get_location_by_client(client_name)
+    if location:
+        return {
+            'lat': location['lat'],
+            'lng': location['lng'],
+            'name': location.get('location_name') or client_name,
+        }
+    logger.warning(f"[VIRTUAL_TOUR] No registered location for client_name='{client_name}', using fallback")
+    return FALLBACK_LOCATION
+
 
 # ============================================================
 # UTILITY FUNCTIONS
@@ -122,8 +146,8 @@ def search_nearby_places(location, place_types, radius=DEFAULT_SEARCH_RADIUS):
 
 def search_places_by_keyword(keyword, location, radius=DEFAULT_SEARCH_RADIUS):
     """
-    Search for places near apartment using a keyword (e.g. 'Indian restaurant', 'Starbucks')
-    Returns top matching places sorted by distance
+    Search for places near the given origin using a keyword (e.g. 'Indian
+    restaurant', 'Starbucks'). Returns top matching places sorted by distance.
     """
     try:
         if not gmaps:
@@ -141,7 +165,7 @@ def search_places_by_keyword(keyword, location, radius=DEFAULT_SEARCH_RADIUS):
         logger.info(f"[KEYWORD SEARCH] Found {len(places)} results for '{keyword}'")
 
         formatted = []
-        apartment_coords = (APARTMENT_COORDINATES['lat'], APARTMENT_COORDINATES['lng'])
+        origin_coords = location  # use the coordinates actually passed in, not a hardcoded constant
 
         for place in places:
             place_id = place['place_id']
@@ -154,7 +178,7 @@ def search_places_by_keyword(keyword, location, radius=DEFAULT_SEARCH_RADIUS):
                 place['geometry']['location']['lat'],
                 place['geometry']['location']['lng']
             )
-            distance = calculate_distance(apartment_coords, place_coords)
+            distance = calculate_distance(origin_coords, place_coords)
 
             formatted.append({
                 'id': place_id,
@@ -173,7 +197,6 @@ def search_places_by_keyword(keyword, location, radius=DEFAULT_SEARCH_RADIUS):
                 'is_custom': False
             })
 
-        # Sort by distance
         formatted.sort(key=lambda x: x['distance'])
         return formatted
 
@@ -275,11 +298,11 @@ def health():
     return jsonify({
         'status': 'healthy',
         'module': 'virtual_tour',
-        'version': '2.0.0',
+        'version': '2.1.0',
         'google_maps_configured': bool(gmaps),
         'default_radius_km': DEFAULT_SEARCH_RADIUS / 1000,
         'available_categories': list(CATEGORY_MAPPING.keys()),
-        'apartment': APARTMENT_COORDINATES
+        'fallback_location': FALLBACK_LOCATION
     }), 200
 
 
@@ -289,14 +312,13 @@ def search_nearby():
     Three modes of search:
 
     MODE 1: Category-based search (is_custom_search = False, no keyword)
-    - Search for category places near apartment
-
     MODE 2: Keyword search (is_keyword_search = True)
-    - Search for specific keyword near apartment (e.g. 'Indian restaurant', 'Starbucks')
-    - Returns multiple matching places sorted by distance
-
     MODE 3: Custom location search (is_custom_search = True)
-    - Geocode a custom address and return distance from apartment
+
+    client_name (optional): if provided and registered via
+    /api/location/resolve, the origin pin is pulled from client_locations.
+    If omitted or not yet registered, falls back to FALLBACK_LOCATION —
+    this is what keeps the current frontend behavior unchanged.
 
     Request Body:
     {
@@ -305,7 +327,8 @@ def search_nearby():
         "radius": 5000,
         "is_custom_search": true/false,
         "is_keyword_search": true/false,
-        "keyword": "Indian restaurant"
+        "keyword": "Indian restaurant",
+        "client_name": "ellington"   // optional — new, backward compatible
     }
     """
     try:
@@ -325,11 +348,14 @@ def search_nearby():
         is_custom_search = data.get('is_custom_search', False)
         is_keyword_search = data.get('is_keyword_search', False)
         keyword = data.get('keyword', '').strip()
+        client_name = data.get('client_name')  
 
-        if not location:
-            return jsonify({'error': 'Location is required'}), 400
+        if is_custom_search and not location:
+            return jsonify({'error': 'Location is required for custom location search'}), 400
 
-        apartment_coords = (APARTMENT_COORDINATES['lat'], APARTMENT_COORDINATES['lng'])
+
+        client_location = get_client_location(client_name)
+        apartment_coords = (client_location['lat'], client_location['lng'])
 
         # ✅ MODE 2: KEYWORD SEARCH
         if is_keyword_search and keyword:
@@ -354,7 +380,7 @@ def search_nearby():
                 'origin': {
                     'lat': apartment_coords[0],
                     'lng': apartment_coords[1],
-                    'name': APARTMENT_COORDINATES['name']
+                    'name': client_location['name']
                 },
                 'places': places,
                 'count': len(places),
@@ -382,9 +408,9 @@ def search_nearby():
                 'success': True,
                 'mode': 'custom_location',
                 'origin': {
-                    'lat': APARTMENT_COORDINATES['lat'],
-                    'lng': APARTMENT_COORDINATES['lng'],
-                    'name': APARTMENT_COORDINATES['name']
+                    'lat': client_location['lat'],
+                    'lng': client_location['lng'],
+                    'name': client_location['name']
                 },
                 'places': [
                     {
@@ -405,7 +431,7 @@ def search_nearby():
                     }
                 ],
                 'count': 1,
-                'message': f'{place_name} is {round(distance, 2)}km from {APARTMENT_COORDINATES["name"]}'
+                'message': f'{place_name} is {round(distance, 2)}km from {client_location["name"]}'
             }), 200
 
         # ✅ MODE 1: CATEGORY-BASED SEARCH
@@ -426,7 +452,7 @@ def search_nearby():
                     'origin': {
                         'lat': apartment_coords[0],
                         'lng': apartment_coords[1],
-                        'name': APARTMENT_COORDINATES['name']
+                        'name': client_location['name']
                     },
                     'category': category,
                     'places': [],
@@ -464,7 +490,7 @@ def search_nearby():
                 'origin': {
                     'lat': apartment_coords[0],
                     'lng': apartment_coords[1],
-                    'name': APARTMENT_COORDINATES['name']
+                    'name': client_location['name']
                 },
                 'category': category,
                 'places': formatted_places,

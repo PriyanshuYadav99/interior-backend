@@ -23,6 +23,7 @@ from routes.activity_routes import activity_bp
 from routes.ai_routes import ai_bp
 from routes.news_routes import news_bp
 from routes.properties_routes import properties_bp
+from routes.location_routes import location_bp
 # ============================================================
 # LOGGING SETUP - MUST BE FIRST!
 # ============================================================
@@ -92,6 +93,7 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(activity_bp)
 app.register_blueprint(ai_bp)
 app.register_blueprint(properties_bp)
+app.register_blueprint(location_bp)
 logger.info("[BLUEPRINT] ✅ All blueprints registered!")
 
 with app.app_context():
