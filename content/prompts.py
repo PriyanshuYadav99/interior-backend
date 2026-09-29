@@ -10,6 +10,7 @@ from content.design_content import (
     THEME_ELEMENTS,
     ROOM_DESCRIPTIONS
 )
+from content.client_rooms import CLIENT_ONLY_ROOM_TYPES
 import re
 
 
@@ -429,7 +430,7 @@ def validate_inputs(room_type, style, custom_prompt):
     if not room_type:
         return False, "Room type is required"
     
-    if room_type not in FIXED_ROOM_LAYOUTS:
+    if room_type not in FIXED_ROOM_LAYOUTS and room_type not in CLIENT_ONLY_ROOM_TYPES:
         return False, f"Room type '{room_type}' not supported"
     
     if not style and not custom_prompt:
