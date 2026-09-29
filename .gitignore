@@ -47,9 +47,41 @@ Thumbs.db
 *.db
 *.sqlite
 *.sqlite3
-
+*data.sql
+*schema.sql
 # Temporary
 temp/
 tmp/
 uploads/
 *.tmp
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+
+# Database dumps and schema exports — may contain real data/structure
+*.sql
+schema_overview.csv
+scenario_image_cache.json
+supabase_dump_*/
