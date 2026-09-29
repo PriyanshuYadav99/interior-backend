@@ -21,7 +21,26 @@ ROOM_IMAGES = {
 Only theme, colors, textures, and decorative elements change.
 Room structure, furniture positions, and architecture remain IDENTICAL.
 """
+VALID_CLIENTS = ['skyline', 'ellington', 'sothebys', 'the-wow-tower']
 
+# Legacy, non-unit-aware clients — flat room_type -> filename
+LEGACY_CLIENT_IMAGES = {
+    'skyline': {
+        'master_bedroom': 'skyline_bedroom.webp',
+        'living_room': 'skyline_living_room.webp',
+        'kitchen': 'skyline_kitchen.webp',
+    },
+    'ellington': {
+        'master_bedroom': 'ellington_bedroom.webp',
+        'living_room': 'ellington_living_room.webp',
+        'kitchen': 'ellington_kitchen.webp',
+    },
+    'sothebys': {
+        'master_bedroom': 'sothebys_bedroom.webp',
+        'living_room': 'sothebys_living_room.webp',
+        'kitchen': 'sothebys_kitchen.webp',
+    },
+}
 # ====================================================================
 # 🏗️ FIXED ROOM ARCHITECTURES (NEVER CHANGES)
 # ====================================================================

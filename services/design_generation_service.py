@@ -28,9 +28,10 @@ from config.settings import (
     CACHE_DURATION,
     VERSION_CACHE_DURATION,
 )
-from content.design_content import ROOM_IMAGES, BASE_DIR
-from services.external_clients import supabase
 
+from services.external_clients import supabase
+from content.design_content import ROOM_IMAGES, BASE_DIR, LEGACY_CLIENT_IMAGES
+from content.client_rooms import get_client_room_image
 logger = logging.getLogger(__name__)
 
 # ── In-process caches (module-level state, same as the original app.py) ──
@@ -178,65 +179,34 @@ def optimize_prompt_for_gpt_image1(prompt, room_type):
     return prompt
 
 
-def load_reference_image(room_type, client_name='skyline'):
-    """Load and convert reference image to PNG format for OpenAI - WITH CLIENT SUPPORT"""
+def load_reference_image(room_type, client_name='skyline', flat_type=None):
     try:
-        # Build client-specific path
         if client_name and client_name != 'default':
-            # Client-specific images
-            # NOTE: BASE_DIR is imported from content.design_content rather
-            # than recomputed via __file__ here, since this module now lives
-            # one folder deeper than app.py used to — reusing the already
-            # project-root-relative BASE_DIR keeps this path identical to
-            # the original behavior.
-            base_dir = BASE_DIR
+            filename = get_client_room_image(client_name, room_type, flat_type)
+            if filename is None:
+                filename = LEGACY_CLIENT_IMAGES.get(client_name, {}).get(room_type)
 
-            # Map room_type to actual filename based on client
-            if client_name == 'skyline':
-                filename_map = {
-                    'master_bedroom': 'skyline_bedroom.webp',
-                    'living_room': 'skyline_living_room.webp',
-                    'kitchen': 'skyline_kitchen.webp'
-                }
-            elif client_name == 'ellington':
-                filename_map = {
-                    'master_bedroom': 'ellington_bedroom.webp',
-                    'living_room': 'ellington_living_room.webp',
-                    'kitchen': 'ellington_kitchen.webp'
-                }
-            elif client_name == 'sothebys':
-                filename_map = {
-                'master_bedroom': 'sothebys_bedroom.webp',
-                'living_room': 'sothebys_living_room.webp',
-                'kitchen': 'sothebys_kitchen.webp'
-            }
-            else:
-                logger.error(f"Unknown client: {client_name}")
-                return None
-
-            filename = filename_map.get(room_type)
             if not filename:
-                logger.error(f"No filename mapping for {room_type} in {client_name}")
+                logger.error(f"No filename mapping for {room_type} in {client_name} ({flat_type})")
                 return None
 
-            image_path = os.path.join(base_dir, 'images', client_name, filename)
+            image_path = os.path.join(BASE_DIR, 'images', client_name, filename)
 
             if not os.path.exists(image_path):
                 logger.warning(f"Client image not found: {image_path}, falling back to default")
-                # Fallback to default
                 image_path = ROOM_IMAGES.get(room_type)
         else:
-            # Default images (your current setup)
             if room_type not in ROOM_IMAGES:
                 logger.error(f"No reference image found for {room_type}")
                 return None
             image_path = ROOM_IMAGES[room_type]
 
-        if not os.path.exists(image_path):
+        if not image_path or not os.path.exists(image_path):
             logger.error(f"Reference image not found at path: {image_path}")
             return None
 
-        logger.info(f"[INFO] Loading image from: {image_path} (Client: {client_name})")
+        logger.info(f"[INFO] Loading image from: {image_path} (Client: {client_name}, Unit: {flat_type})")
+        # ... rest of the function (Image.open, convert, base64) is UNCHANGED
 
         img = Image.open(image_path)
 

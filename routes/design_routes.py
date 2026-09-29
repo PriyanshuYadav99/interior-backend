@@ -7,6 +7,16 @@ properly split into their own blueprint files. This module brings the
 design-generation feature in line with that same pattern. Every route body
 below is unchanged from the original — only the decorator (@app.route ->
 @design_bp.route) and imports changed.
+
+UPDATED: VALID_CLIENTS is now imported once from content.design_content
+instead of being redefined inline in three different routes (which had
+drifted out of sync — the-wow-tower was missing from two of them, and
+get_flat_types had a literal duplicate 'the-wow-tower' entry). generate_design
+and get_room_preview now also accept an optional flat_type so unit-aware
+clients (e.g. the-wow-tower) load the correct per-unit reference image and
+don't collide in the cache across units. A new /api/rooms/<client_name>
+route lets the frontend fetch the correct room list per client (and per
+unit, for unit-aware clients) instead of hardcoding it.
 """
 
 import time
@@ -18,7 +28,13 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 
 from config.settings import REPLICATE_API_TOKEN, EMAIL_USER, EMAIL_PASSWORD
-from content.design_content import ROOM_IMAGES, FIXED_ROOM_LAYOUTS, INTERIOR_STYLES
+from content.design_content import (
+    ROOM_IMAGES,
+    FIXED_ROOM_LAYOUTS,
+    INTERIOR_STYLES,
+    VALID_CLIENTS,
+)
+from content.client_rooms import get_client_rooms
 from content.prompts import construct_prompt, validate_inputs
 from services.external_clients import supabase
 from services.design_generation_service import (
@@ -68,7 +84,7 @@ def health_check():
 
 @design_bp.route('/api/rooms', methods=['GET'])
 def get_rooms():
-    """Get available rooms with reference images"""
+    """Get available rooms with reference images (legacy, non-client-aware list)"""
     rooms = [
         {
             'id': room_id,
@@ -78,6 +94,39 @@ def get_rooms():
         for room_id in FIXED_ROOM_LAYOUTS.keys()
     ]
     return jsonify(rooms), 200
+
+
+@design_bp.route('/api/rooms/<client_name>', methods=['GET'])
+def get_client_rooms_route(client_name):
+    """
+    Get the room list for a specific client, optionally filtered by unit
+    (?flat_type=1BR etc). Unit-aware clients (defined in
+    content.client_rooms.CLIENT_UNIT_ROOMS) return their per-unit room
+    list. Any other valid client falls back to the same global room list
+    /api/rooms returns.
+    """
+    if client_name not in VALID_CLIENTS:
+        return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
+
+    flat_type = request.args.get('flat_type')
+    client_rooms = get_client_rooms(client_name, flat_type)
+
+    if client_rooms is not None:
+        # Unit-aware client — use its configured room list for this unit
+        rooms = [{'id': r['id'], 'name': r['name']} for r in client_rooms]
+    else:
+        # Not unit-aware — same list every client used to get
+        rooms = [
+            {'id': room_id, 'name': room_id.replace('_', ' ').title()}
+            for room_id in FIXED_ROOM_LAYOUTS.keys()
+        ]
+
+    return jsonify({
+        'success': True,
+        'client_name': client_name,
+        'flat_type': flat_type,
+        'rooms': rooms
+    }), 200
 
 
 @design_bp.route('/api/styles', methods=['GET'])
@@ -256,17 +305,17 @@ def generate_design():
         # Extract parameters
         room_type = data.get('room_type')
         client_name = data.get('client_name', 'skyline')
+        flat_type = data.get('flat_type')  # unit type, e.g. "1BR" — only used by unit-aware clients
         style = data.get('style')
         property_section = data.get('property_section')
         custom_prompt = data.get('custom_prompt', '').strip()
         width = data.get('width', 1024)
         height = data.get('height', 1024)
         logger.info(f"="*70)
-        logger.info(f"[REQUEST] Room: {room_type} | Style: {style} | Client: {client_name}")
+        logger.info(f"[REQUEST] Room: {room_type} | Style: {style} | Client: {client_name} | Unit: {flat_type}")
         logger.info(f"="*70)
 
         # Validate client
-        VALID_CLIENTS = ['skyline', 'ellington', 'sothebys']
         if client_name not in VALID_CLIENTS:
             return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
 
@@ -279,7 +328,11 @@ def generate_design():
         is_custom_theme = bool(custom_prompt)
         cache_prompt = custom_prompt if is_custom_theme else f"{room_type}_{style}"
 
-        cached_result = get_cached_image(cache_prompt, client_name)
+        # Fold flat_type into the cache scope so different units (e.g. 1BR vs
+        # 2BR living room) never collide on the same cached image.
+        cache_client = f"{client_name}:{flat_type}" if flat_type else client_name
+
+        cached_result = get_cached_image(cache_prompt, cache_client)
         if cached_result:
             logger.info(f"[CACHE HIT] ⚡ Returning cached result instantly!")
             return jsonify({
@@ -291,7 +344,7 @@ def generate_design():
 
         # Load reference image
         logger.info(f"[STEP 1/3] Loading reference image...")
-        reference_image = load_reference_image(room_type, client_name)
+        reference_image = load_reference_image(room_type, client_name, flat_type)
 
         if not reference_image:
             return jsonify({
@@ -336,6 +389,7 @@ def generate_design():
             'image_base64': image_base64,
             'client_name': client_name,
             'room_type': room_type,
+            'flat_type': flat_type,
             'style': style if not is_custom_theme else 'custom',
             'custom_theme': custom_prompt if is_custom_theme else None,
             'model_used': 'adirik/interior-design',
@@ -345,7 +399,7 @@ def generate_design():
         }
 
         # CACHE THE RESULT
-        save_to_cache(cache_prompt, response_data, client_name)
+        save_to_cache(cache_prompt, response_data, cache_client)
 
         # DO CLOUDINARY + DATABASE IN BACKGROUND (NON-BLOCKING)
         def background_upload():
@@ -616,11 +670,11 @@ def clear_cache():
 def get_room_preview(client_name, room_type):
     """Serve the base reference image for a room so frontend can show it immediately on room click"""
     try:
-        VALID_CLIENTS = ['skyline', 'ellington','sothebys']
         if client_name not in VALID_CLIENTS:
-            return jsonify({'error': f'Invalid client'}), 400
+            return jsonify({'error': 'Invalid client'}), 400
 
-        image_base64 = load_reference_image(room_type, client_name)
+        flat_type = request.args.get('flat_type')
+        image_base64 = load_reference_image(room_type, client_name, flat_type)
         if not image_base64:
             return jsonify({'error': 'Image not found'}), 404
 
@@ -628,12 +682,14 @@ def get_room_preview(client_name, room_type):
             'success': True,
             'image_base64': image_base64,
             'room_type': room_type,
-            'client_name': client_name
+            'client_name': client_name,
+            'flat_type': flat_type
         }), 200
 
     except Exception as e:
         logger.error(f"[ROOM PREVIEW] Error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @design_bp.route('/api/track-interest', methods=['POST', 'OPTIONS'])
 def track_interest():
@@ -668,10 +724,10 @@ def track_interest():
         logger.error(f"[TRACK_INTEREST] Error: {e}")
         return jsonify({'error': 'Failed to log interest'}), 500
 
+
 @design_bp.route('/api/flat-types/<client_name>', methods=['GET'])
 def get_flat_types(client_name):
     try:
-        VALID_CLIENTS = ['skyline', 'ellington', 'sothebys']
         if client_name not in VALID_CLIENTS:
             return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
 
