@@ -29,10 +29,8 @@ from flask import Blueprint, request, jsonify
 
 from config.settings import REPLICATE_API_TOKEN, EMAIL_USER, EMAIL_PASSWORD
 from content.design_content import (
-    ROOM_IMAGES,
-    FIXED_ROOM_LAYOUTS,
-    INTERIOR_STYLES,
-    VALID_CLIENTS,
+    ROOM_IMAGES, FIXED_ROOM_LAYOUTS, INTERIOR_STYLES,
+    VALID_CLIENTS, LEGACY_CLIENT_IMAGES,
 )
 from content.client_rooms import get_client_rooms
 from content.prompts import construct_prompt, validate_inputs
@@ -98,13 +96,6 @@ def get_rooms():
 
 @design_bp.route('/api/rooms/<client_name>', methods=['GET'])
 def get_client_rooms_route(client_name):
-    """
-    Get the room list for a specific client, optionally filtered by unit
-    (?flat_type=1BR etc). Unit-aware clients (defined in
-    content.client_rooms.CLIENT_UNIT_ROOMS) return their per-unit room
-    list. Any other valid client falls back to the same global room list
-    /api/rooms returns.
-    """
     if client_name not in VALID_CLIENTS:
         return jsonify({'error': f'Invalid client. Must be one of: {VALID_CLIENTS}'}), 400
 
@@ -112,21 +103,19 @@ def get_client_rooms_route(client_name):
     client_rooms = get_client_rooms(client_name, flat_type)
 
     if client_rooms is not None:
-        # Unit-aware client — use its configured room list for this unit
         rooms = [{'id': r['id'], 'name': r['name']} for r in client_rooms]
+    elif client_name in LEGACY_CLIENT_IMAGES:
+        rooms = [
+            {'id': room_id, 'name': room_id.replace('_', ' ').title()}
+            for room_id in LEGACY_CLIENT_IMAGES[client_name].keys()
+        ]
     else:
-        # Not unit-aware — same list every client used to get
         rooms = [
             {'id': room_id, 'name': room_id.replace('_', ' ').title()}
             for room_id in FIXED_ROOM_LAYOUTS.keys()
         ]
 
-    return jsonify({
-        'success': True,
-        'client_name': client_name,
-        'flat_type': flat_type,
-        'rooms': rooms
-    }), 200
+    return jsonify({'success': True, 'client_name': client_name, 'flat_type': flat_type, 'rooms': rooms}), 200
 
 
 @design_bp.route('/api/styles', methods=['GET'])
