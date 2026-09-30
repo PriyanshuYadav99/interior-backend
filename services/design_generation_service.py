@@ -79,6 +79,7 @@ def save_generation_to_db(client_name, room_type, style, custom_prompt, generate
             'session_id': session_id,
             'client_name': client_name,
             'room_type': room_type,
+            'flat_type': flat_type,
             'style': style,
             'custom_prompt': custom_prompt,
             'image_url': generated_image_url,

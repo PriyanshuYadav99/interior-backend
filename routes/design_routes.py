@@ -296,7 +296,6 @@ def generate_design():
         client_name = data.get('client_name', 'skyline')
         flat_type = data.get('flat_type')  # unit type, e.g. "1BR" — only used by unit-aware clients
         style = data.get('style')
-        property_section = data.get('property_section')
         custom_prompt = data.get('custom_prompt', '').strip()
         width = data.get('width', 1024)
         height = data.get('height', 1024)
@@ -409,7 +408,8 @@ def generate_design():
                         custom_prompt=custom_prompt if is_custom_theme else None,
                         generated_image_url=cloudinary_url,
                         user_id=request_user_id,
-                        session_id=request_session_id
+                        session_id=request_session_id,
+                        flat_type=flat_type,
                     )
                     logger.info(f"[BACKGROUND] ✅ Saved to database")
 
@@ -433,7 +433,7 @@ def generate_design():
                         supabase.table('user_property_interests').insert({
                             'user_id': request_user_id,
                             'client_name': client_name,
-                            'property_section': property_section,
+                            'property_section': flat_type,
                             'room_type': room_type,
                             'style': style if not is_custom_theme else 'custom'
                         }).execute()

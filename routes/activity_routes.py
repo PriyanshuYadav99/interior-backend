@@ -68,6 +68,7 @@ def log_activity():
         tool_name   = data.get('tool_name', '').strip()
         time_spent  = data.get('time_spent_seconds', 0)
         user_id     = data.get('user_id', '').strip() or None
+        flat_type   = data.get('flat_type') or None
 
         if not session_id:
             return jsonify({'error': 'session_id is required'}), 400
@@ -132,6 +133,7 @@ def log_activity():
 #   "user_id": "uuid",              optional
 #   "client_name": "skyline",
 #   "tool_name": "virtual_tour",
+#   "flat_type": "2BHK",            optional
 #   "vt_category": "dining",
 #   "vt_place_name": "Nando's JBR",
 #   "vt_place_id": "ChIJ..."
@@ -143,6 +145,7 @@ def log_activity():
 #   "user_id": "uuid",              optional
 #   "client_name": "skyline",
 #   "tool_name": "lifeecho",
+#   "flat_type": "2BHK",            optional
 #   "lifeecho_scenario_id": 5,
 #   "lifeecho_scenario_title": "School Run Without the Morning Rush",
 #   "lifeecho_is_custom": false
@@ -154,6 +157,7 @@ def log_activity():
 #   "user_id": "uuid",              optional
 #   "client_name": "skyline",
 #   "tool_name": "lifeecho",
+#   "flat_type": "2BHK",            optional
 #   "lifeecho_is_custom": true,
 #   "lifeecho_custom_text": "What if I need to reach airport at 4am?"
 # }
@@ -176,6 +180,7 @@ def log_selection():
         client_name = data.get('client_name', '').strip()
         tool_name   = data.get('tool_name', '').strip()
         user_id     = data.get('user_id', '').strip() or None
+        flat_type   = data.get('flat_type') or None   # FIX: was missing -> NameError
 
         if not session_id:
             return jsonify({'error': 'session_id is required'}), 400
@@ -197,14 +202,14 @@ def log_selection():
         insert_data = {
             'session_id': session_id,
             'client_name': client_name,
-            'tool_name': tool_name
+            'tool_name': tool_name,
+            'flat_type': flat_type,
         }
 
         if resolved_user_id:
             insert_data['user_id'] = resolved_user_id
 
         # Virtual Tour specific fields
-        
         if tool_name == 'virtual_tour':
             vt_category   = data.get('vt_category', '').strip()
             vt_place_name = data.get('vt_place_name', '').strip()
@@ -227,9 +232,9 @@ def log_selection():
 
         # LifeEcho specific fields
         elif tool_name == 'lifeecho':
-            is_custom   = data.get('lifeecho_is_custom', False)
-            custom_text = data.get('lifeecho_custom_text', '').strip()
-            scenario_id = data.get('lifeecho_scenario_id')
+            is_custom      = data.get('lifeecho_is_custom', False)
+            custom_text    = data.get('lifeecho_custom_text', '').strip()
+            scenario_id    = data.get('lifeecho_scenario_id')
             scenario_title = data.get('lifeecho_scenario_title', '').strip()
 
             insert_data['lifeecho_is_custom'] = is_custom
@@ -251,6 +256,21 @@ def log_selection():
         supabase.table('user_tool_selections') \
             .insert(insert_data) \
             .execute()
+
+        # Also record this as a property interest so it shows up on the leads
+        # dashboard the same way room-design generations do (only once the
+        # visitor is a known user — guest browsing has no user_id yet).
+        if resolved_user_id and flat_type:
+            try:
+                supabase.table('user_property_interests').insert({
+                    'user_id': resolved_user_id,
+                    'client_name': client_name,
+                    'property_section': flat_type,
+                    'room_type': data.get('vt_category') if tool_name == 'virtual_tour' else tool_name,
+                    'style': None,
+                }).execute()
+            except Exception as e:
+                logger.warning(f"[SELECTION] Could not log property interest: {e}")
 
         return jsonify({
             'success': True,
@@ -274,11 +294,18 @@ def health():
         'status': 'healthy',
         'module': 'activity_tracker',
         'endpoints': [
-            'POST /api/activity/log       — log tool usage + time spent',
-            'POST /api/activity/selection — log virtual tour / lifeecho selection'
+            'POST /api/activity/log          — log tool usage + time spent',
+            'POST /api/activity/selection    — log virtual tour / lifeecho selection',
+            'POST /api/activity/link-session — attach user_id to guest session rows'
         ]
     }), 200
-    
+
+
+# ============================================================
+# 4. LINK SESSION (backfill user_id after login/registration)
+# POST /api/activity/link-session
+# ============================================================
+
 @activity_bp.route('/link-session', methods=['POST', 'OPTIONS'])
 def link_session():
     if request.method == 'OPTIONS':
@@ -314,4 +341,4 @@ def link_session():
 
     except Exception as e:
         logger.error(f"[LINK SESSION ERROR] {e}")
-        return jsonify({'error': 'Failed to link session'}), 500    
+        return jsonify({'error': 'Failed to link session'}), 500
