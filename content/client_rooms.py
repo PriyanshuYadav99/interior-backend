@@ -130,7 +130,7 @@ def get_client_units(client_name):
     client_map = CLIENT_UNIT_ROOMS.get(client_name)
     if client_map is None:
         return None
-    return [{'id': k, 'name': UNIT_DISPLAY_NAMES.get(k, k)} for k in client_map]
+    return [{'id': k, 'name': k} for k in client_map]
 
 # Auto-built from the config above. Never edit by hand again.
 CLIENT_ONLY_ROOM_TYPES = {
