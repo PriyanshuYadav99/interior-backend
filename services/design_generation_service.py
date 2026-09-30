@@ -62,7 +62,8 @@ def save_to_cache(prompt, image_data, client_name='default'):
     logger.info(f"[CACHE] Cached image for client={client_name}: {prompt[:50]}...")
 
 
-def save_generation_to_db(client_name, room_type, style, custom_prompt, generated_image_url, user_id=None, session_id=None):
+def save_generation_to_db(client_name, room_type, style, custom_prompt, generated_image_url,
+                          user_id=None, session_id=None, flat_type=None):
     """Save generation to Supabase only (MongoDB removed for performance)"""
     try:
         if not supabase or not generated_image_url:

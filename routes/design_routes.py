@@ -32,7 +32,7 @@ from content.design_content import (
     ROOM_IMAGES, FIXED_ROOM_LAYOUTS, INTERIOR_STYLES,
     VALID_CLIENTS, LEGACY_CLIENT_IMAGES,
 )
-from content.client_rooms import get_client_rooms
+from content.client_rooms import get_client_rooms, get_client_units, CLIENT_UNIT_ROOMS
 from content.prompts import construct_prompt, validate_inputs
 from services.external_clients import supabase
 from services.design_generation_service import (
@@ -50,7 +50,7 @@ from services.design_generation_service import (
 from services.email_service import send_welcome_email
 from services.scheduler import schedule_user_notification
 from utils.decorators import timeout_decorator
-
+VALID_CLIENTS = list(dict.fromkeys([*VALID_CLIENTS, *CLIENT_UNIT_ROOMS]))
 logger = logging.getLogger(__name__)
 
 design_bp = Blueprint('design', __name__)
@@ -731,7 +731,8 @@ def get_flat_types(client_name):
             'id': s['section_key'],
             'name': s.get('property_type') or s['section_name'],
         } for s in sections]
-
+        if not flat_types:
+            flat_types = get_client_units(client_name) or []
         return jsonify({'success': True, 'client_name': client_name, 'flat_types': flat_types}), 200
 
     except Exception as e:

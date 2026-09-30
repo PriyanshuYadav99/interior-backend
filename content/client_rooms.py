@@ -120,7 +120,22 @@ def get_client_room_image(client_name, room_type, flat_type=None):
 # validate_inputs() in content/prompts.py checks this set so generation
 # isn't blocked for these room types. Note: "bedroom_1" is NOT listed here
 # because it already exists as a key in FIXED_ROOM_LAYOUTS.
+UNIT_DISPLAY_NAMES = {
+    "studio": "Studio", "1BR": "1 Bedroom", "2BR": "2 Bedrooms",
+    "3BR": "3 Bedrooms", "4BR": "4 Bedrooms", "Townhouse": "Townhouse",
+}
+
+def get_client_units(client_name):
+    """[{'id','name'}] for unit-aware clients, else None."""
+    client_map = CLIENT_UNIT_ROOMS.get(client_name)
+    if client_map is None:
+        return None
+    return [{'id': k, 'name': UNIT_DISPLAY_NAMES.get(k, k)} for k in client_map]
+
+# Auto-built from the config above. Never edit by hand again.
 CLIENT_ONLY_ROOM_TYPES = {
-    "gym", "kids_play_area", "swimming_pool", "studio_room",
-    "bedroom", "bedroom_2", "bedroom_3", "dining",
+    r["id"]
+    for units in CLIENT_UNIT_ROOMS.values()
+    for rooms in units.values()
+    for r in rooms
 }
