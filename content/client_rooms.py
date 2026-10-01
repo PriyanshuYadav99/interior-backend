@@ -102,7 +102,7 @@ CLIENT_UNIT_ROOMS = {
                         {"id": "kitchen",        "name": "Kitchen",          "image": "spring-field_kitchen (1).webp"},
                         {"id": "gym",            "name": "Yoga Studio",      "image": "spring-field_yogastudio.jpg"},
                         {"id": "kids_play_area", "name": "Kids Play Area",   "image": "spring-field_gameroom.jpg"},
-                        {"id": "swimming_pool",  "name": "Swimming Pool",    "image": "spring-field_infinitypool.jpg"},
+                        {"id": "swimming_pool",  "name": "Swimming Pool",    "image": "spring-field_infinitypooll.jpg"},
                     ],
                     
         },
