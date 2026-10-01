@@ -1,11 +1,16 @@
 """
 properties_routes.py — Properties dashboard, AI outreach segments, bulk send.
 
-Covers your flow:
-  1-2. GET  /api/admin/properties                       -> property cards (image 1)
-  3.   GET  /api/admin/properties/<key>/outreach         -> segment counts + AI message (image 2)
-       POST /api/admin/properties/<key>/send-outreach    -> send to every lead in chosen segment(s)
-  4.   (leads list itself is admin_routes.py's existing /api/admin/leads?section=<key>, image 3)
+Each client (builder) = one property, read from the `client_locations` table:
+  - name     -> derived from client_name (the-wow-tower -> "The Wow Tower")
+  - location -> client_locations.location_name
+  - leads    -> all users of that client
+
+Flow:
+  1-2. GET  /api/admin/properties                       -> property cards
+  3.   GET  /api/admin/properties/<id>/outreach          -> segment counts + AI message
+       POST /api/admin/properties/<id>/send-outreach     -> send to every lead in chosen segment(s)
+  4.   (leads list itself is admin_routes.py's existing /api/admin/leads)
 
 Register in app.py:
     from properties_routes import properties_bp
@@ -40,38 +45,30 @@ def _parse(ts):
         return datetime.min.replace(tzinfo=timezone.utc)
 
 
+def _display_name(client_name):
+    """the-wow-tower -> 'The Wow Tower'"""
+    return (client_name or '').replace('-', ' ').replace('_', ' ').title()
+
+
 def _get_property(supabase, client_name, section_key):
-    result = supabase.table('property_sections') \
+    """Fetch one property row from client_locations by its id."""
+    result = supabase.table('client_locations') \
         .select('*') \
         .eq('client_name', client_name) \
-        .eq('section_key', section_key) \
-        .eq('is_active', True) \
+        .eq('id', section_key) \
         .execute()
-    return result.data[0] if result.data else None
+    if not result.data:
+        return None
+    r = result.data[0]
+    r['section_name'] = _display_name(client_name)  # used by outreach routes
+    return r
 
 
 def _get_property_leads(supabase, client_name, section_key):
-    interest_rows = supabase.table('user_property_interests') \
-        .select('user_id') \
-        .eq('client_name', client_name) \
-        .eq('property_section', section_key) \
-        .execute().data or []
-    interest_user_ids = {r['user_id'] for r in interest_rows}
-
-    legacy_users = supabase.table('users') \
-        .select('id') \
-        .eq('client_name', client_name) \
-        .eq('property_section', section_key) \
-        .execute().data or []
-    legacy_user_ids = {u['id'] for u in legacy_users}
-
-    user_ids = list(interest_user_ids | legacy_user_ids)
-    if not user_ids:
-        return []
-
+    """One property per client, so all of the client's leads belong to it."""
     return supabase.table('users') \
         .select('*') \
-        .in_('id', user_ids) \
+        .eq('client_name', client_name) \
         .execute().data or []
 
 
@@ -117,26 +114,28 @@ def _segment_leads(leads, activity_map):
     return hot, new, inactive
 
 
-def _property_card(supabase, client_name, section):
-    key = section['section_key']
+def _property_card(supabase, client_name, prop):
+    key = str(prop['id'])
     leads = _get_property_leads(supabase, client_name, key)
     activity_map = _last_activity_map(supabase, [u['id'] for u in leads])
     hot, new, inactive = _segment_leads(leads, activity_map)
 
     return {
         'id': key,
-        'name': section.get('section_name'),
-        'location': section.get('location', ''),
-        'image_url': section.get('image_url', ''),
-        'type': section.get('property_type'),
+        'name': _display_name(client_name),
+        'location': prop.get('location_name') or '',
+        'lat': prop.get('lat'),
+        'lng': prop.get('lng'),
+        'image_url': prop.get('image_url'),  # None if the column doesn't exist
         'new_leads': len(new),
         'hot_leads': len(hot),
+        'inactive_leads': len(inactive),
         'total_leads': len(leads),
     }
 
 
 def _generate_action_list(card, groq_client):
-    """5-point AI action list shown on each property card (image 1)."""
+    """5-point AI action list shown on each property card."""
     prompt = f"""You are a real estate sales operations assistant.
 Property: {card['name']}
 Hot leads: {card['hot_leads']}
@@ -163,7 +162,7 @@ follow-up (new leads), and general strategy. Return ONLY a JSON array of
         return [
             f"Contact {card['hot_leads']} hot leads immediately",
             f"Follow up with {card['new_leads']} new leads",
-            "Match leads with preferred unit types",
+            "Match leads with their preferred property",
             "Schedule property/virtual tours",
             "Launch personalized AI outreach"
         ]
@@ -183,16 +182,14 @@ def list_properties():
 
         client_name = request.builder['client_name']
 
-        sections = supabase.table('property_sections') \
+        rows = supabase.table('client_locations') \
             .select('*') \
             .eq('client_name', client_name) \
-            .eq('is_active', True) \
-            .order('display_order') \
             .execute().data or []
 
         properties = []
-        for s in sections:
-            card = _property_card(supabase, client_name, s)
+        for r in rows:
+            card = _property_card(supabase, client_name, r)
             card['ai_action_list'] = _generate_action_list(card, groq_client)
             properties.append(card)
 
@@ -204,7 +201,7 @@ def list_properties():
 
 
 # ---------------------------------------------------------------
-# 3a. OUTREACH PREVIEW →  GET /api/admin/properties/<key>/outreach?channel=sms
+# 3a. OUTREACH PREVIEW →  GET /api/admin/properties/<id>/outreach?channel=sms
 # ---------------------------------------------------------------
 
 @properties_bp.route('/<section_key>/outreach', methods=['GET'])
@@ -229,9 +226,9 @@ def get_outreach_preview(section_key):
         prompt = f"""Write a short, warm outreach message template from a real estate
 sales agent for the property "{section.get('section_name')}", to be sent via {channel}.
 
-Use merge placeholders exactly like {{{{First Name}}}} and {{{{Unit Type}}}}.
-Mention the property has options that match the lead's interest.
-End with a soft call-to-action to arrange a viewing or share more details.
+Use merge placeholders exactly like {{{{First Name}}}} and {{{{Property Name}}}}.
+Mention that this property matches the lead's interest.
+End with a soft call-to-action to arrange a site visit or share more details.
 Keep it under 60 words. Return ONLY the message text, nothing else."""
 
         completion = groq_client.chat.completions.create(
@@ -261,7 +258,7 @@ Keep it under 60 words. Return ONLY the message text, nothing else."""
 
 
 # ---------------------------------------------------------------
-# 3b. SEND BULK OUTREACH → POST /api/admin/properties/<key>/send-outreach
+# 3b. SEND BULK OUTREACH → POST /api/admin/properties/<id>/send-outreach
 # body: { "segments": ["hot","new"], "channel": "sms", "message": "Hi {{First Name}}..." }
 # ---------------------------------------------------------------
 
@@ -297,11 +294,14 @@ def send_bulk_outreach(section_key):
                     targets.append(u)
 
         sent, failed = 0, 0
+        property_name = section.get('section_name') or section_key
+
         for u in targets:
             first_name = (u.get('full_name') or 'there').split(' ')[0]
             personalized = message_template \
                 .replace('{{First Name}}', first_name) \
-                .replace('{{Unit Type}}', u.get('property_section', section_key))
+                .replace('{{Property Name}}', property_name) \
+                .replace('{{Unit Type}}', property_name)  # safety net for old templates
 
             ok, err = dispatch_message(u, channel, personalized)
 
@@ -338,7 +338,6 @@ def send_bulk_outreach(section_key):
 
 # ---------------------------------------------------------------
 # Optional: manually refresh AI temperature scores for a property
-# (also a good candidate to call from services/scheduler.py on a timer)
 # ---------------------------------------------------------------
 
 @properties_bp.route('/<section_key>/refresh-scores', methods=['POST'])
