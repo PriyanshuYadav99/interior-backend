@@ -92,6 +92,20 @@ CLIENT_UNIT_ROOMS = {
                     {"id": "kids_play_area", "name": "Kids Play Area",   "image": "nakheel_game-room.jpg"},
                     {"id": "swimming_pool",  "name": "Swimming Pool",    "image": "nakheel_infinitypool.jpg"},
     ]},
+    "spring-field": {
+            
+                    "3BR": [
+                        {"id": "master_bedroom", "name": "Master Bedroom",   "image": "spring-field_master-bedroom.webp"},
+                        {"id": "bedroom_1",      "name": "Bedroom 1",        "image": "spring-field_bedroom-1.webp"},
+                        {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "spring-field_bedroom-2.webp"},
+                        {"id": "living_room",    "name": "Living Room",      "image": "spring-field_living-room.webp"},
+                        {"id": "kitchen",        "name": "Kitchen",          "image": "spring-field_kitchen (1).webp"},
+                        {"id": "gym",            "name": "Yoga Studio",      "image": "spring-field_yogastudio.jpg"},
+                        {"id": "kids_play_area", "name": "Kids Play Area",   "image": "spring-field_gameroom.jpg"},
+                        {"id": "swimming_pool",  "name": "Swimming Pool",    "image": "spring-field_infinitypool.jpg"},
+                    ],
+                    
+        },
 }
 
 
