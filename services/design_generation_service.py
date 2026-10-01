@@ -28,7 +28,7 @@ from config.settings import (
     CACHE_DURATION,
     VERSION_CACHE_DURATION,
 )
-
+from functools import lru_cache
 from services.external_clients import supabase
 from content.design_content import ROOM_IMAGES, BASE_DIR, LEGACY_CLIENT_IMAGES
 from content.client_rooms import get_client_room_image
@@ -181,19 +181,35 @@ def optimize_prompt_for_gpt_image1(prompt, room_type):
     return prompt
 
 
-def load_reference_image(room_type, client_name='skyline', flat_type=None):
+@lru_cache(maxsize=128)
+def _encode_image(image_path, mtime, max_side, fmt):
+    """Resize + encode once, then serve from memory."""
+    img = Image.open(image_path)
+    if img.mode == 'RGBA':
+        background = Image.new('RGB', img.size, (255, 255, 255))
+        background.paste(img, mask=img.split()[3])
+        img = background
+    elif img.mode != 'RGB':
+        img = img.convert('RGB')
+    img.thumbnail((max_side, max_side), Image.LANCZOS)
+    buf = io.BytesIO()
+    if fmt == 'JPEG':
+        img.save(buf, format='JPEG', quality=80, optimize=True)
+    else:
+        img.save(buf, format='PNG', optimize=True)
+    return base64.b64encode(buf.getvalue()).decode('utf-8')
+
+
+def load_reference_image(room_type, client_name='skyline', flat_type=None, preview=False):
     try:
         if client_name and client_name != 'default':
             filename = get_client_room_image(client_name, room_type, flat_type)
             if filename is None:
                 filename = LEGACY_CLIENT_IMAGES.get(client_name, {}).get(room_type)
-
             if not filename:
                 logger.error(f"No filename mapping for {room_type} in {client_name} ({flat_type})")
                 return None
-
             image_path = os.path.join(BASE_DIR, 'images', client_name, filename)
-
             if not os.path.exists(image_path):
                 logger.warning(f"Client image not found: {image_path}, falling back to default")
                 image_path = ROOM_IMAGES.get(room_type)
@@ -207,30 +223,10 @@ def load_reference_image(room_type, client_name='skyline', flat_type=None):
             logger.error(f"Reference image not found at path: {image_path}")
             return None
 
-        logger.info(f"[INFO] Loading image from: {image_path} (Client: {client_name}, Unit: {flat_type})")
-        # ... rest of the function (Image.open, convert, base64) is UNCHANGED
-
-        img = Image.open(image_path)
-
-        # Convert RGBA to RGB if needed
-        if img.mode == 'RGBA':
-            background = Image.new('RGB', img.size, (255, 255, 255))
-            background.paste(img, mask=img.split()[3])
-            img = background
-        elif img.mode != 'RGB':
-            img = img.convert('RGB')
-
-        # Save as PNG to bytes
-        img_byte_arr = io.BytesIO()
-        img.save(img_byte_arr, format='PNG')
-        img_byte_arr.seek(0)
-        image_data = img_byte_arr.read()
-
-        # Convert to base64
-        image_base64 = base64.b64encode(image_data).decode('utf-8')
-
-        logger.info(f"[SUCCESS] Loaded reference image for {room_type} - {client_name} ({len(image_data)} bytes)")
-        return image_base64
+        mtime = os.path.getmtime(image_path)
+        if preview:
+            return _encode_image(image_path, mtime, 900, 'JPEG')
+        return _encode_image(image_path, mtime, 1024, 'PNG')
 
     except Exception as e:
         logger.error(f"[ERROR] Error loading reference image: {e}")

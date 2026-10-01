@@ -663,17 +663,19 @@ def get_room_preview(client_name, room_type):
             return jsonify({'error': 'Invalid client'}), 400
 
         flat_type = request.args.get('flat_type')
-        image_base64 = load_reference_image(room_type, client_name, flat_type)
+        image_base64 = load_reference_image(room_type, client_name, flat_type, preview=True)
         if not image_base64:
             return jsonify({'error': 'Image not found'}), 404
 
-        return jsonify({
+        resp = jsonify({
             'success': True,
             'image_base64': image_base64,
             'room_type': room_type,
             'client_name': client_name,
             'flat_type': flat_type
-        }), 200
+        })
+        resp.headers['Cache-Control'] = 'public, max-age=86400'
+        return resp, 200
 
     except Exception as e:
         logger.error(f"[ROOM PREVIEW] Error: {e}")
