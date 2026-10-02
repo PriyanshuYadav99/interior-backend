@@ -951,6 +951,7 @@ RULES
   Do not just repeat the scenario title. If life_scenarios is empty, return [].
 - nearby_places are businesses NEAR the development (e.g. a hotel gym, a restaurant). NEVER describe
   them as amenities inside the property, and never claim facilities that are not in the data.
+  Only name a place if it appears in nearby_places or life_scenarios. Never mention any other place.
 - messages: address the buyer by first_name and use the real property / unit type. NEVER use
   placeholders, braces or brackets. Warm, not pushy, no invented prices or discounts.
   sms: max 300 characters. whatsapp: 60-100 words. email body: 90-140 words, sign off as
