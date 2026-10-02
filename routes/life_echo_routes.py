@@ -340,11 +340,14 @@ Always finish every sentence completely. Never truncate words or leave sentences
 
 
 # ============================================================
-# SERVICE FUNCTIONS - IMAGE SERVICE (Pexels + cache)
+# SERVICE FUNCTIONS - IMAGE SERVICE (Pexels + cache)  -- FIXED
 # ============================================================
 
 IMAGE_CACHE_FILE = Path(os.getenv('IMAGE_CACHE_FILE', 'scenario_image_cache.json'))
 _cache_lock = threading.Lock()
+
+# Bump this whenever rules change. Old (bad) cached photos are ignored automatically.
+CACHE_VERSION = 'v2'
 
 
 def _load_image_cache():
@@ -366,79 +369,165 @@ def _save_image_cache():
         logger.warning(f"[IMAGES] Could not save cache: {e}")
 
 
-# (regex of trigger words, cache key, search query that gives realistic photos)
+# (trigger regex, cache key, [search queries, best first], regex the photo's ALT text must match)
 # ORDER MATTERS: more specific rules first.
+# FIX 1: transit is now ABOVE pharmacy, because "Pharmacy Metro Station" is a Dubai Metro
+#        station, not a shop.
 KEYWORD_RULES = [
-    (r'\b(gym|fitness|workout|yoga|exercise)\b', 'gym', 'modern gym interior fitness equipment'),
-    (r'\b(hospital|emergency|clinic|fever|ambulance|medical|doctor)\b', 'hospital', 'hospital building exterior modern'),
-    (r'\b(restaurant|dining|cafe|coffee|food|brunch|dinner)\b', 'dining', 'restaurant interior dining cozy'),
-    (r'\b(hockey|rink|skating|trail|trails|hiking|cycling)\b', 'outdoor-rec', 'community park walking trail'),
-    (r'\b(park|parks|garden|green|playground|nature)\b', 'park', 'city park green trees residential'),
-    (r'\b(school|schools|catchment|elementary|secondary|education|library|libraries)\b', 'school', 'school building exterior students'),
-    # --- new rules for fam / nakheel prompts (must stay BEFORE 'transit') ---
-    (r'\b(airport|flight|flights|terminal)\b', 'airport', 'modern airport terminal interior'),
-    (r'\b(pharmacy|chemist|drugstore)\b', 'pharmacy', 'pharmacy store interior shelves'),
-    (r'\b(expo|exhibition)\b', 'expo', 'modern exhibition centre building architecture'),
-    # ------------------------------------------------------------------------
-    (r'\b(transit|metro|train|lrt|subway|station|commute|bus)\b', 'transit', 'modern train station platform commuters'),
-    (r'\b(mall|shopping|grocery|groceries|supermarket|walkable)\b', 'shopping', 'shopping street supermarket exterior'),
-    (r'\b(basement|flood|flooding|drainage|sump)\b', 'basement', 'finished basement suite interior'),
-    (r'\b(garage|snow|winter|driveway)\b', 'winter-home', 'suburban house snow driveway garage'),
-    (r'\b(fiber|internet|wifi|remote work|cottage)\b', 'remote-work', 'home office remote work lake view'),
-    (r'\b(wildfire|fire)\b', 'wildfire', 'house forest landscaping stone gravel'),
-    (r'\b(energy|heat pump|insulation|solar)\b', 'energy', 'modern energy efficient house exterior'),
-    (r'\b(quiet|noise|peace|cul-de-sac|serenity)\b', 'quiet', 'quiet residential street cul-de-sac trees'),
-    (r'\b(security|safety|safe)\b', 'security', 'gated residential community entrance'),
-    (r'\b(temple|church|mosque|prayer|worship)\b', 'worship', 'place of worship exterior architecture'),
-    (r'\b(pool|swimming|clubhouse|amenit)\w*', 'amenities', 'apartment building swimming pool amenities'),
+    (r'\b(metro station|railway|railway station|train station|metro|lrt|subway|train)\b',
+     'transit',
+     ['Dubai Metro train station', 'metro train station platform', 'modern train station'],
+     r'metro|train|station|railway|subway|platform|rail'),
+
+    (r'\b(gym|fitness|workout|yoga|exercise)\b',
+     'gym', ['modern gym interior fitness equipment'], r'gym|fitness|workout|exercise|yoga'),
+
+    (r'\b(hospital|emergency|clinic|fever|ambulance|medical|doctor)\b',
+     'hospital',
+     ['hospital emergency entrance', 'ambulance emergency room', 'hospital building'],
+     r'hospital|ambulance|emergency|medical|clinic|doctor|health'),
+
+    (r'\b(restaurant|dining|cafe|coffee|food|brunch|dinner)\b',
+     'dining', ['restaurant interior dining'], r'restaurant|dining|cafe|coffee|food|table'),
+
+    (r'\b(hockey|rink|skating|trail|trails|hiking|cycling)\b',
+     'outdoor-rec', ['community park walking trail'], r'trail|park|path|walk|cycl|hik|rink|skat'),
+
+    (r'\b(park|parks|garden|green|playground|nature)\b',
+     'park', ['city park green trees'], r'park|garden|green|tree|playground'),
+
+    (r'\b(school|schools|catchment|elementary|secondary|education|library|libraries)\b',
+     'school',
+     ['international school building', 'school building exterior', 'school classroom students'],
+     r'school|classroom|student|education|campus|library'),
+
+    (r'\b(airport|flight|flights|terminal)\b',
+     'airport',
+     ['airport terminal interior', 'airport terminal departures'],
+     r'airport|terminal|departure|aircraft|airplane|flight'),
+
+    (r'\b(pharmacy|chemist|drugstore)\b',
+     'pharmacy', ['pharmacy store shelves', 'pharmacist pharmacy'], r'pharmacy|pharmacist|drugstore|medicine'),
+
+    (r'\b(expo|exhibition)\b',
+     'expo',
+     ['Expo City Dubai', 'Dubai Expo 2020 pavilion', 'exhibition centre building'],
+     r'expo|exhibition|pavilion|dubai|convention'),
+
+    (r'\b(station|commute|bus)\b',
+     'transit-bus', ['bus station commuters', 'train station commuters'], r'bus|station|commut|train|transit'),
+
+    (r'\b(mall|shopping|grocery|groceries|supermarket|walkable)\b',
+     'shopping', ['shopping mall exterior', 'supermarket exterior'], r'mall|shop|supermarket|store|grocery'),
+
+    (r'\b(basement|flood|flooding|drainage|sump)\b',
+     'basement', ['finished basement interior'], r'basement|interior|room'),
+
+    (r'\b(garage|snow|winter|driveway)\b',
+     'winter-home', ['house snow driveway garage'], r'garage|snow|driveway|winter|house'),
+
+    (r'\b(fiber|internet|wifi|remote work|cottage)\b',
+     'remote-work', ['home office remote work'], r'office|work|laptop|desk|home'),
+
+    (r'\b(wildfire|fire)\b',
+     'wildfire', ['house forest stone gravel landscaping'], r'house|forest|stone|gravel|garden|landscap'),
+
+    (r'\b(energy|heat pump|insulation|solar)\b',
+     'energy', ['energy efficient house solar panels'], r'solar|energy|house|panel|heat'),
+
+    (r'\b(quiet|noise|peace|cul-de-sac|serenity)\b',
+     'quiet', ['quiet residential street trees'], r'street|residential|quiet|house|tree'),
+
+    (r'\b(security|safety|safe)\b',
+     'security', ['gated residential community entrance'], r'gate|security|residential|entrance'),
+
+    (r'\b(temple|church|mosque|prayer|worship)\b',
+     'worship', ['mosque exterior architecture', 'place of worship exterior'], r'mosque|church|temple|worship|prayer'),
+
+    (r'\b(pool|swimming|clubhouse|amenit)\w*',
+     'amenities', ['apartment building swimming pool'], r'pool|swimming|apartment|resort|building'),
 ]
 DEFAULT_KEY = 'residential'
-DEFAULT_QUERY = 'modern residential apartment building exterior'
+DEFAULT_QUERIES = ['modern residential apartment building exterior', 'Dubai apartment building']
+DEFAULT_MUST = r'apartment|building|residential|tower|skyscraper|house|architecture'
 
 
 def resolve_keyword(title, text):
-    """Title first (most specific), then the longer text. Returns (cache_key, search_query)."""
+    """Title first (most specific), then the longer text. Returns (key, queries, must_regex)."""
     for haystack in ((title or '').lower(), (text or '').lower()):
-        for pattern, key, query in KEYWORD_RULES:
+        for pattern, key, queries, must in KEYWORD_RULES:
             if re.search(pattern, haystack):
-                return key, query
-    return DEFAULT_KEY, DEFAULT_QUERY
+                return key, queries, must
+    return DEFAULT_KEY, DEFAULT_QUERIES, DEFAULT_MUST
 
 
-def fetch_pexels_images(query, count=3):
-    if not PEXELS_API_KEY:
-        raise RuntimeError('PEXELS_API_KEY not configured')
+def _pexels_search(query, per_page=15):
     resp = requests.get(
         'https://api.pexels.com/v1/search',
         headers={'Authorization': PEXELS_API_KEY},
-        params={'query': query, 'per_page': count, 'orientation': 'landscape'},
+        params={'query': query, 'per_page': per_page, 'orientation': 'landscape'},
         timeout=8,
     )
     resp.raise_for_status()
-    return [
-        {
-            'url': p['src']['large'],
-            'thumb': p['src']['medium'],
-            'alt': p.get('alt') or query,
-            'photographer': p.get('photographer', ''),
-            'photographer_url': p.get('photographer_url', ''),
-            'source_url': p.get('url', ''),
-        }
-        for p in resp.json().get('photos', [])
-    ]
+    return resp.json().get('photos', [])
 
 
-def get_images_for_scenario(title, text, count=1):
-    key, query = resolve_keyword(title, text)
+def fetch_pexels_images(queries, must_regex, count=5):
+    """
+    FIX 2: Don't blindly trust Pexels' first result. Pull 15 per query, keep only photos whose
+    ALT text matches the topic, and try the next query if nothing relevant came back.
+    Photos with a non-matching alt are rejected. Photos with an empty alt are a last resort.
+    """
+    if not PEXELS_API_KEY:
+        raise RuntimeError('PEXELS_API_KEY not configured')
+
+    good, neutral, seen = [], [], set()
+    for query in queries:
+        try:
+            photos = _pexels_search(query)
+        except Exception as e:
+            logger.warning(f"[IMAGES] Pexels query failed '{query}': {e}")
+            continue
+
+        for p in photos:
+            url = p['src']['large']
+            if url in seen:
+                continue
+            seen.add(url)
+            alt = (p.get('alt') or '').strip()
+            item = {
+                'url': url,
+                'thumb': p['src']['medium'],
+                'alt': alt or query,
+                'photographer': p.get('photographer', ''),
+                'photographer_url': p.get('photographer_url', ''),
+                'source_url': p.get('url', ''),
+            }
+            if alt and re.search(must_regex, alt.lower()):
+                good.append(item)
+            elif not alt:
+                neutral.append(item)
+            # alt present but unrelated -> rejected on purpose
+
+        if len(good) >= count:
+            break
+
+    return (good or neutral)[:count]
+
+
+def get_images_for_scenario(title, text, count=5):
+    key, queries, must = resolve_keyword(title, text)
+    cache_key = f'{CACHE_VERSION}:{key}'
+
     with _cache_lock:
-        cached = _image_cache.get(key)
+        cached = _image_cache.get(cache_key)
     if cached:
         return key, cached, True
 
-    images = fetch_pexels_images(query, count)
+    images = fetch_pexels_images(queries, must, count)
     if images:  # never cache empty results
         with _cache_lock:
-            _image_cache[key] = images
+            _image_cache[cache_key] = images
             _save_image_cache()
     return key, images, False
 
@@ -453,7 +542,7 @@ def health():
     return jsonify({
         'status': 'healthy',
         'module': 'scenario_simulator',
-        'version': '1.2.0',
+        'version': '1.3.0',
         'groq_configured': bool(groq_client),
         'replicate_configured': bool(REPLICATE_API_TOKEN),
         'pexels_configured': bool(PEXELS_API_KEY),
