@@ -441,7 +441,7 @@ KEYWORD_RULES = [
     (r'\b(security|safety|safe)\b',
      'security', ['gated residential community entrance'], r'gate|security|residential|entrance'),
 
-    (r'\b(temple|church|mosque|prayer|worship)\b',
+    (r'\b(temple|church|mosque|prayers?|pray\w*|worship)\b',
      'worship', ['mosque exterior architecture', 'place of worship exterior'], r'mosque|church|temple|worship|prayer'),
 
     (r'\b(pool|swimming|clubhouse|amenit)\w*',
@@ -515,8 +515,56 @@ def fetch_pexels_images(queries, must_regex, count=5):
     return (good or neutral)[:count]
 
 
+_TOPIC_STOP = {'the', 'and', 'for', 'with', 'near', 'nearby', 'from', 'that', 'this', 'what', 'how', 'far',
+               'are', 'can', 'will', 'would', 'want', 'need', 'have', 'has', 'you', 'your', 'our', 'any',
+               'home', 'house', 'flat', 'apartment', 'property', 'around', 'close', 'closest', 'nearest'}
+
+
+def _topic_from_prompt(title, text):
+    """Search words taken from what the visitor typed (used only when no keyword rule matches)."""
+    raw = re.split(r'[.\n!?]', (text or title or '').strip())[0]
+    words = [w for w in re.findall(r"[A-Za-z]+", raw) if len(w) > 2 and w.lower() not in _TOPIC_STOP]
+    return ' '.join(words[:5])
+
+
+def _topic_images(topic, count=5):
+    """Photos for the visitor's own topic. Pexels already ranks by relevance, so no keyword filter."""
+    items = []
+    for p in _pexels_search(topic, per_page=count):
+        items.append({
+            'url': p['src']['large'],
+            'thumb': p['src']['medium'],
+            'alt': (p.get('alt') or '').strip() or topic,
+            'photographer': p.get('photographer', ''),
+            'photographer_url': p.get('photographer_url', ''),
+            'source_url': p.get('url', ''),
+        })
+    return items
+
+
 def get_images_for_scenario(title, text, count=5):
     key, queries, must = resolve_keyword(title, text)
+
+    # No keyword rule matched: search the visitor's own words instead of the same default photos
+    if key == DEFAULT_KEY:
+        topic = _topic_from_prompt(title, text)
+        if topic:
+            topic_key = f'{CACHE_VERSION}:topic:{topic.lower()}'
+            with _cache_lock:
+                cached = _image_cache.get(topic_key)
+            if cached:
+                return topic_key, cached, True
+            try:
+                found = _topic_images(topic, count)
+            except Exception as e:
+                logger.warning(f"[IMAGES] Topic search failed '{topic}': {e}")
+                found = []
+            if found:
+                with _cache_lock:
+                    _image_cache[topic_key] = found
+                    _save_image_cache()
+                return topic_key, found, False
+
     cache_key = f'{CACHE_VERSION}:{key}'
 
     with _cache_lock:
