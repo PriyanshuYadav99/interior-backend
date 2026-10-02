@@ -33,22 +33,10 @@ def resolve_user_id(supabase, user_id, session_id):
     return None
 
 
-# ============================================================
+
 # 1. LOG TOOL USAGE + TIME SPENT
 # POST /api/activity/log
-#
-# Call this when user LEAVES a tool (you know time spent)
-#
-# Body:
-# {
-#   "session_id": "abc123",         required
-#   "user_id": "uuid",              optional (if logged in)
-#   "client_name": "skyline",       required
-#   "tool_name": "room_design",     required — one of:
-#                                   "room_design", "virtual_tour", "lifeecho"
-#   "time_spent_seconds": 120       required
-# }
-# ============================================================
+
 
 @activity_bp.route('/log', methods=['POST', 'OPTIONS'])
 def log_activity():
@@ -126,42 +114,6 @@ def log_activity():
 # ============================================================
 # 2. LOG TOOL SELECTION (Virtual Tour place / LifeEcho scenario)
 # POST /api/activity/selection
-#
-# Body for Virtual Tour:
-# {
-#   "session_id": "abc123",
-#   "user_id": "uuid",              optional
-#   "client_name": "skyline",
-#   "tool_name": "virtual_tour",
-#   "flat_type": "2BHK",            optional
-#   "vt_category": "dining",
-#   "vt_place_name": "Nando's JBR",
-#   "vt_place_id": "ChIJ..."
-# }
-#
-# Body for LifeEcho (pre-generated scenario):
-# {
-#   "session_id": "abc123",
-#   "user_id": "uuid",              optional
-#   "client_name": "skyline",
-#   "tool_name": "lifeecho",
-#   "flat_type": "2BHK",            optional
-#   "lifeecho_scenario_id": 5,
-#   "lifeecho_scenario_title": "School Run Without the Morning Rush",
-#   "lifeecho_is_custom": false
-# }
-#
-# Body for LifeEcho (custom scenario):
-# {
-#   "session_id": "abc123",
-#   "user_id": "uuid",              optional
-#   "client_name": "skyline",
-#   "tool_name": "lifeecho",
-#   "flat_type": "2BHK",            optional
-#   "lifeecho_is_custom": true,
-#   "lifeecho_custom_text": "What if I need to reach airport at 4am?"
-# }
-# ============================================================
 
 @activity_bp.route('/selection', methods=['POST', 'OPTIONS'])
 def log_selection():

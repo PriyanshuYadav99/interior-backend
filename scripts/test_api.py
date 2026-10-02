@@ -12,10 +12,8 @@ import sys
 # ============================================================
 # CONFIGURATION - CHANGE THIS FOR LOCAL TESTING
 # ============================================================
-BASE_URL = "http://localhost:5000"  # Change port if different
-# Common alternatives:
-# BASE_URL = "http://localhost:8000"
-# BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = "http://localhost:5000"  
+
 
 # ANSI colors for terminal
 GREEN = '\033[92m'

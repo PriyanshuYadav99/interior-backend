@@ -1,4 +1,3 @@
-"""Generic route decorators. Moved verbatim from app.py."""
 
 import time
 import logging

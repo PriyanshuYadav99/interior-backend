@@ -1,8 +1,3 @@
-"""
-outreach_dispatch.py — single place that actually sends a message
-on a given channel. Used by both properties_routes.py (bulk) and
-ai_routes.py (single lead) so the sending logic only lives once.
-"""
 
 import logging
 

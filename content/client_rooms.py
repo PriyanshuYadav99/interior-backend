@@ -42,55 +42,44 @@ CLIENT_UNIT_ROOMS = {
     },
     "nakheel": {
         "Townhouse": [
-                    {"id": "townhouse_living_room",    "name": "Living & Bedroom", "image": "nakheel_livingroom(townhouse).jpg"},
-                    {"id": "gym",            "name": "Yoga Studio",      "image": "nakheel_yoga-studio.jpg"},
-                    {"id": "kids_play_area", "name": "Kids Play Area",   "image": "nakheel_game-room.jpg"},
-                    {"id": "swimming_pool",  "name": "Swimming Pool",    "image": "nakheel_infinitypool.jpg"},
+                    {"id": "master_bedroom",    "name": "Master Bedroom",      "image": "nakheel_masterbedroom(townhouse).png"},
+                    {"id": "bedroom_1",         "name": "Bedroom 1",        "image": "nakheel_bedroom1.jpg"},
+                    {"id": "bedroom_2",         "name": "Bedroom 2",        "image": "nakheel_bedroom2.png"},
+                    {"id": "bedroom_3",         "name": "Bedroom 3",        "image": "nakheel_bedroom3.jpg"},
+                    {"id": "living_room",       "name": "Living Room",         "image": "nakheel_livingroom(townhouse).jpg"},
+                    {"id": "kitchen",           "name": "Kitchen",             "image": "nakheel_kitchen(townhouse).png"},
+                    
                 ],
 
         
         "1BR": [
-            {"id": "master_bedroom",    "name": "Master Bedroom",      "image": "nakheel_bedroom.jpg"},
+            {"id": "master_bedroom",    "name": "Master Bedroom",      "image": "nakheel_masterbedroom(1br-3br).png"},
             {"id": "living_room",       "name": "Living Room",         "image": "nakheel_livingroom(1br).jpg"},
-            {"id": "dining",            "name": "Dining",              "image": "nakheel_dining.jpg"},
-            {"id": "kitchen",           "name": "Kitchen",             "image": "nakheel_kitchen.png"},
-            {"id": "gym",               "name": "Yoga Studio",         "image": "nakheel_yoga-studio.jpg"},
-            {"id": "swimming_pool",     "name": "Swimming Pool",       "image": "nakheel_infinitypool.jpg"},
-            {"id": "kids_play_area",    "name": "Kids Play Area",      "image": "nakheel_game-room.jpg"},
+            {"id": "kitchen",           "name": "Kitchen",             "image": "nakheel_kitchen(1br-3br).png"},
             
         ],
         "2BR": [
-                    {"id": "master_bedroom", "name": "Master Bedroom",   "image": "nakheel_bedroom.jpg"},
-                    {"id": "bedroom",        "name": "Bedroom",          "image": "nakheel_bedroom.jpg"},
-                    {"id": "living_room",    "name": "Living Room",      "image":"nakheel_livingroom(2br-3br).jpg"},
-                    {"id": "dining",         "name": "Dining",           "image": "nakheel_dining.jpg"},
-                    {"id": "kitchen",        "name": "Kitchen",          "image": "nakheel_kitchen.png"},
-                    {"id": "gym",            "name": "Yoga Studio",      "image": "nakheel_yoga-studio.jpg"},
-                    {"id": "kids_play_area", "name": "Kids Play Area",   "image": "nakheel_game-room.jpg"},
-                    {"id": "swimming_pool",  "name": "Swimming Pool",    "image": "nakheel_infinitypool.jpg"},
+                    {"id": "master_bedroom", "name": "Master Bedroom",   "image": "nakheel_masterbedroom(2br).png"},
+                    {"id": "bedroom",        "name": "Bedroom",          "image": "nakheel_bedroom1.jpg"},
+                    {"id": "living_room",    "name": "Living Room",      "image":"nakheel_livingroom(2br).jpg"},
+                    {"id": "kitchen",        "name": "Kitchen",          "image": "nakheel_kitchen(2br-4br).png"},
+                    
                 ],
                 "3BR": [
-                    {"id": "master_bedroom", "name": "Master Bedroom",   "image": "nakheel_bedroom.jpg"},
-                    {"id": "bedroom_1",      "name": "Bedroom 1",          "image": "nakheel_bedroom.jpg"},
-                    {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "nakheel_bedroom.jpg"},
-                    {"id": "living_room",    "name": "Living Room",      "image": "nakheel_livingroom(2br-3br).jpg"},
-                    {"id": "dining",         "name": "Dining",           "image": "nakheel_dining.jpg"},
-                    {"id": "kitchen",        "name": "Kitchen",          "image": "nakheel_kitchen.png"},
-                    {"id": "gym",            "name": "Yoga Studio",      "image": "nakheel_yoga-studio.jpg"},
-                    {"id": "kids_play_area", "name": "Kids Play Area",   "image": "nakheel_game-room.jpg"},
-                    {"id": "swimming_pool",  "name": "Swimming Pool",    "image": "nakheel_infinitypool.jpg"},
+                    {"id": "master_bedroom", "name": "Master Bedroom",   "image": "nakheel_masterbedroom(1br-3br).png"},
+                    {"id": "bedroom_1",      "name": "Bedroom 1",        "image": "nakheel_bedroom1.jpg"},
+                    {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "nakheel_bedroom2.png"},
+                    {"id": "living_room",    "name": "Living Room",      "image": "nakheel_livingroom(3br).png"},
+                    {"id": "kitchen",        "name": "Kitchen",          "image": "nakheel_kitchen(1br-3br).png"},
+                    
                 ],
                 "4BR": [
-                    {"id": "master_bedroom", "name": "Master Bedroom",   "image": "nakheel_bedroom.jpg"},
-                    {"id": "bedroom_1",      "name": "Bedroom 1",        "image": "nakheel_bedroom.jpg"},
-                    {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "nakheel_bedroom.jpg"},
-                    {"id": "bedroom_3",      "name": "Bedroom 3",        "image": "nakheel_bedroom.jpg"},
-                    {"id": "living_room",    "name": "Living Room",      "image": "nakheel_livingroom(4br).jpg"},
-                    {"id": "dining",         "name": "Dining",           "image": "nakheel_dining.jpg"},
-                    {"id": "kitchen",        "name": "Kitchen",          "image": "nakheel_kitchen.png"},
-                    {"id": "gym",            "name": "Yoga Studio",      "image": "nakheel_yoga-studio.jpg"},
-                    {"id": "kids_play_area", "name": "Kids Play Area",   "image": "nakheel_game-room.jpg"},
-                    {"id": "swimming_pool",  "name": "Swimming Pool",    "image": "nakheel_infinitypool.jpg"},
+                    {"id": "master_bedroom", "name": "Master Bedroom",   "image": "nakheel_masterbedroom(4br).png"},
+                    {"id": "bedroom_1",      "name": "Bedroom 1",        "image": "nakheel_bedroom1.jpg"},
+                    {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "nakheel_bedroom2.png"},
+                    {"id": "bedroom_3",      "name": "Bedroom 3",        "image": "nakheel_bedroom3.jpg"},
+                    {"id": "living_room",    "name": "Living Room",      "image": "nakheel_livingroom(4br).png"},
+                    {"id": "kitchen",        "name": "Kitchen",          "image": "nakheel_kitchen(2br-4br).png"},
     ]},
     "spring-field": {
             
@@ -106,6 +95,31 @@ CLIENT_UNIT_ROOMS = {
                     ],
                     
         },
+     "fam": {
+            
+            "1 Bedroom": [
+                {"id": "master_bedroom",    "name": "Master Bedroom",      "image": "fam_master-bedroom(1br).png"},
+                {"id": "living_room",       "name": "Living Room",         "image": "fam_Living-room(1br).png"},
+                {"id": "kitchen",           "name": "Kitchen",             "image": "fam_kitchen(1br-2br).png"},
+                
+                ],
+            "2 Bedroom": [
+                        {"id": "master_bedroom", "name": "Master Bedroom",   "image": "fam_master-bedroom(2br).png"},
+                        {"id": "bedroom",        "name": "Bedroom",          "image": "fam_bedroom(1br-2br).jpg"},
+                        {"id": "living_room",    "name": "Living Room",      "image":"fam_Living-room(2br).png"},
+                        {"id": "kitchen",        "name": "Kitchen",          "image": "fam_kitchen(1br-2br).png"},
+                    ],
+
+                    "3 Bedroom": [
+                        {"id": "master_bedroom", "name": "Master Bedroom",   "image": "fam_master-bedroom(3br).png"},
+                        {"id": "bedroom_1",      "name": "Bedroom 1",          "image": "fam_bedroom1(3br).png"},
+                        {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "fam_bedroom2(3br).png"},
+                        {"id": "living_room",    "name": "Living Room",      "image": "fam_Living-room(3br).png"},
+                        {"id": "kitchen",        "name": "Kitchen",          "image": "fam_kitchen(3br).png"},
+                        
+                    ],
+                    
+        },    
 }
 
 
@@ -125,15 +139,6 @@ def get_client_room_image(client_name, room_type, flat_type=None):
             return room["image"]
     return None
 
-
-# Room ids that only exist for unit-aware clients (amenities, combined
-# studio layouts, secondary bedrooms) and are intentionally NOT part of
-# FIXED_ROOM_LAYOUTS, since FIXED_ROOM_LAYOUTS also doubles as the default
-# room list for non-unit-aware clients — adding these there would leak
-# "Gym"/"Bedroom 2" into clients that don't have those images.
-# validate_inputs() in content/prompts.py checks this set so generation
-# isn't blocked for these room types. Note: "bedroom_1" is NOT listed here
-# because it already exists as a key in FIXED_ROOM_LAYOUTS.
 UNIT_DISPLAY_NAMES = {
     "studio": "Studio", "1BR": "1 Bedroom", "2BR": "2 Bedrooms",
     "3BR": "3 Bedrooms", "4BR": "4 Bedrooms", "Townhouse": "Townhouse",
@@ -146,7 +151,7 @@ def get_client_units(client_name):
         return None
     return [{'id': k, 'name': k} for k in client_map]
 
-# Auto-built from the config above. Never edit by hand again.
+
 CLIENT_ONLY_ROOM_TYPES = {
     r["id"]
     for units in CLIENT_UNIT_ROOMS.values()

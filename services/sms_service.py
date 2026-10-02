@@ -1,20 +1,3 @@
-"""
-sms_service.py — SMS sending via Twilio.
-
-Setup:
-1. pip install twilio
-2. Add to your .env:
-     TWILIO_ACCOUNT_SID=your_account_sid
-     TWILIO_AUTH_TOKEN=your_auth_token
-     TWILIO_PHONE_NUMBER=+1xxxxxxxxxx   (the number Twilio gave you)
-
-Note: Sending SMS to Indian numbers (+91) via Twilio requires DLT
-(Distributed Ledger Technology) registration with Indian telecom
-authorities — a template/sender-ID approval process done through
-Twilio's console. Until that's approved, sends to +91 numbers will
-fail or be blocked. If your leads are mostly India-based, consider
-MSG91 or Gupshup instead, which handle DLT registration directly.
-"""
 
 import os
 import logging

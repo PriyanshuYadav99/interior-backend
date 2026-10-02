@@ -106,13 +106,7 @@ logger.info("=" * 70)
 # ============================================================
 # DEBUG / SCHEDULER ENDPOINTS
 # ============================================================
-# These stay here (rather than in routes/) because `app_scheduler` below
-# is only ever assigned inside the `if __name__ == '__main__':` block at
-# the bottom of this file — see the note there. Keeping these routes in
-# the same module keeps that (pre-existing) global lookup working exactly
-# as it did before this reorg; moving them to a separate file would need
-# either duplicating that scoping quirk elsewhere or fixing it outright,
-# and this pass is a structure-only move, not a behavior change.
+
 
 @app.route('/api/scheduler-status', methods=['GET'])
 def scheduler_status():
@@ -227,15 +221,6 @@ def test_whatsapp_notification(user_id):
 # ============================================================
 if __name__ == '__main__':
 
-    # NOTE (found during restructuring, intentionally left unchanged):
-    # `app_scheduler` is only ever assigned in this __main__ block. This
-    # file is served in production via gunicorn per the Procfile
-    # (`gunicorn app:app`), and gunicorn never executes this block, since
-    # __name__ is the module name ('app'), not '__main__', when imported
-    # that way. That means in production the scheduler is likely never
-    # actually initialized/started, and /api/scheduler-status will always
-    # report "Scheduler not initialized". This predates this restructure;
-    # flagged in the README rather than silently changed here.
 
     # STEP 2: Initialize scheduler
     if supabase:
@@ -260,7 +245,4 @@ if __name__ == '__main__':
     logger.info(f"Scenario Module: ✓")
     logger.info("=" * 70)
 
-    # Set debug=True for development (shows errors) — unchanged from the
-    # original; this only runs under `python app.py` directly, never under
-    # gunicorn, so it doesn't affect the Procfile-based production deploy.
     app.run(host='0.0.0.0', port=port, debug=True)

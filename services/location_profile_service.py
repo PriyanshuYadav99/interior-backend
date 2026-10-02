@@ -1,9 +1,3 @@
-"""
-Builds a localized "profile" for a lat/lng — currency, climate, transit
-names, emergency number — used to fill in the Life Echo prompt template
-instead of hardcoded Canadian/Indian values. Runs once per location, at
-registration time, and gets cached in client_locations.config.
-"""
 
 import os
 import json

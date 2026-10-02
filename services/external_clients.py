@@ -1,14 +1,3 @@
-"""
-External service client setup — Supabase (database) and Cloudinary (image
-storage). Both are configured once at import time, exactly like they were
-in the original app.py, just relocated so other modules (services, routes)
-can import `supabase` without importing from app.py and risking a circular
-import.
-
-Note: this codebase previously also had `mongo_client = None` / `db = None`
-left over from a removed MongoDB integration. Neither was ever read anywhere
-in the codebase, so they were dropped as genuinely dead code, not moved.
-"""
 
 import logging
 import cloudinary

@@ -34,7 +34,7 @@ from content.design_content import ROOM_IMAGES, BASE_DIR, LEGACY_CLIENT_IMAGES
 from content.client_rooms import get_client_room_image
 logger = logging.getLogger(__name__)
 
-# ── In-process caches (module-level state, same as the original app.py) ──
+ 
 image_cache = {}
 _cached_model_version = None
 _version_cache_time = None

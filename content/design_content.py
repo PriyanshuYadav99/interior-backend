@@ -3,10 +3,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# This module now lives in content/design_content.py (one level below the
-# project root), so BASE_DIR must go up one extra level to still resolve to
-# the actual project root where images/ lives — otherwise these paths would
-# silently point at content/images/ instead.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Paths to reference room images

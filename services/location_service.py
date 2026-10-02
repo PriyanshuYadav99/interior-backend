@@ -1,11 +1,3 @@
-"""
-Location service — single source of truth for client → coordinates → profile.
-
-Handles create-or-fetch for the client_locations table. On first creation
-for a given lat/lng, it also triggers build_location_profile() to generate
-the currency/climate/transport data used by scenario.py's Life Echo prompts.
-Subsequent lookups are cheap reads — no repeated LLM calls.
-"""
 
 import logging
 from services.external_clients import supabase
