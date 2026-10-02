@@ -866,7 +866,7 @@ def get_property_filter():
             'total_leads': len(users),   # shown on the "All properties" option
             'property_name': property_name,
             'properties': properties,
-            'options': options,
+            'options': [], 
         }), 200
 
     except Exception as e:
@@ -1008,8 +1008,8 @@ def get_leads():
             uid = u['id']
             unit_interests = sorted(interests_by_user.get(uid, set()))
             # Fallback: if no interest rows yet, show the legacy single value so nothing looks empty
-            if not unit_interests and u.get('property_section'):
-                unit_interests = [u['property_section']]
+                        # Only units the lead really used (generated a design / made a selection).
+            # The unit on the registration form is NOT counted: it is just the page's default unit.
 
             temp = (u.get('lead_temperature') or '').lower()
             status = temp if temp in ('hot', 'warm', 'cold') else 'new'

@@ -716,9 +716,7 @@ def summarize(data, user, section_names=None):
             key = row.get('flat_type')
             if key and key not in unit_keys:
                 unit_keys.append(key)
-        legacy_key = user.get('property_section')
-        if legacy_key and legacy_key not in unit_keys:
-            unit_keys.append(legacy_key)
+            # (the unit chosen on the registration form is not counted: it is only the page's default unit)
 
     # freshest timestamp across everything (used to decide if cached AI text is stale)
     stamps = []
