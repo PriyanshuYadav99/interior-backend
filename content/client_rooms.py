@@ -45,7 +45,7 @@ CLIENT_UNIT_ROOMS = {
                     {"id": "master_bedroom",    "name": "Master Bedroom",      "image": "nakheel_masterbedroom(townhouse).png"},
                     {"id": "bedroom_1",         "name": "Bedroom 1",        "image": "nakheel_bedroom1.jpg"},
                     {"id": "bedroom_2",         "name": "Bedroom 2",        "image": "nakheel_bedroom2.png"},
-                    {"id": "bedroom_3",         "name": "Bedroom 3",        "image": "nakheel_bedroom3.jpg"},
+                    {"id": "bedroom_3",         "name": "Bedroom 3",        "image": "nakheel_bedroom3.png"},
                     {"id": "living_room",       "name": "Living Room",         "image": "nakheel_livingroom(townhouse).jpg"},
                     {"id": "kitchen",           "name": "Kitchen",             "image": "nakheel_kitchen(townhouse).png"},
                     
@@ -77,8 +77,8 @@ CLIENT_UNIT_ROOMS = {
                     {"id": "master_bedroom", "name": "Master Bedroom",   "image": "nakheel_masterbedroom(4br).png"},
                     {"id": "bedroom_1",      "name": "Bedroom 1",        "image": "nakheel_bedroom1.jpg"},
                     {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "nakheel_bedroom2.png"},
-                    {"id": "bedroom_3",      "name": "Bedroom 3",        "image": "nakheel_bedroom3.jpg"},
-                    {"id": "living_room",    "name": "Living Room",      "image": "nakheel_livingroom(4br).png"},
+                    {"id": "bedroom_3",      "name": "Bedroom 3",        "image": "nakheel_bedroom3.png"},
+                    {"id": "living_room",    "name": "Living Room",      "image": "nakheel_livingroom(4br).jpg"},
                     {"id": "kitchen",        "name": "Kitchen",          "image": "nakheel_kitchen(2br-4br).png"},
     ]},
     "spring-field": {
@@ -95,31 +95,26 @@ CLIENT_UNIT_ROOMS = {
                     ],
                     
         },
-     "fam": {
-            
-            "1 Bedroom": [
-                {"id": "master_bedroom",    "name": "Master Bedroom",      "image": "fam_master-bedroom(1br).png"},
-                {"id": "living_room",       "name": "Living Room",         "image": "fam_Living-room(1br).png"},
-                {"id": "kitchen",           "name": "Kitchen",             "image": "fam_kitchen(1br-2br).png"},
-                
-                ],
-            "2 Bedroom": [
-                        {"id": "master_bedroom", "name": "Master Bedroom",   "image": "fam_master-bedroom(2br).png"},
-                        {"id": "bedroom",        "name": "Bedroom",          "image": "fam_bedroom(1br-2br).jpg"},
-                        {"id": "living_room",    "name": "Living Room",      "image":"fam_Living-room(2br).png"},
-                        {"id": "kitchen",        "name": "Kitchen",          "image": "fam_kitchen(1br-2br).png"},
-                    ],
-
-                    "3 Bedroom": [
-                        {"id": "master_bedroom", "name": "Master Bedroom",   "image": "fam_master-bedroom(3br).png"},
-                        {"id": "bedroom_1",      "name": "Bedroom 1",          "image": "fam_bedroom1(3br).png"},
-                        {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "fam_bedroom2(3br).png"},
-                        {"id": "living_room",    "name": "Living Room",      "image": "fam_Living-room(3br).png"},
-                        {"id": "kitchen",        "name": "Kitchen",          "image": "fam_kitchen(3br).png"},
-                        
-                    ],
-                    
-        },    
+         "fam": {
+        "1br": [
+            {"id": "master_bedroom", "name": "Master Bedroom", "image": "fam_master-bedroom(1br).png"},
+            {"id": "living_room",    "name": "Living Room",    "image": "fam_Living-room(1br).png"},
+            {"id": "kitchen",        "name": "Kitchen",        "image": "fam_kitchen(1br-2br).png"},
+        ],
+        "2br": [
+            {"id": "master_bedroom", "name": "Master Bedroom", "image": "fam_master-bedroom(2br).png"},
+            {"id": "bedroom",        "name": "Bedroom",        "image": "fam_bedroom(1br-2br).jpg"},
+            {"id": "living_room",    "name": "Living Room",    "image": "fam_Living-room(2br).png"},
+            {"id": "kitchen",        "name": "Kitchen",        "image": "fam_kitchen(1br-2br).png"},
+        ],
+        "3br": [
+            {"id": "master_bedroom", "name": "Master Bedroom", "image": "fam_master-bedroom(3br).png"},
+            {"id": "bedroom_1",      "name": "Bedroom 1",      "image": "fam_bedroom1(3br).png"},
+            {"id": "bedroom_2",      "name": "Bedroom 2",      "image": "fam_bedroom2(3br).png"},
+            {"id": "living_room",    "name": "Living Room",    "image": "fam_Living-room(3br).png"},
+            {"id": "kitchen",        "name": "Kitchen",        "image": "fam_kitchen(3br).png"},
+        ],
+    },  
 }
 
 
