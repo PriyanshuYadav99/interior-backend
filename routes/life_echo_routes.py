@@ -924,6 +924,8 @@ def get_client_scenarios(client_name):
 
         location = get_location_by_client(key)
         profile = location.get('config') if location else None
+        if not profile:
+            logger.warning(f"[CLIENT-SCENARIO] No location profile for '{key}', using generic defaults (not caching)")
 
         with ThreadPoolExecutor(max_workers=len(prompts)) as pool:
             results = list(pool.map(
@@ -932,8 +934,8 @@ def get_client_scenarios(client_name):
             ))
         scenarios = [s for s in results if s]
 
-        # only cache when everything succeeded, so a failure retries next time
-        if len(scenarios) == len(prompts):
+        # cache only if every story succeeded AND a real location profile was used
+        if profile and len(scenarios) == len(prompts):
             _client_cache[key] = scenarios
         return scenarios
 
