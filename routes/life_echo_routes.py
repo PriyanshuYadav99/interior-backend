@@ -1,8 +1,10 @@
-
 """
 Scenario Simulator Module - Single File Version
 Generates realistic real estate scenarios with AI-generated narratives
 and cached, keyword-matched real photos (Pexels).
+
+Per-client scenarios: clients listed in CLIENT_SCENARIO_PROMPTS (fam, nakheel)
+get their own cards. Every other client uses the normal SCENARIO_POOL.
 """
 
 from flask import Blueprint, request, jsonify
@@ -16,6 +18,7 @@ import re
 import math
 import random
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from groq import Groq
 from services.location_service import get_location_by_client
@@ -372,6 +375,11 @@ KEYWORD_RULES = [
     (r'\b(hockey|rink|skating|trail|trails|hiking|cycling)\b', 'outdoor-rec', 'community park walking trail'),
     (r'\b(park|parks|garden|green|playground|nature)\b', 'park', 'city park green trees residential'),
     (r'\b(school|schools|catchment|elementary|secondary|education|library|libraries)\b', 'school', 'school building exterior students'),
+    # --- new rules for fam / nakheel prompts (must stay BEFORE 'transit') ---
+    (r'\b(airport|flight|flights|terminal)\b', 'airport', 'modern airport terminal interior'),
+    (r'\b(pharmacy|chemist|drugstore)\b', 'pharmacy', 'pharmacy store interior shelves'),
+    (r'\b(expo|exhibition)\b', 'expo', 'modern exhibition centre building architecture'),
+    # ------------------------------------------------------------------------
     (r'\b(transit|metro|train|lrt|subway|station|commute|bus)\b', 'transit', 'modern train station platform commuters'),
     (r'\b(mall|shopping|grocery|groceries|supermarket|walkable)\b', 'shopping', 'shopping street supermarket exterior'),
     (r'\b(basement|flood|flooding|drainage|sump)\b', 'basement', 'finished basement suite interior'),
@@ -445,11 +453,12 @@ def health():
     return jsonify({
         'status': 'healthy',
         'module': 'scenario_simulator',
-        'version': '1.1.0',
+        'version': '1.2.0',
         'groq_configured': bool(groq_client),
         'replicate_configured': bool(REPLICATE_API_TOKEN),
         'pexels_configured': bool(PEXELS_API_KEY),
-        'cached_image_keywords': list(_image_cache.keys())
+        'cached_image_keywords': list(_image_cache.keys()),
+        'client_scenarios_cached': list(_client_cache.keys()),
     }), 200
 
 
@@ -858,6 +867,77 @@ CATEGORY_ICONS = {
 }
 
 
+# ============================================================
+# CLIENT-SPECIFIC SCENARIOS
+# Only clients listed here get custom cards. Any client NOT listed
+# keeps using the normal SCENARIO_POOL above.
+# To add a client later, just add another entry to this dict.
+# ============================================================
+
+CLIENT_SCENARIO_PROMPTS = {
+    "fam": [
+        {"prompt": "International School near me", "icon": "building"},
+        {"prompt": "Nearest Hospital near me", "icon": "shield"},
+        {"prompt": "How far is Al Maktoum International Airport (DWC)", "icon": "clock"},
+        {"prompt": "Closest Railway station", "icon": "clock"},
+    ],
+    "nakheel": [
+        {"prompt": "International School near me", "icon": "building"},
+        {"prompt": "Quickest way to Expo City", "icon": "clock"},
+        {"prompt": "How far is Al Maktoum International Airport (DWC)", "icon": "clock"},
+        {"prompt": "How far is Pharmacy metro station", "icon": "shield"},
+    ],
+}
+
+_client_cache = {}
+_client_locks = {k: threading.Lock() for k in CLIENT_SCENARIO_PROMPTS}
+
+
+def _build_client_scenario(client, idx, item, location_profile):
+    result = generate_scenario_story(item['prompt'], location_profile)
+    if not result.get('success'):
+        logger.warning(f"[CLIENT-SCENARIO] Failed '{item['prompt']}' for {client}")
+        return None
+    return {
+        'id': f"{client}-{idx}",
+        # keep the prompt as the card title so it matches the sheet exactly
+        'title': item['prompt'],
+        'story': result['story'],
+        'tagline': result['tagline'],
+        'icon': item['icon'],
+        'category': 'client',
+        'promptText': item['prompt'],  # used by the frontend for photo matching
+    }
+
+
+def get_client_scenarios(client_name):
+    """Returns None if the client has no custom prompts (use the normal pool)."""
+    key = (client_name or '').strip().lower()
+    prompts = CLIENT_SCENARIO_PROMPTS.get(key)
+    if not prompts:
+        return None
+
+    with _client_locks[key]:
+        cached = _client_cache.get(key)
+        if cached:
+            return cached
+
+        location = get_location_by_client(key)
+        profile = location.get('config') if location else None
+
+        with ThreadPoolExecutor(max_workers=len(prompts)) as pool:
+            results = list(pool.map(
+                lambda a: _build_client_scenario(key, a[0], a[1], profile),
+                enumerate(prompts),
+            ))
+        scenarios = [s for s in results if s]
+
+        # only cache when everything succeeded, so a failure retries next time
+        if len(scenarios) == len(prompts):
+            _client_cache[key] = scenarios
+        return scenarios
+
+
 @scenario_bp.route('/pre-generated', methods=['GET'])
 def get_pre_generated_scenarios():
     """Get 5 random pre-generated example scenarios"""
@@ -892,11 +972,28 @@ def get_random_scenarios():
     Get the next batch of scenarios sequentially from the pool.
     Loops back to the start after the last batch.
 
-    Usage: GET /api/scenario/random
+    For clients listed in CLIENT_SCENARIO_PROMPTS (fam, nakheel) it returns
+    that client's own cards instead, and does NOT touch the global batch counter.
+
+    Usage: GET /api/scenario/random?client_name=fam
     """
     global current_batch_index
 
     try:
+        # ---- client-specific scenarios (fam / nakheel) ----
+        client_scenarios = get_client_scenarios(request.args.get('client_name', ''))
+        if client_scenarios is not None:
+            if not client_scenarios:
+                return jsonify({'error': 'Failed to generate client scenarios'}), 500
+            return jsonify({
+                'success': True,
+                'scenarios': client_scenarios,
+                'batch_number': 1,
+                'total_batches': 1,
+                'total_pool_size': len(client_scenarios),
+            }), 200
+
+        # ---- default behaviour for every other client ----
         if not SCENARIO_POOL:
             return jsonify({'error': 'Scenario pool is empty'}), 400
 
