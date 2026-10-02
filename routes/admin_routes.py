@@ -653,11 +653,22 @@ def verify_token(token):
             return None
 
         session = result.data[0]
+        company_name = session.get('company_name', '')
+        property_name = session.get('property_name', '')
+        try:
+            fresh = supabase.table('builders').select('company_name, property_name') \
+                .eq('id', session['builder_id']).execute().data
+            if fresh:
+                company_name = fresh[0].get('company_name') or company_name
+                property_name = fresh[0].get('property_name') or property_name
+        except Exception:
+            pass
+
         return {
             'username': session['username'],
             'client_name': session['client_name'],
-            'company_name': session.get('company_name', ''),
-            'property_name': session.get('property_name', ''),
+            'company_name': company_name,
+            'property_name': property_name,
             'builder_id': session['builder_id']
         }
     except Exception as e:
@@ -982,6 +993,15 @@ def get_leads():
             if not sec:
                 continue
             interests_by_user.setdefault(uid, set()).add(sec)
+
+        for start in range(0, len(user_ids_all), 20):
+            gen_rows = supabase.table('user_generations') \
+                .select('user_id, flat_type') \
+                .in_('user_id', user_ids_all[start:start + 20]) \
+                .execute().data or []
+            for g in gen_rows:
+                if g.get('user_id') and g.get('flat_type'):
+                    interests_by_user.setdefault(g['user_id'], set()).add(g['flat_type'])
 
         leads = []
         for u in users:

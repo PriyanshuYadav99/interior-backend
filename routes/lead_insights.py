@@ -712,8 +712,13 @@ def summarize(data, user, section_names=None):
         sec = r.get('property_section')
         if sec and sec not in unit_keys:
             unit_keys.append(sec)
-    if not unit_keys and user.get('property_section'):
-        unit_keys = [user['property_section']]
+        for row in list(gens) + list(sels):
+            key = row.get('flat_type')
+            if key and key not in unit_keys:
+                unit_keys.append(key)
+        legacy_key = user.get('property_section')
+        if legacy_key and legacy_key not in unit_keys:
+            unit_keys.append(legacy_key)
 
     # freshest timestamp across everything (used to decide if cached AI text is stale)
     stamps = []
