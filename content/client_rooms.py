@@ -117,7 +117,7 @@ CLIENT_UNIT_ROOMS = {
     },  
     "home-and-rentals": {
                 
-                        "3BR": [
+                        "Single-Family(TWO-STORY)": [
                             {"id": "master_bedroom", "name": "Master Bedroom",   "image": "home-and-rentals_master-bedroom.jpeg"},
                             {"id": "bedroom_1",      "name": "Bedroom 1",        "image": "home-and-rentals_bedroom-1.jpeg"},
                             {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "home-and-rentals_bedroom-2.jpeg"},
