@@ -115,6 +115,19 @@ CLIENT_UNIT_ROOMS = {
             {"id": "kitchen",        "name": "Kitchen",        "image": "fam_kitchen(3br).png"},
         ],
     },  
+    "home-and-rentals": {
+                
+                        "3BR": [
+                            {"id": "master_bedroom", "name": "Master Bedroom",   "image": "home-and-rentals_master-bedroom.jpeg"},
+                            {"id": "bedroom_1",      "name": "Bedroom 1",        "image": "home-and-rentals_bedroom-1.jpeg"},
+                            {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "home-and-rentals_bedroom-2.jpeg"},
+                            {"id": "bedroom_3",      "name": "Bedroom 3",        "image": "home-and-rentals_bedroom-3.jpeg"},
+                            {"id": "living_room",    "name": "Living Room",      "image": "home-and-rentals_living-room.jpeg"},
+                            {"id": "kitchen",        "name": "Kitchen",          "image": "home-and-rentals_kitchen.jpeg"},
+                            {"id": "bathroom",       "name": "Bathroom",         "image": "home-and-rentals_bathroom.jpeg"},
+                        ],
+                        
+            },
 }
 
 
