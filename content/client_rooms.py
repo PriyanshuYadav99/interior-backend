@@ -128,6 +128,22 @@ CLIENT_UNIT_ROOMS = {
                         ],
                         
             },
+     "shahrukhz": {
+            "2BR": [
+                {"id": "master_bedroom", "name": "Master Bedroom", "image": "shahrukhz_masterbedroom(2bhk).png"},
+                {"id": "bedroom",        "name": "Bedroom",        "image": "shahrukhz_Bedroom-1(2bhk).png"},
+                {"id": "living_room",    "name": "Living Room",    "image": "shahrukhz_living-room(2bhk).png"},
+                {"id": "kitchen",        "name": "Kitchen",        "image": "shahrukhz_kitchen(2bhk).png"},
+            ],
+            "Penthouse": [
+                {"id": "master_bedroom", "name": "Master Bedroom",   "image": "shahrukhz_masterbedroom(penthouse).png"},
+                {"id": "bedroom_1",      "name": "Bedroom 1",        "image": "shahrukhz_bedroom-1(penthouse).png"},
+                {"id": "bedroom_2",      "name": "Bedroom 2",        "image": "shahrukhz_bedroom-2(penthouse).png"},
+                {"id": "bedroom_3",      "name": "Bedroom 3",        "image": "shahrukhz_bedroom-3(penthouse).png"},
+                {"id": "living_room",    "name": "Living Room",      "image": "shahrukhz_livingroom(penthouse).png"},
+                {"id": "kitchen",        "name": "Kitchen",          "image": "shahrukhz_kitchen(penthouse).png"},
+            ],
+     }        
 }
 
 
