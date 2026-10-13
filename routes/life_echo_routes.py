@@ -1027,8 +1027,8 @@ CLIENT_SCENARIO_PROMPTS = {
     "shahrukhz": [
             {"prompt": "International School near me", "icon": "building"},
             {"prompt": "Quickest way to Expo City", "icon": "clock"},
-            {"prompt": "How far is Al Maktoum International Airport (DWC)", "icon": "clock"},
-            {"prompt": "How far is Pharmacy metro station", "icon": "shield"},    
+            {"prompt": "How far is Al Maktoum International Airport (DWC)", "icon": "plane"},
+            {"prompt": "How far is  Metro station", "icon": "metro"},    
         ],
 }
 
