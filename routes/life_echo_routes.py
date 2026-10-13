@@ -1001,6 +1001,8 @@ CATEGORY_ICONS = {
     'transit': 'clock',
     'school': 'building',
     'home': 'home',
+    'Airport': 'plane',
+    'Metro': 'metro',
 }
 
 
