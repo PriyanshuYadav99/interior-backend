@@ -17,7 +17,11 @@ ROOM_IMAGES = {
 Only theme, colors, textures, and decorative elements change.
 Room structure, furniture positions, and architecture remain IDENTICAL.
 """
-VALID_CLIENTS = ['skyline', 'ellington', 'sothebys', 'the-wow-tower', 'nakheel', 'madhuban', 'shahrukhz', 'samana']
+VALID_CLIENTS = [
+    'skyline', 'ellington', 'sothebys', 'the-wow-tower', 'nakheel',
+    'spring-field', 'fam', 'home-and-rentals',
+    'shahrukhz', 'samana', 'madhuban',
+]
 
 # Legacy, non-unit-aware clients — flat room_type -> filename
 LEGACY_CLIENT_IMAGES = {
