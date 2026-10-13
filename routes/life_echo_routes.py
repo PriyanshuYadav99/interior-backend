@@ -1003,6 +1003,9 @@ CATEGORY_ICONS = {
     'home': 'home',
     'Airport': 'plane',
     'Metro': 'metro',
+    'scuba': 'scuba',
+    'child': 'child',
+    'park': 'park'
 }
 
 
@@ -1032,6 +1035,12 @@ CLIENT_SCENARIO_PROMPTS = {
             {"prompt": "How far is Al Maktoum International Airport (DWC)", "icon": "plane"},
             {"prompt": "How far is  Metro station", "icon": "metro"},    
         ],
+    "samana": [
+                {"prompt": "I have two young child", "icon": "child"},
+                {"prompt": "love to explore tech park", "icon": "park"},
+                {"prompt": "I am a frequent commuter of international destination", "icon": "plane"},
+                {"prompt": "I love scuba diving", "icon": "scuba"},    
+            ],    
 }
 
 _client_cache = {}
