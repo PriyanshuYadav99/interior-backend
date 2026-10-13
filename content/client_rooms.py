@@ -142,25 +142,25 @@ CLIENT_UNIT_ROOMS = {
     },
 
     "samana": {
-        "1bhk": [
+        "1BHK": [
             {"id": "master_bedroom", "name": "Master Bedroom", "image": "samana_masterbedroom(1bhk-3bhk).png"},
             {"id": "living_room",    "name": "Living Room",    "image": "samana_livingroom(1bhk).png"},
             {"id": "kitchen",        "name": "Kitchen",        "image": "samana_kitchen(1bhk).png"},
         ],
-        "2bhk": [
+        "2BHK": [
             {"id": "master_bedroom", "name": "Master Bedroom", "image": "samana_masterbedroom(2bhk-4bhk).png"},
             {"id": "bedroom",        "name": "Bedroom",        "image": "samana_bedroom1(2bhk-3bhk-4bhk).png"},
             {"id": "living_room",    "name": "Living Room",    "image": "samana_livingroom(2bhk).png"},
             {"id": "kitchen",        "name": "Kitchen",        "image": "samana_kitchen(2bhk) (1).png"},
         ],
-        "3bhk": [
+        "3BHK": [
             {"id": "master_bedroom", "name": "Master Bedroom", "image": "samana_masterbedroom(1bhk-3bhk).png"},
             {"id": "bedroom_1",      "name": "Bedroom 1",      "image": "samana_bedroom1(2bhk-3bhk-4bhk).png"},
             {"id": "bedroom_2",      "name": "Bedroom 2",      "image": "samana_bedroom2(3bhk-4bhk).png"},
             {"id": "living_room",    "name": "Living Room",    "image": "samana_livingroom(3bhk).png"},
             {"id": "kitchen",        "name": "Kitchen",        "image": "samana_kitchen(3bhk).png"},
         ],
-        "4bhk": [
+        "4BHK": [
             {"id": "master_bedroom", "name": "Master Bedroom", "image": "samana_masterbedroom(2bhk-4bhk).png"},
             {"id": "bedroom_1",      "name": "Bedroom 1",      "image": "samana_bedroom1(2bhk-3bhk-4bhk).png"},
             {"id": "bedroom_2",      "name": "Bedroom 2",      "image": "samana_bedroom2(3bhk-4bhk).png"},
