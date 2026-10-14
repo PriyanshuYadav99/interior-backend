@@ -60,6 +60,13 @@ PHOTOGRAPHY_PRESETS = {
         'lighting': 'bright cheerful natural light, playful overhead lighting',
         'atmosphere': 'fun yet organized, realistic children\'s space with lived-in charm',
         'time': 'bright afternoon'
+    },
+    # NEW: Cinema Hall (room id matches client_rooms.py -> "cinemahall")
+    'cinemahall': {
+        'camera': 'Sony A7S III, 24mm f/1.4 lens',
+        'lighting': 'low-light cinematic ambience, dim warm LED wall sconces, soft floor step lights, subtle screen glow washing over the seating',
+        'atmosphere': 'immersive private theater feel, lived-in with a slightly rumpled throw blanket and a popcorn bowl on a side table',
+        'time': 'evening, lights dimmed for movie night'
     }
 }
 
@@ -91,6 +98,30 @@ def get_photography_preset(room_type):
             'time': 'natural daylight'
         }
     )
+
+
+# ============================================================
+# NEW: ROOM-SPECIFIC DISPLAY NAMES & TRANSFORM TARGETS
+# Rooms not listed here keep the original behavior exactly.
+# ============================================================
+
+ROOM_DISPLAY_NAMES = {
+    'cinemahall': 'cinema hall (home theater)',
+}
+
+ROOM_TRANSFORM_TARGETS = {
+    'cinemahall': 'wall colors/acoustic panels, recliner and sofa upholstery, carpet or flooring finish, curtains around the screen, sconces and ceiling accent lighting, posters and framed artwork',
+}
+
+
+def get_room_display_name(room_type):
+    """Readable room name; falls back to the original behavior."""
+    return ROOM_DISPLAY_NAMES.get(room_type, room_type.replace('_', ' '))
+
+
+def get_transform_targets(room_type, default):
+    """Room-specific transform list; falls back to the existing text."""
+    return ROOM_TRANSFORM_TARGETS.get(room_type, default)
 
 
 def construct_style_transformation_prompt(room_type, style):
@@ -203,7 +234,7 @@ def construct_style_transformation_prompt(room_type, style):
     })
     
     # ENHANCED PHOTOREALISTIC PROMPT
-    prompt = f"""PHOTOREALISTIC interior transformation: Transform this {room_type.replace('_', ' ')} to {style_description} style.
+    prompt = f"""PHOTOREALISTIC interior transformation: Transform this {get_room_display_name(room_type)} to {style_description} style.
 
 PRESERVE EXACTLY: Room layout, furniture positions, architectural features, room dimensions, camera perspective.
 
@@ -223,7 +254,7 @@ Atmosphere: {photo_preset['atmosphere']}
 
 {PHOTOREALISM_SUFFIX}
 
-Transform only: wall colors/textures, bedding/upholstery fabrics, decorative items, artwork, lighting fixtures.
+Transform only: {get_transform_targets(room_type, 'wall colors/textures, bedding/upholstery fabrics, decorative items, artwork, lighting fixtures')}.
 Maintain: exact furniture placement, room structure, architectural elements."""
 
     return prompt
@@ -373,7 +404,7 @@ def construct_custom_theme_prompt(room_type, custom_theme):
     theme_elements = extract_theme_elements(custom_theme)
     photo_preset = get_photography_preset(room_type)
     
-    prompt = f"""PHOTOREALISTIC {custom_theme} themed interior: Transform this {room_type.replace('_', ' ')}.
+    prompt = f"""PHOTOREALISTIC {custom_theme} themed interior: Transform this {get_room_display_name(room_type)}.
 
 PRESERVE EXACTLY: Room layout, furniture positions, architectural structure, dimensions.
 
@@ -394,7 +425,7 @@ Style: {theme_elements.get('photography', 'professional interior photography')}
 
 {PHOTOREALISM_SUFFIX}
 
-Transform only: walls, bedding/upholstery, decorative items, artwork, lighting fixtures to match {custom_theme} theme.
+Transform only: {get_transform_targets(room_type, 'walls, bedding/upholstery, decorative items, artwork, lighting fixtures')} to match {custom_theme} theme.
 Maintain: exact furniture placement and room structure."""
     
     return {

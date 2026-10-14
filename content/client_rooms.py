@@ -169,6 +169,38 @@ CLIENT_UNIT_ROOMS = {
             {"id": "kitchen",        "name": "Kitchen",        "image": "samana_kitchen(4bhk).png"},
         ],
     },
+
+    "damac": {
+            
+            "3BHK": [
+                {"id": "master_bedroom", "name": "Master Bedroom", "image": "damac_masterbedroom(3br).png"},
+                {"id": "bedroom_1",      "name": "Bedroom 1",      "image": "damac_bedroom1(3br).png"},
+                {"id": "bedroom_2",      "name": "Bedroom 2",      "image": "damac_bedroom2(3br).png"},
+                {"id": "living_room",    "name": "Living Room",    "image": "damac_livingroom(3br).png"},
+                {"id": "cinemahall",        "name": "Cinema Hall", "image": "damac_cinemahall.png"},
+                {"id": "property",        "name": "Property", "image": "damac_propety-thumbail.jpeg"},
+            ],
+            "4BHK": [
+                {"id": "master_bedroom", "name": "Master Bedroom", "image": "damac_masterbedroom(4br).png"},
+                {"id": "bedroom_1",      "name": "Bedroom 1",      "image": "damac_bedroom1(4br).png"},
+                {"id": "bedroom_2",      "name": "Bedroom 2",      "image": "damac_bedroom2(4br).png"},
+                {"id": "bedroom_3",      "name": "Bedroom 3",      "image": "damac_bedroom3(4br).png"},
+                {"id": "living_room",    "name": "Living Room",    "image": "damac_livingroom(4br-5br).png"},
+                {"id": "cinemahall",        "name": "Cinema Hall", "image": "damac_cinemahall.png"},
+                {"id": "property",        "name": "Property", "image": "damac_propety-thumbail.jpeg"},
+                
+            ],
+            "5BHK": [
+                {"id": "master_bedroom", "name": "Master Bedroom", "image": "damac_masterbedroom(5br).png"},
+                {"id": "bedroom_1",      "name": "Bedroom 1",      "image": "damac_bedroom1(5br).png"},
+                {"id": "bedroom_2",      "name": "Bedroom 2",      "image": "damac_bedroom2(5br).png"},
+                {"id": "bedroom_3",      "name": "Bedroom 3",      "image": "damac_bedroom3(5br).png"},
+                {"id": "bedroom_4",      "name": "Bedroom 4",      "image": "damac_bedroom4(5br).png"},
+                {"id": "living_room",    "name": "Living Room",    "image": "damac_livingroom(4br-5br).png"},
+                {"id": "cinemahall",        "name": "Cinema Hall", "image": "damac_cinemahall.png"},
+                {"id": "property",        "name": "Property", "image": "damac_propety-thumbail.jpeg"},
+            ],
+        },
 }  # <- closes CLIENT_UNIT_ROOMS (this was the missing brace)
 
 

@@ -20,7 +20,7 @@ Room structure, furniture positions, and architecture remain IDENTICAL.
 VALID_CLIENTS = [
     'skyline', 'ellington', 'sothebys', 'the-wow-tower', 'nakheel',
     'spring-field', 'fam', 'home-and-rentals',
-    'shahrukhz', 'samana', 'madhuban',
+    'shahrukhz', 'samana', 'madhuban', 'damac'
 ]
 
 # Legacy, non-unit-aware clients — flat room_type -> filename

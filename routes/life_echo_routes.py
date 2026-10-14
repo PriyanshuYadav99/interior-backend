@@ -1040,7 +1040,13 @@ CLIENT_SCENARIO_PROMPTS = {
                 {"prompt": "love to explore tech park", "icon": "park"},
                 {"prompt": "I am a frequent commuter of international destination", "icon": "plane"},
                 {"prompt": "I love scuba diving", "icon": "scuba"},    
-            ],    
+            ],  
+    "damac": [
+                    {"prompt": "International School near me", "icon": "building"},
+                    {"prompt": "Quickest way to  Expo City", "icon": "clock"},
+                    {"prompt": "How far is Al Maktoum International Airport (DWC)", "icon": "plane"},
+                    {"prompt": "How far is Pharmacy metro station", "icon": "metro"},    
+                ],          
 }
 
 _client_cache = {}
