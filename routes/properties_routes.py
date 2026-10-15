@@ -358,26 +358,7 @@
 #         logger.error(f"[REFRESH SCORES] {e}")
 #         return jsonify({'error': 'Failed to refresh scores'}), 500
 
-"""
-properties_routes.py — Properties dashboard, AI outreach segments, bulk send.
-
-Each client (builder) = one property, read from the `client_locations` table:
-  - name     -> derived from client_name (the-wow-tower -> "The Wow Tower")
-  - location -> client_locations.location_name
-  - leads    -> all users of that client
-
-Flow:
-  1-2. GET  /api/admin/properties                       -> property cards
-  3.   GET  /api/admin/properties/<id>/outreach          -> segment counts + AI message
-       POST /api/admin/properties/<id>/send-outreach     -> send to every lead in chosen segment(s)
-  4.   (leads list itself is admin_routes.py's existing /api/admin/leads)
-
-Register in app.py:
-    from properties_routes import properties_bp
-    app.register_blueprint(properties_bp)
-"""
-
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory, url_for
 import logging
 import os
 import re
@@ -392,6 +373,12 @@ properties_bp = Blueprint('properties', __name__, url_prefix='/api/admin/propert
 
 NEW_LEAD_WINDOW_DAYS = 7
 INACTIVE_WINDOW_DAYS = 14
+
+# NEW: property cover images live in images/<client_name>/property.<ext>
+IMAGES_ROOT = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'images'
+)
+PROPERTY_IMAGE_EXTS = ('.webp', '.jpg', '.jpeg', '.png')
 
 
 # ---------------------------------------------------------------
@@ -410,6 +397,20 @@ def _display_name(client_name):
     Falls back to the client slug made readable: the-wow-tower -> 'The Wow Tower'."""
     real_name = (getattr(request, 'builder', None) or {}).get('property_name')
     return real_name or (client_name or '').replace('-', ' ').replace('_', ' ').title()
+
+
+def _property_image_url(client_name):
+    """NEW: Looks for images/<client_name>/property.<ext> and returns its public URL.
+    Returns None if no such file exists (frontend then shows the placeholder)."""
+    if not client_name:
+        return None
+    for ext in PROPERTY_IMAGE_EXTS:
+        if os.path.isfile(os.path.join(IMAGES_ROOT, client_name, 'property' + ext)):
+            scheme = 'http' if request.host.startswith(('localhost', '127.')) else 'https'
+            return url_for('properties.serve_property_image',
+                           client_name=client_name, filename='property' + ext,
+                           _external=True, _scheme=scheme)
+    return None
 
 
 def _get_property(supabase, client_name, section_key):
@@ -488,7 +489,8 @@ def _property_card(supabase, client_name, prop):
         'location': prop.get('location_name') or '',
         'lat': prop.get('lat'),
         'lng': prop.get('lng'),
-        'image_url': prop.get('image_url'),  # None if the column doesn't exist
+        # UPDATED: DB value wins if present, otherwise images/<client_name>/property.<ext>
+        'image_url': prop.get('image_url') or _property_image_url(client_name),
         'new_leads': len(new),
         'hot_leads': len(hot),
         'inactive_leads': len(inactive),
@@ -528,6 +530,21 @@ follow-up (new leads), and general strategy. Return ONLY a JSON array of
             "Schedule property/virtual tours",
             "Launch personalized AI outreach"
         ]
+
+
+# ---------------------------------------------------------------
+# NEW: SERVE PROPERTY COVER IMAGE
+# GET /api/admin/properties/images/<client_name>/property.<ext>
+# No @builder_required on purpose: <img> tags can't send a login token.
+# Only files named property.<ext> are served, so base room images stay private.
+# ---------------------------------------------------------------
+
+@properties_bp.route('/images/<client_name>/<filename>', methods=['GET'])
+def serve_property_image(client_name, filename):
+    name, ext = os.path.splitext(filename)
+    if name != 'property' or ext.lower() not in PROPERTY_IMAGE_EXTS:
+        return jsonify({'error': 'Not found'}), 404
+    return send_from_directory(IMAGES_ROOT, os.path.join(client_name, filename), max_age=86400)
 
 
 # ---------------------------------------------------------------
