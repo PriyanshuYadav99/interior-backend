@@ -1036,7 +1036,6 @@ CLIENT_SCENARIO_PROMPTS = {
             {"prompt": "How far is  Metro station", "icon": "metro"},    
         ],
     "samana": [
-                {"prompt": "I have two young child", "icon": "child"},
                 {"prompt": "love to explore tech park", "icon": "park"},
                 {"prompt": "I am a frequent commuter of international destination", "icon": "plane"},
                 {"prompt": "I love scuba diving", "icon": "scuba"},    
